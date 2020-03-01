@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI.cs" type="Script" id=1]
+
+[node name="UI" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MenuSeparator" type="VSplitContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+split_offset = 40
+dragger_visibility = 2
+
+[node name="MenuPanel" type="Panel" parent="MenuSeparator"]
+margin_right = 1024.0
+margin_bottom = 40.0
+
+[node name="Menu" type="HBoxContainer" parent="MenuSeparator/MenuPanel"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="File" type="MenuButton" parent="MenuSeparator/MenuPanel/Menu"]
+margin_right = 35.0
+margin_bottom = 40.0
+text = "File"
+
+[node name="Splitter" type="HSplitContainer" parent="MenuSeparator"]
+margin_top = 40.0
+margin_right = 1024.0
+margin_bottom = 600.0
+split_offset = 250
+
+[node name="Left" type="Panel" parent="MenuSeparator/Splitter"]
+margin_right = 250.0
+margin_bottom = 560.0
+
+[node name="ProjectTree" type="Tree" parent="MenuSeparator/Splitter/Left"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Main" type="Panel" parent="MenuSeparator/Splitter"]
+margin_left = 262.0
+margin_right = 1024.0
+margin_bottom = 560.0
