@@ -1,0 +1,102 @@
+[gd_scene format=2]
+
+[node name="ProjectEditor" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="Name"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Project Name"
+
+[node name="LineEdit" type="LineEdit" parent="Name"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+text = "My Project"
+
+[node name="Description" type="HBoxContainer" parent="."]
+margin_top = 28.0
+margin_right = 1024.0
+margin_bottom = 52.0
+
+[node name="Label" type="Label" parent="Description"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Project Description"
+
+[node name="LineEdit" type="LineEdit" parent="Description"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+text = "..."
+
+[node name="UniqueId" type="HBoxContainer" parent="."]
+margin_top = 56.0
+margin_right = 1024.0
+margin_bottom = 80.0
+
+[node name="Label" type="Label" parent="UniqueId"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Project Unique ID"
+
+[node name="LineEdit" type="LineEdit" parent="UniqueId"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+text = "username.myproject"
+
+[node name="Version" type="HBoxContainer" parent="."]
+margin_top = 84.0
+margin_right = 1024.0
+margin_bottom = 108.0
+
+[node name="Label" type="Label" parent="Version"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Project Version"
+
+[node name="LineEdit" type="LineEdit" parent="Version"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+text = "1.0.0"
+
+[node name="Author" type="HBoxContainer" parent="."]
+margin_top = 112.0
+margin_right = 1024.0
+margin_bottom = 136.0
+
+[node name="Label" type="Label" parent="Author"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Project Author(s)"
+
+[node name="LineEdit" type="LineEdit" parent="Author"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+text = "username"

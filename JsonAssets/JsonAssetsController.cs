@@ -18,7 +18,7 @@ namespace StardewEditor3.JsonAssets
         {
         }
 
-        public override void OnModCreated(UI ui, TreeItem mod)
+        public override ModData OnModCreated(UI ui, TreeItem mod)
         {
             string[] sections = new string[]
             {
@@ -39,7 +39,19 @@ namespace StardewEditor3.JsonAssets
                 var item = ui.ProjectTree.CreateItem(mod);
                 item.SetText(0, section);
                 item.AddButton(0, ui.AddIcon, UI.ADD_BUTTON_INDEX, tooltip: "Add new entry");
+                item.SetMeta(Meta.CorrespondingController, ModUniqueId);
             }
+
+            return null;
+        }
+        public override void OnRemoved(UI ui, ModData data, TreeItem entry)
+        {
+            // todo
+        }
+
+        public override void OnEditingAreaChanged(UI ui, ModData data, Node area)
+        {
+            // todo
         }
     }
 }

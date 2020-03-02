@@ -49,7 +49,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Main" type="Panel" parent="MenuSeparator/Splitter"]
+[node name="Main" type="PanelContainer" parent="MenuSeparator/Splitter"]
 margin_left = 262.0
 margin_right = 1024.0
 margin_bottom = 560.0
@@ -74,18 +74,18 @@ __meta__ = {
 }
 
 [node name="PendingRemovalDialog" type="ConfirmationDialog" parent="."]
-margin_right = 320.0
-margin_bottom = 240.0
+margin_right = 1024.0
+margin_bottom = 600.0
 
 [node name="Label2" type="Label" parent="PendingRemovalDialog"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -152.0
-margin_top = -112.0
-margin_right = 152.0
-margin_bottom = 84.0
+margin_left = -504.0
+margin_top = -292.0
+margin_right = 504.0
+margin_bottom = 264.0
 text = "Do you to remove this item?
 This cannot be undone."
 __meta__ = {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StardewEditor3.Data
+namespace StardewEditor3
 {
-    public class Project
+    public static class Meta
     {
-        public List<Dependency> Dependencies { get; } = new List<Dependency>();
+        public const string CorrespondingController = "CorrespondingController";
     }
 }

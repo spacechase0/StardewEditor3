@@ -21,7 +21,11 @@ namespace StardewEditor3
             ModAbbreviation = modAbbrev;
         }
 
-        public abstract void OnModCreated(UI ui, TreeItem mod);
+        public abstract ModData OnModCreated(UI ui, TreeItem mod);
+
+        public abstract void OnRemoved(UI ui, ModData data, TreeItem entry);
+
+        public abstract void OnEditingAreaChanged(UI ui, ModData data, Node area);
 
         private static Dictionary<string, ContentPackController> controllers = GetInitialControllers();
 
@@ -35,7 +39,7 @@ namespace StardewEditor3
             return controllers[modUniqueId];
         }
 
-        public static void RegsiterController(ContentPackController controller)
+        public static void RegisterController(ContentPackController controller)
         {
             controllers.Add(controller.ModUniqueId, controller);
         }

@@ -54,10 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentPackController.cs" />
-    <Compile Include="Data\Dependency.cs" />
+    <Compile Include="Dependency.cs" />
     <Compile Include="JsonAssets\JsonAssetsController.cs" />
     <Compile Include="Lzx\LzxDecoder.cs" />
-    <Compile Include="Data\Project.cs" />
+    <Compile Include="Meta.cs" />
+    <Compile Include="ModData.cs" />
+    <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tbin\Layer.cs" />
     <Compile Include="Tbin\Map.cs" />

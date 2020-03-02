@@ -1,6 +1,5 @@
 using Godot;
 using StardewEditor3;
-using StardewEditor3.Data;
 using System;
 using System.Collections.Generic;
 
@@ -10,12 +9,16 @@ public class UI : MarginContainer
 
 	public Tree ProjectTree { get; set; }
     public TreeItem ProjectRoot { get; set; }
+    public PanelContainer MainEditingArea { get; set; }
 
     private TreeItem depsRoot;
     private Dictionary<TreeItem, Dependency> deps = new Dictionary<TreeItem, Dependency>();
 
     private MenuButton fileMenu;
     private PopupMenu newModMenu;
+
+    private PackedScene ProjectEditor;
+    private PackedScene DependencyEditor;
 
 	public Texture EditIcon { get; set; }
 	public Texture AddIcon { get; set; }
@@ -30,6 +33,9 @@ public class UI : MarginContainer
 		EditIcon = GD.Load<Texture>("res://res/icons/edit.png");
 		AddIcon = GD.Load<Texture>("res://res/icons/add.png");
 		RemoveIcon = GD.Load<Texture>("res://res/icons/remove.png");
+
+        ProjectEditor = GD.Load<PackedScene>("res://ProjectEditor.tscn");
+        //DependencyEditor = GD.Load<PackedScene>("res://DependencyEditor.tscn");
 
 		fileMenu = GetNode<MenuButton>("MenuSeparator/MenuPanel/Menu/File");
 		var filePopup = fileMenu.GetPopup();
@@ -49,6 +55,8 @@ public class UI : MarginContainer
         ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
 		ProjectTree.Connect("button_pressed", this, nameof(Signal_TreeButtonPressed));
 		ProjectTree.Connect("item_activated", this, nameof(Signal_TreeCellActivated));
+
+        MainEditingArea = GetNode<PanelContainer>("MenuSeparator/Splitter/Main");
 
         var confirm = GetNode<ConfirmationDialog>("ConfirmNewProjectDialog");
         confirm.Connect("confirmed", this, nameof(CreateNewProject));
@@ -98,6 +106,7 @@ public class UI : MarginContainer
         var mod = ProjectTree.CreateItem(ProjectRoot);
         mod.SetText(0, $"[{controller.ModAbbreviation}] {ProjectRoot.GetText(0)}");
         mod.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this mod");
+        mod.SetMeta(Meta.CorrespondingController, controller.ModUniqueId);
         controller.OnModCreated(this, mod);
     }
 
@@ -132,10 +141,93 @@ public class UI : MarginContainer
             ModProject.Dependencies.Remove(deps[pendingRemoval]);
             deps.Remove(pendingRemoval);
         }
+        else if (pendingRemoval.GetMeta(Meta.CorrespondingController) != null)
+        {
+            var controller = ContentPackController.GetControllerForMod((string) pendingRemoval.GetMeta(Meta.CorrespondingController));
+            var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
+            if (pendingRemoval.GetParent() == ProjectRoot)
+                ModProject.Mods.Remove(data);
+            else
+                controller.OnRemoved(this, data, pendingRemoval);
+        }
         pendingRemoval.GetParent().RemoveChild(pendingRemoval);
     }
     
 	private void Signal_TreeCellActivated()
 	{
+        var sel = ProjectTree.GetSelected();
+        Node newArea = null;
+
+        if ( sel == ProjectRoot )
+        {
+            var editor = ProjectEditor.Instance();
+            var lineEdit = editor.GetNode<LineEdit>("Name/LineEdit");
+            lineEdit.Text = ModProject.Name;
+            lineEdit.Connect("text_changed", this, nameof(Signal_ProjectNameEdited));
+            lineEdit = editor.GetNode<LineEdit>("Description/LineEdit");
+            lineEdit.Text = ModProject.Description;
+            lineEdit.Connect("text_changed", this, nameof(Signal_ProjectDescriptionEdited));
+            lineEdit = editor.GetNode<LineEdit>("UniqueId/LineEdit");
+            lineEdit.Text = ModProject.UniqueId;
+            lineEdit.Connect("text_changed", this, nameof(Signal_ProjectUniqueIdEdited));
+            lineEdit = editor.GetNode<LineEdit>("Version/LineEdit");
+            lineEdit.Text = ModProject.Version;
+            lineEdit.Connect("text_changed", this, nameof(Signal_ProjectVersionEdited));
+            lineEdit = editor.GetNode<LineEdit>("Author/LineEdit");
+            lineEdit.Text = ModProject.Author;
+            lineEdit.Connect("text_changed", this, nameof(Signal_ProjectAuthorEdited));
+            newArea = editor;
+        }
+
+        if ( newArea != null )
+        {
+            ClearMainEditingArea();
+            MainEditingArea.AddChild(newArea);
+        }
 	}
+
+    private void Signal_ProjectNameEdited(string str)
+    {
+        ModProject.Name = str;
+        ProjectRoot.SetText(0, str);
+        for ( var child = ProjectRoot.GetChildren(); child != null; child = child.GetNext() )
+        {
+            if ( child.GetText(0).BeginsWith("[") )
+            {
+                var controller = ContentPackController.GetControllerForMod((string)child.GetMeta(Meta.CorrespondingController));
+                child.SetText(0, $"[{controller.ModAbbreviation}] {str}");
+            }
+        }
+    }
+    private void Signal_ProjectDescriptionEdited(string str)
+    {
+        ModProject.Description = str;
+    }
+    private void Signal_ProjectUniqueIdEdited(string str)
+    {
+        ModProject.UniqueId = str;
+    }
+    private void Signal_ProjectVersionEdited(string str)
+    {
+        ModProject.Version = str;
+    }
+    private void Signal_ProjectAuthorEdited(string str)
+    {
+        ModProject.Author = str;
+    }
+
+    private void ClearMainEditingArea()
+    {
+        if (MainEditingArea.GetChildCount() <= 0)
+            return;
+
+        var child = MainEditingArea.GetChild(0);
+        if (child.GetMeta(Meta.CorrespondingController) != null)
+        {
+            var controller = ContentPackController.GetControllerForMod((string)pendingRemoval.GetMeta(Meta.CorrespondingController));
+            var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
+            controller.OnEditingAreaChanged(this, data, child);
+        }
+        child.QueueFree();
+    }
 }

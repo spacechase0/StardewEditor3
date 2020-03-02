@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StardewEditor3.Data
+namespace StardewEditor3
 {
     public class Dependency
     {
