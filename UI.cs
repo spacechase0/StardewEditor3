@@ -1,13 +1,18 @@
 using Godot;
-using StardewEditor3.ContentPackControllers;
+using StardewEditor3;
+using StardewEditor3.Data;
 using System;
+using System.Collections.Generic;
 
 public class UI : MarginContainer
 {
+    public Project ModProject { get; set; }
+
 	public Tree ProjectTree { get; set; }
     public TreeItem ProjectRoot { get; set; }
 
-    private TreeItem deps;
+    private TreeItem depsRoot;
+    private Dictionary<TreeItem, Dependency> deps = new Dictionary<TreeItem, Dependency>();
 
     private MenuButton fileMenu;
     private PopupMenu newModMenu;
@@ -44,17 +49,30 @@ public class UI : MarginContainer
         ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
 		ProjectTree.Connect("button_pressed", this, nameof(Signal_TreeButtonPressed));
 		ProjectTree.Connect("item_activated", this, nameof(Signal_TreeCellActivated));
-	}
+
+        var confirm = GetNode<ConfirmationDialog>("ConfirmNewProjectDialog");
+        confirm.Connect("confirmed", this, nameof(CreateNewProject));
+
+        var removal = GetNode<ConfirmationDialog>("PendingRemovalDialog");
+        removal.Connect("confirmed", this, nameof(Signal_PendingRemovalConfirm));
+    }
 
     private void CreateNewProject()
     {
+        if ( ProjectRoot != null )
+        {
+            ProjectRoot.GetParent().RemoveChild(ProjectRoot);
+        }
+
+        ModProject = new Project();
+
         ProjectRoot = ProjectTree.CreateItem();
         ProjectRoot.SetText(0, "My Project");
         ProjectRoot.DisableFolding = true;
 
-        deps = ProjectTree.CreateItem(ProjectRoot);
-        deps.SetText(0, "Dependencies");
-        deps.AddButton(0, AddIcon, ADD_BUTTON_INDEX);
+        depsRoot = ProjectTree.CreateItem(ProjectRoot);
+        depsRoot.SetText(0, "Dependencies");
+        depsRoot.AddButton(0, AddIcon, ADD_BUTTON_INDEX);
 
         fileMenu.GetPopup().SetItemDisabled(1, false);
     }
@@ -62,7 +80,15 @@ public class UI : MarginContainer
     private void Signal_FileMenuActivated(int index)
     {
         if (index == 0)
-            CreateNewProject();
+        {
+            if (ModProject != null)
+            {
+                var confirm = GetNode<ConfirmationDialog>("ConfirmNewProjectDialog");
+                confirm.PopupCentered();
+            }
+            else
+                CreateNewProject();
+        }
     }
 
     private void Signal_NewModMenuActivated(int index)
@@ -78,17 +104,35 @@ public class UI : MarginContainer
     private void Signal_TreeButtonPressed(TreeItem item, int column, int id)
     {
         if (id == REMOVE_BUTTON_INDEX)
-            item.GetParent().RemoveChild(item);
+        {
+            pendingRemoval = item;
+            var confirm = GetNode<ConfirmationDialog>("PendingRemovalDialog");
+            confirm.PopupCentered();
+        }
         else if ( id == ADD_BUTTON_INDEX )
         {
-            if ( item == deps )
+            if ( item == depsRoot)
             {
-                var dep = ProjectTree.CreateItem(deps);
-                dep.SetText(0, "mod.id");
-                dep.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this dependency");
-                dep.SetEditable(0, true);
+                Dependency dep;
+                ModProject.Dependencies.Add(dep = new Dependency() { UniqueID = "mod.id" });
+
+                var depItem = ProjectTree.CreateItem(depsRoot);
+                depItem.SetText(0, dep.UniqueID);
+                depItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this dependency");
+                deps.Add(depItem, dep);
             }
         }
+    }
+
+    private TreeItem pendingRemoval;
+    private void Signal_PendingRemovalConfirm()
+    {
+        if ( pendingRemoval.GetParent() == depsRoot )
+        {
+            ModProject.Dependencies.Remove(deps[pendingRemoval]);
+            deps.Remove(pendingRemoval);
+        }
+        pendingRemoval.GetParent().RemoveChild(pendingRemoval);
     }
     
 	private void Signal_TreeCellActivated()

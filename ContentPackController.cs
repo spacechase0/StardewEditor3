@@ -1,11 +1,12 @@
 ﻿using Godot;
+using StardewEditor3.JsonAssets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StardewEditor3.ContentPackControllers
+namespace StardewEditor3
 {
     public abstract class ContentPackController
     {

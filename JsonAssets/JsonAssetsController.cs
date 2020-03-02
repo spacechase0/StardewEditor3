@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StardewEditor3.ContentPackControllers
+namespace StardewEditor3.JsonAssets
 {
     public class JsonAssetsController : ContentPackController
     {
