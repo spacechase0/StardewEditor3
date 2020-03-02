@@ -11,9 +11,10 @@ namespace StardewEditor3.ContentPackControllers
     {
         public const string MOD_NAME = "Json Assets";
         public const string MOD_UNIQUE_ID = "spacechase0.JsonAssets";
+        public const string MOD_ABBREVIATION = "JA";
 
         public JsonAssetsController()
-        :   base(MOD_NAME, MOD_UNIQUE_ID)
+        :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
         {
         }
 
@@ -37,7 +38,7 @@ namespace StardewEditor3.ContentPackControllers
             {
                 var item = ui.ProjectTree.CreateItem(mod);
                 item.SetText(0, section);
-                item.AddButton(0, ui.AddIcon, tooltip: "Add new entry");
+                item.AddButton(0, ui.AddIcon, UI.ADD_BUTTON_INDEX, tooltip: "Add new entry");
             }
         }
     }

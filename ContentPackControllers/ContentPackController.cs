@@ -11,11 +11,13 @@ namespace StardewEditor3.ContentPackControllers
     {
         public string ModName { get; }
         public string ModUniqueId { get; }
+        public string ModAbbreviation { get; }
 
-        protected ContentPackController(string modName, string modUniqueId)
+        protected ContentPackController(string modName, string modUniqueId, string modAbbrev)
         {
             ModName = modName;
             ModUniqueId = modUniqueId;
+            ModAbbreviation = modAbbrev;
         }
 
         public abstract void OnModCreated(UI ui, TreeItem mod);
