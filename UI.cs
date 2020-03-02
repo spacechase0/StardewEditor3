@@ -19,13 +19,14 @@ public class UI : MarginContainer
 		var fileMenu = GetNode<MenuButton>("MenuSeparator/MenuPanel/Menu/File");
 		var filePopup = fileMenu.GetPopup();
 		filePopup.AddItem("New project...");
-		filePopup.AddSubmenuItem("New content pack...", "NewMod");
-		var newModPopup = fileMenu.GetNode<PopupMenu>("NewMod");
+		var newModPopup = new PopupMenu() { Name = "NewMod" };
 		foreach ( var controllerId in ContentPackController.GetRegisteredControllerTypes() )
 		{
 			var controller = ContentPackController.GetControllerForMod(controllerId);
 			newModPopup.AddItem(controller.ModName);
 		}
+		filePopup.AddChild(newModPopup);
+		filePopup.AddSubmenuItem("New content pack...", "NewMod");
 
 		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
 		ProjectTree.Connect("item_activated", this, nameof(Signal_CellActivated));
