@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,30 @@ namespace StardewEditor3.ContentPackControllers
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID)
         {
+        }
+
+        public override void OnModCreated(UI ui, TreeItem mod)
+        {
+            string[] sections = new string[]
+            {
+                "Objects",
+                "Crops",
+                "Fruit Trees",
+                "Big Craftables",
+                "Hats",
+                "Weapons",
+                "Shirts",
+                "Pants",
+                "Tailoring Recipes",
+                "Boots",
+            };
+
+            foreach ( var section in sections )
+            {
+                var item = ui.ProjectTree.CreateItem(mod);
+                item.SetText(0, section);
+                item.AddButton(0, ui.AddIcon, tooltip: "Add new entry");
+            }
         }
     }
 }

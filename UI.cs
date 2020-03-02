@@ -1,58 +1,45 @@
 using Godot;
+using StardewEditor3.ContentPackControllers;
 using System;
 
 public class UI : MarginContainer
 {
-	private Tree tree;
-	private Texture editIcon;
+	public Tree ProjectTree { get; set; }
+
+	public Texture EditIcon { get; set; }
+	public Texture AddIcon { get; set; }
+	public Texture RemoveIcon { get; set; }
 	
 	public override void _Ready()
 	{
-		editIcon = GD.Load<Texture>("res://res/icons/edit.png");
+		EditIcon = GD.Load<Texture>("res://res/icons/edit.png");
+		AddIcon = GD.Load<Texture>("res://res/icons/add.png");
+		RemoveIcon = GD.Load<Texture>("res://res/icons/remove.png");
 
-		tree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
-		tree.Connect("item_rmb_edited", this, nameof(Signal_ItemRmbEdited));
-		tree.Connect("item_rmb_selected", this, nameof(Signal_ItemRmbEdited2));
+		var fileMenu = GetNode<MenuButton>("MenuSeparator/MenuPanel/Menu/File");
+		var filePopup = fileMenu.GetPopup();
+		filePopup.AddItem("New project...");
+		filePopup.AddSubmenuItem("New content pack...", "NewMod");
+		var newModPopup = fileMenu.GetNode<PopupMenu>("NewMod");
+		foreach ( var controllerId in ContentPackController.GetRegisteredControllerTypes() )
+		{
+			var controller = ContentPackController.GetControllerForMod(controllerId);
+			newModPopup.AddItem(controller.ModName);
+		}
 
-		var root = tree.CreateItem();
+		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
+		ProjectTree.Connect("item_activated", this, nameof(Signal_CellActivated));
+
+		var root = ProjectTree.CreateItem();
 		root.SetText(0, "My Project");
 		root.DisableFolding = true;
 
-		var cp = tree.CreateItem(root);
-		cp.SetText(0, "[CP] My Project");
-		{
-			var editImages = tree.CreateItem(cp);
-			editImages.SetText(0, "Patches");
-			{
-				var a = tree.CreateItem(editImages);
-				a.SetText(0, "Test Patch");
-				a.AddButton(0, editIcon);
-			}
-		}
-
-		var ja = tree.CreateItem(root);
+		var ja = ProjectTree.CreateItem(root);
 		ja.SetText(0, "[JA] My Project");
-		{
-			var objs = tree.CreateItem(ja);
-			objs.SetText(0, "Objects");
-			{
-				var a = tree.CreateItem(objs);
-				a.SetText(0, "Test Item");
-			}
-		}
+		ContentPackController.GetControllerForMod(JsonAssetsController.MOD_UNIQUE_ID).OnModCreated(this, ja);
 	}
 
-	private void Signal_ItemRmbEdited()
+	private void Signal_CellActivated()
 	{
 	}
-
-	private void Signal_ItemRmbEdited2(Vector2 pos)
-	{
-	}
-
-	//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-	//  public override void _Process(float delta)
-	//  {
-	//      
-	//  }
 }
