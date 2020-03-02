@@ -7,6 +7,8 @@ public class UI : MarginContainer
 	public Tree ProjectTree { get; set; }
     public TreeItem ProjectRoot { get; set; }
 
+    private TreeItem deps;
+
     private MenuButton fileMenu;
     private PopupMenu newModMenu;
 
@@ -37,10 +39,11 @@ public class UI : MarginContainer
 		}
 		filePopup.AddChild(newModMenu);
 		filePopup.AddSubmenuItem("New content pack...", "NewMod");
+        filePopup.SetItemDisabled(1, true);
 
-		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
-		ProjectTree.Connect("button_pressed", this, nameof(Signal_ButtonPressed));
-		ProjectTree.Connect("item_activated", this, nameof(Signal_CellActivated));
+        ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
+		ProjectTree.Connect("button_pressed", this, nameof(Signal_TreeButtonPressed));
+		ProjectTree.Connect("item_activated", this, nameof(Signal_TreeCellActivated));
 	}
 
     private void CreateNewProject()
@@ -48,6 +51,12 @@ public class UI : MarginContainer
         ProjectRoot = ProjectTree.CreateItem();
         ProjectRoot.SetText(0, "My Project");
         ProjectRoot.DisableFolding = true;
+
+        deps = ProjectTree.CreateItem(ProjectRoot);
+        deps.SetText(0, "Dependencies");
+        deps.AddButton(0, AddIcon, ADD_BUTTON_INDEX);
+
+        fileMenu.GetPopup().SetItemDisabled(1, false);
     }
 
     private void Signal_FileMenuActivated(int index)
@@ -66,13 +75,23 @@ public class UI : MarginContainer
         controller.OnModCreated(this, mod);
     }
 
-    private void Signal_ButtonPressed(TreeItem item, int column, int id)
+    private void Signal_TreeButtonPressed(TreeItem item, int column, int id)
     {
         if (id == REMOVE_BUTTON_INDEX)
             item.GetParent().RemoveChild(item);
+        else if ( id == ADD_BUTTON_INDEX )
+        {
+            if ( item == deps )
+            {
+                var dep = ProjectTree.CreateItem(deps);
+                dep.SetText(0, "mod.id");
+                dep.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this dependency");
+                dep.SetEditable(0, true);
+            }
+        }
     }
     
-	private void Signal_CellActivated()
+	private void Signal_TreeCellActivated()
 	{
 	}
 }
