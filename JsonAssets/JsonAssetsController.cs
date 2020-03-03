@@ -44,6 +44,15 @@ namespace StardewEditor3.JsonAssets
 
             return null;
         }
+
+        public override void OnSave(UI ui)
+        {
+        }
+
+        public override void OnLoad(UI ui)
+        {
+        }
+
         public override void OnRemoved(UI ui, ModData data, TreeItem entry)
         {
             // todo

@@ -1,4 +1,5 @@
 using Godot;
+using Newtonsoft.Json;
 using StardewEditor3;
 using System;
 using System.Collections.Generic;
@@ -6,8 +7,9 @@ using System.Collections.Generic;
 public class UI : MarginContainer
 {
 	public Project ModProject { get; set; }
+    public string ModProjectDir { get; set; }
 
-	public Tree ProjectTree { get; set; }
+    public Tree ProjectTree { get; set; }
 	public TreeItem ProjectRoot { get; set; }
 	public PanelContainer MainEditingArea { get; set; }
 
@@ -56,6 +58,9 @@ public class UI : MarginContainer
 		filePopup.AddChild(newModMenu);
 		filePopup.AddSubmenuItem("New content pack...", "NewMod");
 		filePopup.SetItemDisabled(1, true);
+        filePopup.AddSeparator();
+        filePopup.AddItem("Save");
+        // todo - add export
 
 		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
 		ProjectTree.Connect("button_pressed", this, nameof(Signal_TreeButtonPressed));
@@ -64,11 +69,32 @@ public class UI : MarginContainer
 		MainEditingArea = GetNode<PanelContainer>("MenuSeparator/Splitter/Main");
 
 		var confirm = GetNode<ConfirmationDialog>("ConfirmNewProjectDialog");
-		confirm.Connect("confirmed", this, nameof(CreateNewProject));
+		confirm.Connect("confirmed", this, nameof(CreateNewProject_Pre));
 
 		var removal = GetNode<ConfirmationDialog>("PendingRemovalDialog");
 		removal.Connect("confirmed", this, nameof(Signal_PendingRemovalConfirm));
+
+        var createDir = GetNode<FileDialog>("NewProjectDirectoryDialog");
+        createDir.Connect("dir_selected", this, nameof(Signal_CreateNewProject_SelectedDirectory));
 	}
+
+    private void CreateNewProject_Pre()
+    {
+        var createDir = GetNode<FileDialog>("NewProjectDirectoryDialog");
+        createDir.PopupCenteredClamped();
+    }
+
+    private void Signal_CreateNewProject_SelectedDirectory(string dir)
+    {
+        if ( System.IO.Directory.GetFiles(dir).Length != 0 || System.IO.Directory.GetDirectories(dir).Length != 0 )
+        {
+            GetNode<AcceptDialog>("BadProjectDirectoryDialog").PopupCenteredClamped();
+            return;
+        }
+
+        ModProjectDir = dir;
+        CreateNewProject();
+    }
 
 	private void CreateNewProject()
 	{
@@ -92,7 +118,21 @@ public class UI : MarginContainer
 		updateKeysRoot.AddButton(0, AddIcon, ADD_BUTTON_INDEX, tooltip: "Add an update key");
 
 		fileMenu.GetPopup().SetItemDisabled(1, false);
+
+        SaveProject();
 	}
+
+    private void SaveProject()
+    {
+        string path = System.IO.Path.Combine(ModProjectDir, "project.stardeweditor");
+        GD.Print("Saving to " + path);
+        System.IO.File.WriteAllText(path, JsonConvert.SerializeObject(ModProject));
+        foreach ( var project in ModProject.Mods )
+        {
+            var controller = ContentPackController.GetControllerForMod(project.ContentPackFor);
+            controller.OnSave(this);
+        }
+    }
 
 	private void Signal_FileMenuActivated(int index)
 	{
@@ -101,11 +141,15 @@ public class UI : MarginContainer
 			if (ModProject != null)
 			{
 				var confirm = GetNode<ConfirmationDialog>("ConfirmNewProjectDialog");
-				confirm.PopupCentered();
+				confirm.PopupCenteredClamped();
 			}
 			else
-				CreateNewProject();
+                CreateNewProject_Pre();
 		}
+        else if ( index == 3 )
+        {
+            SaveProject();
+        }
 	}
 
 	private void Signal_NewModMenuActivated(int index)
@@ -125,7 +169,7 @@ public class UI : MarginContainer
 		{
 			pendingRemoval = item;
 			var confirm = GetNode<ConfirmationDialog>("PendingRemovalDialog");
-			confirm.PopupCentered();
+			confirm.PopupCenteredClamped();
 		}
 		else if ( id == ADD_BUTTON_INDEX )
 		{
@@ -286,15 +330,15 @@ public class UI : MarginContainer
 	private void Signal_DependencyMinimumVersionEdited(string str)
 	{
 		var dep = deps[activeDep];
-        activeDep.SetText(0, $"{dep.UniqueID} {str}");
-        dep.MinimumVersion = str;
+		activeDep.SetText(0, $"{dep.UniqueID} {str}");
+		dep.MinimumVersion = str;
 	}
 
 	private TreeItem activeUpdateKey = null;
 	private void Signal_UpdateKeyPlatformEdited(int idx)
 	{
 		var optionButton = MainEditingArea.GetChild(0).GetNode<OptionButton>("Platform/OptionButton");
-        var str = optionButton.GetItemText(idx);
+		var str = optionButton.GetItemText(idx);
 
 		var updateKey = updateKeys[activeUpdateKey];
 		activeUpdateKey.SetText(0, $"{str}:{updateKey.Id}");

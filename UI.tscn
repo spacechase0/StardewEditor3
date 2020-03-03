@@ -55,18 +55,18 @@ margin_right = 1024.0
 margin_bottom = 560.0
 
 [node name="ConfirmNewProjectDialog" type="ConfirmationDialog" parent="."]
-margin_right = 320.0
-margin_bottom = 240.0
+margin_right = 1024.0
+margin_bottom = 600.0
 
 [node name="Label2" type="Label" parent="ConfirmNewProjectDialog"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -152.0
-margin_top = -112.0
-margin_right = 152.0
-margin_bottom = 84.0
+margin_left = -504.0
+margin_top = -292.0
+margin_right = 504.0
+margin_bottom = 264.0
 text = "Do you want to create a new project?
 This will close the current one without saving."
 __meta__ = {
@@ -74,20 +74,44 @@ __meta__ = {
 }
 
 [node name="PendingRemovalDialog" type="ConfirmationDialog" parent="."]
-margin_right = 320.0
-margin_bottom = 240.0
+margin_right = 1024.0
+margin_bottom = 600.0
 
 [node name="Label2" type="Label" parent="PendingRemovalDialog"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -152.0
-margin_top = -112.0
-margin_right = 152.0
-margin_bottom = 84.0
+margin_left = -504.0
+margin_top = -292.0
+margin_right = 504.0
+margin_bottom = 264.0
 text = "Do you to remove this item?
 This cannot be undone."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NewProjectDirectoryDialog" type="FileDialog" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+window_title = "Open a Directory"
+dialog_text = "Choose an empty directory for this file."
+mode = 2
+access = 2
+current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
+current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
+
+[node name="BadProjectDirectoryDialog" type="AcceptDialog" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+window_title = "Error"
+
+[node name="Label2" type="Label" parent="BadProjectDirectoryDialog"]
+margin_right = 40.0
+margin_bottom = 14.0
+text = "Bad project directory.
+The directory must be empty."
 __meta__ = {
 "_edit_use_anchors_": false
 }
