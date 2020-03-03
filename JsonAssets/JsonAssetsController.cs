@@ -45,12 +45,14 @@ namespace StardewEditor3.JsonAssets
             return null;
         }
 
-        public override void OnSave(UI ui)
+        public override void OnSave(UI ui, ModData data)
         {
+            // todo
         }
 
         public override void OnLoad(UI ui, ModData data)
         {
+            // todo
         }
 
         public override void OnRemoved(UI ui, ModData data, TreeItem entry)
@@ -59,6 +61,16 @@ namespace StardewEditor3.JsonAssets
         }
 
         public override void OnEditingAreaChanged(UI ui, ModData data, Node area)
+        {
+            // todo
+        }
+
+        public override void OnResourceRenamed(UI ui, ModData data, string oldFilename, string newFilename)
+        {
+            // todo
+        }
+
+        public override void OnResourceDeleted(UI ui, ModData data, string filename)
         {
             // todo
         }

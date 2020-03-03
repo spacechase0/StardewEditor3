@@ -23,13 +23,17 @@ namespace StardewEditor3
 
         public abstract ModData OnModCreated(UI ui, TreeItem mod);
 
-        public abstract void OnSave(UI ui);
+        public abstract void OnSave(UI ui, ModData data);
 
         public abstract void OnLoad(UI ui, ModData data);
 
         public abstract void OnRemoved(UI ui, ModData data, TreeItem entry);
 
         public abstract void OnEditingAreaChanged(UI ui, ModData data, Node area);
+
+        public abstract void OnResourceRenamed(UI ui, ModData data, string oldFilename, string newFilename);
+
+        public abstract void OnResourceDeleted(UI ui, ModData data, string filename);
 
         private static Dictionary<string, ContentPackController> controllers = GetInitialControllers();
 

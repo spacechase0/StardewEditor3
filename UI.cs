@@ -4,11 +4,14 @@ using StardewEditor3;
 using StardewEditor3.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 public class UI : MarginContainer
 {
-	public Project ModProject { get; set; }
     public string ModProjectDir { get; set; }
+    public Project ModProject { get; set; }
+
+    private FileSystemWatcher projectDirWatcher;
 
     public Tree ProjectTree { get; set; }
 	public TreeItem ProjectRoot { get; set; }
@@ -19,6 +22,9 @@ public class UI : MarginContainer
 
 	private TreeItem updateKeysRoot;
 	private Dictionary<TreeItem, UpdateKey> updateKeys = new Dictionary<TreeItem, UpdateKey>();
+
+    private TreeItem resourcesRoot;
+    private Dictionary<TreeItem, string> resourcesNames = new Dictionary<TreeItem, string>();
 
 	private MenuButton fileMenu;
 	private PopupMenu newModMenu;
@@ -67,6 +73,7 @@ public class UI : MarginContainer
 		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
 		ProjectTree.Connect("button_pressed", this, nameof(Signal_TreeButtonPressed));
 		ProjectTree.Connect("item_activated", this, nameof(Signal_TreeCellActivated));
+        ProjectTree.Connect("item_edited", this, nameof(Signal_TreeItemEdited));
 
 		MainEditingArea = GetNode<PanelContainer>("MenuSeparator/Splitter/Main");
 
@@ -84,6 +91,9 @@ public class UI : MarginContainer
 
         var open = GetNode<FileDialog>("OpenProjectDialog");
         open.Connect("file_selected", this, nameof(Signal_OpenProject));
+
+        var import = GetNode<FileDialog>("ResourceImportDialog");
+        import.Connect("files_selected", this, nameof(Signal_ResourceImport_Multiple));
     }
 
     private void Signal_CreateNewProject_Pre()
@@ -109,7 +119,13 @@ public class UI : MarginContainer
 		if ( ProjectRoot != null )
 		{
 			ProjectRoot.GetParent().RemoveChild(ProjectRoot);
-		}
+        }
+
+        if (projectDirWatcher != null)
+        {
+            projectDirWatcher.EnableRaisingEvents = false;
+            projectDirWatcher = null; 
+        }
 
         if ( !loading )
     		ModProject = new Project();
@@ -126,10 +142,17 @@ public class UI : MarginContainer
 		updateKeysRoot.SetText(0, "Update Keys");
 		updateKeysRoot.AddButton(0, AddIcon, ADD_BUTTON_INDEX, tooltip: "Add an update key");
 
+        resourcesRoot = ProjectTree.CreateItem(ProjectRoot);
+        resourcesRoot.SetText(0, "Resources");
+        resourcesRoot.AddButton(0, AddIcon, ADD_BUTTON_INDEX, tooltip: "Import a resource");
+
 		fileMenu.GetPopup().SetItemDisabled(1, false);
 
-        if ( !loading )
+        if (!loading)
+        {
             SaveProject();
+            InitFileSystemWatcher();
+        }
 	}
 
     private void SaveProject()
@@ -142,13 +165,13 @@ public class UI : MarginContainer
         settings.TypeNameHandling = TypeNameHandling.Objects;
 
         System.IO.File.WriteAllText(path, JsonConvert.SerializeObject(ModProject, settings));
-        foreach ( var project in ModProject.Mods )
+        foreach ( var mod in ModProject.Mods )
         {
-            var controller = ContentPackController.GetControllerForMod(project.ContentPackFor);
-            controller.OnSave(this);
+            var controller = ContentPackController.GetControllerForMod(mod.ContentPackFor);
+            controller.OnSave(this, mod);
         }
     }
-    
+
     private void Signal_OpenProject_Pre()
     {
         var openDialog = GetNode<FileDialog>("OpenProjectDialog");
@@ -203,6 +226,41 @@ public class UI : MarginContainer
             modItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this mod");
             modItem.SetMeta(Meta.CorrespondingController, controller.ModUniqueId);
             controller.OnLoad(this, mod);
+        }
+
+        foreach ( var filename_ in System.IO.Directory.GetFiles(ModProjectDir) )
+        {
+            var filename = System.IO.Path.GetFileName(filename_);
+            var ext = System.IO.Path.GetExtension(filename);
+            if ( ext == ".png" || ext == ".tbin" || ext == ".tmx" || ext == ".json" || ext == ".xnb" )
+            {
+                var resItem = ProjectTree.CreateItem(resourcesRoot);
+                resItem.SetText(0, filename);
+                resItem.SetEditable(0, true);
+                resItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Delete this resource");
+                resourcesNames.Add(resItem, filename);
+            }
+        }
+
+        InitFileSystemWatcher();
+    }
+
+    private void Signal_ResourceImport_Multiple(string[] files)
+    {
+        foreach ( var file in files )
+        {
+            var origFilename = System.IO.Path.GetFileName(file);
+            var filename = origFilename;
+            for (int i = 2; System.IO.File.Exists(System.IO.Path.Combine(ModProjectDir, filename)); ++i)
+                filename = System.IO.Path.GetFileNameWithoutExtension(origFilename) + i + System.IO.Path.GetExtension(origFilename);
+
+            System.IO.File.Copy(file, System.IO.Path.Combine(ModProjectDir, filename));
+
+            var resItem = ProjectTree.CreateItem(resourcesRoot);
+            resItem.SetText(0, filename);
+            resItem.SetEditable(0, true);
+            resItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Delete this resource");
+            resourcesNames.Add(resItem, filename);
         }
     }
 
@@ -275,6 +333,11 @@ public class UI : MarginContainer
 				updateKeyItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this update key");
 				updateKeys.Add(updateKeyItem, updateKey);
 			}
+            else if ( item == resourcesRoot )
+            {
+                var import = GetNode<FileDialog>("ResourceImportDialog");
+                import.PopupCenteredClamped();
+            }
 		}
 	}
 
@@ -291,6 +354,16 @@ public class UI : MarginContainer
 			ModProject.UpdateKeys.Remove(updateKeys[pendingRemoval]);
 			updateKeys.Remove(pendingRemoval);
 		}
+        else if ( pendingRemoval.GetParent() == resourcesRoot )
+        {
+            string filename = resourcesNames[pendingRemoval];
+            System.IO.File.Delete(System.IO.Path.Combine(ModProjectDir, filename));
+            foreach (var mod in ModProject.Mods)
+            {
+                var controller = ContentPackController.GetControllerForMod(mod.ContentPackFor);
+                controller.OnResourceDeleted(this, mod, filename);
+            }
+        }
 		else if (pendingRemoval.GetMeta(Meta.CorrespondingController) != null)
 		{
 			var controller = ContentPackController.GetControllerForMod((string) pendingRemoval.GetMeta(Meta.CorrespondingController));
@@ -376,6 +449,23 @@ public class UI : MarginContainer
 		}
 	}
 
+    private void Signal_TreeItemEdited()
+    {
+        var edited = ProjectTree.GetSelected();
+        if ( edited.GetParent() == resourcesRoot )
+        {
+            var oldFilename = resourcesNames[edited];
+            string newFilename = edited.GetText(0);
+
+            System.IO.File.Move(System.IO.Path.Combine(ModProjectDir, oldFilename), System.IO.Path.Combine(ModProjectDir, newFilename));
+            foreach ( var mod in ModProject.Mods )
+            {
+                var controller = ContentPackController.GetControllerForMod(mod.ContentPackFor);
+                controller.OnResourceRenamed(this, mod, oldFilename, newFilename);
+            }
+        }
+    }
+
 	private void Signal_ProjectNameEdited(string str)
 	{
 		ModProject.Name = str;
@@ -457,5 +547,59 @@ public class UI : MarginContainer
 			controller.OnEditingAreaChanged(this, data, child);
 		}
 		child.QueueFree();
-	}
+    }
+
+    private void InitFileSystemWatcher()
+    {
+        projectDirWatcher = new FileSystemWatcher(ModProjectDir);
+        projectDirWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite;
+        projectDirWatcher.Created += WatchProjectDir_Create;
+        projectDirWatcher.Renamed += WatchProjectDir_Rename;
+        projectDirWatcher.Deleted += WatchProjectDir_Delete;
+        projectDirWatcher.EnableRaisingEvents = true;
+    }
+
+    private void WatchProjectDir_Create(object sender, FileSystemEventArgs e)
+    {
+        var filename = System.IO.Path.GetFileName(e.Name);
+        var ext = System.IO.Path.GetExtension(filename);
+        if (ext == ".png" || ext == ".tbin" || ext == ".tmx" || ext == ".json" || ext == ".xnb")
+        {
+            var resItem = ProjectTree.CreateItem(resourcesRoot);
+            resItem.SetText(0, filename);
+            resItem.SetEditable(0, true);
+            resItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Delete this resource");
+            resourcesNames.Add(resItem, filename);
+        }
+    }
+
+    private void WatchProjectDir_Rename(object sender, RenamedEventArgs e)
+    {
+        var oldFilename = System.IO.Path.GetFileName(e.OldName);
+        var filename = System.IO.Path.GetFileName(e.Name);
+
+        for (var child = resourcesRoot.GetChildren(); child != null; child = child.GetNext())
+        {
+            if (child.GetText(0) == oldFilename)
+            {
+                child.SetText(0, filename);
+                resourcesNames[child] = filename;
+                return;
+            }
+        }
+    }
+
+    private void WatchProjectDir_Delete(object sender, FileSystemEventArgs e)
+    {
+        var filename = System.IO.Path.GetFileName(e.Name);
+        for ( var child = resourcesRoot.GetChildren(); child != null; child = child.GetNext() )
+        {
+            if ( child.GetText(0) == filename)
+            {
+                resourcesRoot.RemoveChild(child);
+                resourcesNames.Remove(child);
+                return;
+            }
+        }
+    }
 }
