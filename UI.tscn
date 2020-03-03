@@ -73,6 +73,25 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ConfirmOpenProjectDialog" type="ConfirmationDialog" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="Label2" type="Label" parent="ConfirmOpenProjectDialog"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -504.0
+margin_top = -292.0
+margin_right = 504.0
+margin_bottom = 264.0
+text = "Do you want to open a new project?
+This will close the current one without saving."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="PendingRemovalDialog" type="ConfirmationDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
@@ -115,3 +134,13 @@ The directory must be empty."
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="OpenProjectDialog" type="FileDialog" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+window_title = "Open a File"
+mode = 0
+access = 2
+filters = PoolStringArray( "project.stardeweditor ; Stardew Editor Project" )
+current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
+current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"

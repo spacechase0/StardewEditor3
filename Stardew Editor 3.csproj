@@ -71,6 +71,7 @@
     <Compile Include="Tbin\Vector2.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="UpdateKey.cs" />
+    <Compile Include="Util\VersionCheck.cs" />
     <Compile Include="XNB\Extensions.cs" />
     <Compile Include="XNB\TypeReaders\ArrayReader.cs" />
     <Compile Include="XNB\TypeReaders\DictionaryReader.cs" />

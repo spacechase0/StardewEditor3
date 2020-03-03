@@ -8,6 +8,9 @@ namespace StardewEditor3
 {
     public class Project
     {
+        public const int LATEST_VERSION = 0;
+        public int FormatVersion { get; set; } = LATEST_VERSION;
+
         public string Name { get; set; } = "My Project";
         public string Description { get; set; } = "...";
         public string UniqueId { get; set; } = "username.MyProject";

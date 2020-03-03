@@ -1,6 +1,7 @@
 using Godot;
 using Newtonsoft.Json;
 using StardewEditor3;
+using StardewEditor3.Util;
 using System;
 using System.Collections.Generic;
 
@@ -60,6 +61,7 @@ public class UI : MarginContainer
 		filePopup.SetItemDisabled(1, true);
         filePopup.AddSeparator();
         filePopup.AddItem("Save");
+        filePopup.AddItem("Open");
         // todo - add export
 
 		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
@@ -69,16 +71,22 @@ public class UI : MarginContainer
 		MainEditingArea = GetNode<PanelContainer>("MenuSeparator/Splitter/Main");
 
 		var confirm = GetNode<ConfirmationDialog>("ConfirmNewProjectDialog");
-		confirm.Connect("confirmed", this, nameof(CreateNewProject_Pre));
+		confirm.Connect("confirmed", this, nameof(Signal_CreateNewProject_Pre));
+
+		var confirm2 = GetNode<ConfirmationDialog>("ConfirmOpenProjectDialog");
+		confirm2.Connect("confirmed", this, nameof(Signal_OpenProject_Pre));
 
 		var removal = GetNode<ConfirmationDialog>("PendingRemovalDialog");
 		removal.Connect("confirmed", this, nameof(Signal_PendingRemovalConfirm));
 
         var createDir = GetNode<FileDialog>("NewProjectDirectoryDialog");
         createDir.Connect("dir_selected", this, nameof(Signal_CreateNewProject_SelectedDirectory));
-	}
 
-    private void CreateNewProject_Pre()
+        var open = GetNode<FileDialog>("OpenProjectDialog");
+        open.Connect("file_selected", this, nameof(Signal_OpenProject));
+    }
+
+    private void Signal_CreateNewProject_Pre()
     {
         var createDir = GetNode<FileDialog>("NewProjectDirectoryDialog");
         createDir.PopupCenteredClamped();
@@ -96,17 +104,18 @@ public class UI : MarginContainer
         CreateNewProject();
     }
 
-	private void CreateNewProject()
+	private void CreateNewProject(bool loading = false)
 	{
 		if ( ProjectRoot != null )
 		{
 			ProjectRoot.GetParent().RemoveChild(ProjectRoot);
 		}
 
-		ModProject = new Project();
+        if ( !loading )
+    		ModProject = new Project();
 
 		ProjectRoot = ProjectTree.CreateItem();
-		ProjectRoot.SetText(0, "My Project");
+		ProjectRoot.SetText(0, "My Project 1.0.0");
 		ProjectRoot.DisableFolding = true;
 
 		depsRoot = ProjectTree.CreateItem(ProjectRoot);
@@ -119,18 +128,81 @@ public class UI : MarginContainer
 
 		fileMenu.GetPopup().SetItemDisabled(1, false);
 
-        SaveProject();
+        if ( !loading )
+            SaveProject();
 	}
 
     private void SaveProject()
     {
         string path = System.IO.Path.Combine(ModProjectDir, "project.stardeweditor");
         GD.Print("Saving to " + path);
-        System.IO.File.WriteAllText(path, JsonConvert.SerializeObject(ModProject));
+
+        JsonSerializerSettings settings = new JsonSerializerSettings();
+        settings.Formatting = Formatting.Indented;
+        settings.TypeNameHandling = TypeNameHandling.Objects;
+
+        System.IO.File.WriteAllText(path, JsonConvert.SerializeObject(ModProject, settings));
         foreach ( var project in ModProject.Mods )
         {
             var controller = ContentPackController.GetControllerForMod(project.ContentPackFor);
             controller.OnSave(this);
+        }
+    }
+    
+    private void Signal_OpenProject_Pre()
+    {
+        var openDialog = GetNode<FileDialog>("OpenProjectDialog");
+        openDialog.PopupCenteredClamped();
+    }
+
+    private void Signal_OpenProject(string path)
+    {
+        string json = System.IO.File.ReadAllText(path);
+        var verCheck = JsonConvert.DeserializeObject<VersionCheck>(json);
+        if ( verCheck.FormatVersion != Project.LATEST_VERSION )
+        {
+            GD.Print($"Bad version {verCheck.FormatVersion}, expected {Project.LATEST_VERSION}.");
+            return;
+        }
+        GD.Print("Opening " + path);
+
+        JsonSerializerSettings settings = new JsonSerializerSettings();
+        settings.TypeNameHandling = TypeNameHandling.Objects;
+
+        ModProjectDir = System.IO.Path.GetDirectoryName(path);
+        ModProject = JsonConvert.DeserializeObject<Project>(json, settings);
+
+        CreateNewProject(loading: true);
+        ProjectRoot.SetText(0, $"{ModProject.Name} {ModProject.Version}");
+
+        foreach ( var dep in ModProject.Dependencies )
+        {
+            GD.Print($"Dependency: {dep.UniqueID}");
+            var depItem = ProjectTree.CreateItem(depsRoot);
+            depItem.SetText(0, $"{dep.UniqueID} {dep.MinimumVersion}");
+            depItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this dependency");
+            deps.Add(depItem, dep);
+        }
+
+        foreach ( var updateKey in ModProject.UpdateKeys )
+        {
+            GD.Print($"Update key: {updateKey.Platform}");
+            var updateKeyItem = ProjectTree.CreateItem(updateKeysRoot);
+            updateKeyItem.SetText(0, $"{updateKey.Platform}:{updateKey.Id}");
+            updateKeyItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this update key");
+            updateKeys.Add(updateKeyItem, updateKey);
+        }
+
+        foreach ( var mod in ModProject.Mods )
+        {
+            GD.Print($"Mod: {mod.ContentPackFor}");
+            var controller = ContentPackController.GetControllerForMod(mod.ContentPackFor);
+
+            var modItem = ProjectTree.CreateItem(ProjectRoot);
+            modItem.SetText(0, $"[{controller.ModAbbreviation}] {ModProject.Name}");
+            modItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this mod");
+            modItem.SetMeta(Meta.CorrespondingController, controller.ModUniqueId);
+            controller.OnLoad(this, mod);
         }
     }
 
@@ -144,11 +216,21 @@ public class UI : MarginContainer
 				confirm.PopupCenteredClamped();
 			}
 			else
-                CreateNewProject_Pre();
+                Signal_CreateNewProject_Pre();
 		}
         else if ( index == 3 )
         {
             SaveProject();
+        }
+        else if ( index == 4 )
+        {
+            if (ModProject != null)
+            {
+                var confirm = GetNode<ConfirmationDialog>("ConfirmOpenProjectDialog");
+                confirm.PopupCenteredClamped();
+            }
+            else
+                Signal_OpenProject_Pre();
         }
 	}
 
@@ -157,7 +239,7 @@ public class UI : MarginContainer
 		var controller = ContentPackController.GetControllerForMod(ContentPackController.GetRegisteredControllerTypes()[index]);
 
 		var mod = ProjectTree.CreateItem(ProjectRoot);
-		mod.SetText(0, $"[{controller.ModAbbreviation}] {ProjectRoot.GetText(0)}");
+		mod.SetText(0, $"[{controller.ModAbbreviation}] {ModProject.Name}");
 		mod.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this mod");
 		mod.SetMeta(Meta.CorrespondingController, controller.ModUniqueId);
 		controller.OnModCreated(this, mod);
@@ -288,7 +370,7 @@ public class UI : MarginContainer
 	private void Signal_ProjectNameEdited(string str)
 	{
 		ModProject.Name = str;
-		ProjectRoot.SetText(0, str);
+		ProjectRoot.SetText(0, $"{str} {ModProject.Version}");
 		for ( var child = ProjectRoot.GetChildren(); child != null; child = child.GetNext() )
 		{
 			if ( child.GetText(0).BeginsWith("[") )
@@ -309,7 +391,9 @@ public class UI : MarginContainer
 	private void Signal_ProjectVersionEdited(string str)
 	{
 		ModProject.Version = str;
-	}
+        ProjectRoot.SetText(0, $"{ModProject.Name} {str}");
+
+    }
 	private void Signal_ProjectAuthorEdited(string str)
 	{
 		ModProject.Author = str;

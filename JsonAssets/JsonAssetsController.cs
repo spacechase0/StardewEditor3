@@ -49,7 +49,7 @@ namespace StardewEditor3.JsonAssets
         {
         }
 
-        public override void OnLoad(UI ui)
+        public override void OnLoad(UI ui, ModData data)
         {
         }
 
