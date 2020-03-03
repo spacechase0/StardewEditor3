@@ -14,7 +14,7 @@ namespace StardewEditor3
         public string Version { get; set; } = "1.0.0";
         public string Author { get; set; } = "username";
         public List<Dependency> Dependencies { get; } = new List<Dependency>();
-        public Dictionary<string, int> UpdateKeys { get; } = new Dictionary<string, int>();
+        public List<UpdateKey> UpdateKeys { get; } = new List<UpdateKey>();
 
         public List<ModData> Mods { get; } = new List<ModData>();
     }

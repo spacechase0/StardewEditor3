@@ -14,11 +14,15 @@ public class UI : MarginContainer
 	private TreeItem depsRoot;
 	private Dictionary<TreeItem, Dependency> deps = new Dictionary<TreeItem, Dependency>();
 
+	private TreeItem updateKeysRoot;
+	private Dictionary<TreeItem, UpdateKey> updateKeys = new Dictionary<TreeItem, UpdateKey>();
+
 	private MenuButton fileMenu;
 	private PopupMenu newModMenu;
 
 	private PackedScene ProjectEditor;
 	private PackedScene DependencyEditor;
+	private PackedScene UpdateKeyEditor;
 
 	public Texture EditIcon { get; set; }
 	public Texture AddIcon { get; set; }
@@ -36,6 +40,7 @@ public class UI : MarginContainer
 
 		ProjectEditor = GD.Load<PackedScene>("res://ProjectEditor.tscn");
 		DependencyEditor = GD.Load<PackedScene>("res://DependencyEditor.tscn");
+		UpdateKeyEditor = GD.Load<PackedScene>("res://UpdateKeyEditor.tscn");
 
 		fileMenu = GetNode<MenuButton>("MenuSeparator/MenuPanel/Menu/File");
 		var filePopup = fileMenu.GetPopup();
@@ -80,7 +85,11 @@ public class UI : MarginContainer
 
 		depsRoot = ProjectTree.CreateItem(ProjectRoot);
 		depsRoot.SetText(0, "Dependencies");
-		depsRoot.AddButton(0, AddIcon, ADD_BUTTON_INDEX);
+		depsRoot.AddButton(0, AddIcon, ADD_BUTTON_INDEX, tooltip: "Add a dependency");
+
+		updateKeysRoot = ProjectTree.CreateItem(ProjectRoot);
+		updateKeysRoot.SetText(0, "Update Keys");
+		updateKeysRoot.AddButton(0, AddIcon, ADD_BUTTON_INDEX, tooltip: "Add an update key");
 
 		fileMenu.GetPopup().SetItemDisabled(1, false);
 	}
@@ -120,7 +129,7 @@ public class UI : MarginContainer
 		}
 		else if ( id == ADD_BUTTON_INDEX )
 		{
-			if ( item == depsRoot)
+			if ( item == depsRoot )
 			{
 				Dependency dep;
 				ModProject.Dependencies.Add(dep = new Dependency() { UniqueID = "mod.id" });
@@ -129,6 +138,16 @@ public class UI : MarginContainer
 				depItem.SetText(0, dep.UniqueID);
 				depItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this dependency");
 				deps.Add(depItem, dep);
+			}
+			else if ( item == updateKeysRoot )
+			{
+				UpdateKey updateKey;
+				ModProject.UpdateKeys.Add(updateKey = new UpdateKey() { Platform = "Nexus" } );
+
+				var updateKeyItem = ProjectTree.CreateItem(updateKeysRoot);
+				updateKeyItem.SetText(0, "Nexus:");
+				updateKeyItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this update key");
+				updateKeys.Add(updateKeyItem, updateKey);
 			}
 		}
 	}
@@ -140,6 +159,11 @@ public class UI : MarginContainer
 		{
 			ModProject.Dependencies.Remove(deps[pendingRemoval]);
 			deps.Remove(pendingRemoval);
+		}
+		else if ( pendingRemoval.GetParent() == updateKeysRoot )
+		{
+			ModProject.UpdateKeys.Remove(updateKeys[pendingRemoval]);
+			updateKeys.Remove(pendingRemoval);
 		}
 		else if (pendingRemoval.GetMeta(Meta.CorrespondingController) != null)
 		{
@@ -193,6 +217,20 @@ public class UI : MarginContainer
 			lineEdit = editor.GetNode<LineEdit>("MinimumVersion/LineEdit");
 			lineEdit.Text = dep.MinimumVersion;
 			lineEdit.Connect("text_changed", this, nameof(Signal_DependencyMinimumVersionEdited));
+			newArea = editor;
+		}
+		else if ( sel.GetParent() == updateKeysRoot )
+		{
+			activeUpdateKey = sel;
+			var updateKey = updateKeys[sel];
+
+			var editor = UpdateKeyEditor.Instance();
+			var optionButton = editor.GetNode<OptionButton>("Platform/OptionButton");
+			optionButton.Selected = optionButton.Items.IndexOf(updateKey.Platform);
+			optionButton.Connect("item_selected", this, nameof(Signal_UpdateKeyPlatformEdited));
+			var lineEdit = editor.GetNode<LineEdit>("Id/LineEdit");
+			lineEdit.Text = updateKey.Id;
+			lineEdit.Connect("text_changed", this, nameof(Signal_UpdateKeyIdEdited));
 			newArea = editor;
 		}
 
@@ -249,6 +287,23 @@ public class UI : MarginContainer
 	{
 		var dep = deps[activeDep];
 		dep.MinimumVersion = str;
+	}
+
+	private TreeItem activeUpdateKey = null;
+	private void Signal_UpdateKeyPlatformEdited(int idx)
+	{
+		var optionButton = MainEditingArea.GetChild(0).GetNode<OptionButton>("Platform/OptionButton");
+        var str = optionButton.GetItemText(idx);
+
+		var updateKey = updateKeys[activeUpdateKey];
+		activeUpdateKey.SetText(0, str + ":" + updateKey.Id);
+		updateKey.Platform = str;
+	}
+	private void Signal_UpdateKeyIdEdited(string str)
+	{
+		var updateKey = updateKeys[activeUpdateKey];
+		activeUpdateKey.SetText(0, updateKey.Platform + ":" + str);
+		updateKey.Id = str;
 	}
 
 	private void ClearMainEditingArea()

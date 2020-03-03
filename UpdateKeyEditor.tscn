@@ -1,0 +1,49 @@
+[gd_scene format=2]
+
+[node name="UpdateKeyEditor" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Platform" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 20.0
+
+[node name="Label" type="Label" parent="Platform"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Platform"
+
+[node name="OptionButton" type="OptionButton" parent="Platform"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The platform for this update key."
+text = "Nexus"
+items = [ "Nexus", null, false, 0, null, "ModDrop", null, false, 1, null, "Chucklefish", null, false, 2, null, "CurseForge", null, false, 3, null, "GitHub", null, false, 4, null ]
+selected = 0
+
+[node name="Id" type="HBoxContainer" parent="."]
+margin_top = 24.0
+margin_right = 1024.0
+margin_bottom = 48.0
+
+[node name="Label" type="Label" parent="Id"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Mod ID"
+
+[node name="LineEdit" type="LineEdit" parent="Id"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The ID of this mod on the given platform.
+This should be an integer, except for the GitHub platform."
