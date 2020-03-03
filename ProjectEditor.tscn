@@ -23,6 +23,7 @@ margin_left = 154.0
 margin_right = 354.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The name of the this project."
 text = "My Project"
 
 [node name="Description" type="HBoxContainer" parent="."]
@@ -42,6 +43,7 @@ margin_left = 154.0
 margin_right = 354.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The description of this project."
 text = "..."
 
 [node name="UniqueId" type="HBoxContainer" parent="."]
@@ -61,7 +63,10 @@ margin_left = 154.0
 margin_right = 354.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
-text = "username.myproject"
+hint_tooltip = "The unique ID for this project.
+The typical format is <username>.<ProjectName> (without brackets). 
+The whole thing must only contains letters, numbers, and periods."
+text = "username.MyProject"
 
 [node name="Version" type="HBoxContainer" parent="."]
 margin_top = 84.0
@@ -80,6 +85,7 @@ margin_left = 154.0
 margin_right = 354.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The version of this project."
 text = "1.0.0"
 
 [node name="Author" type="HBoxContainer" parent="."]
@@ -99,4 +105,5 @@ margin_left = 154.0
 margin_right = 354.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The author(s) of the project."
 text = "username"
