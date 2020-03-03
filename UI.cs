@@ -352,7 +352,16 @@ public class UI : MarginContainer
 
 			var editor = UpdateKeyEditor.Instance();
 			var optionButton = editor.GetNode<OptionButton>("Platform/OptionButton");
-			optionButton.Selected = optionButton.Items.IndexOf(updateKey.Platform);
+            int selInd = 0;
+            for ( int i = 0; i < optionButton.GetItemCount(); ++i )
+            {
+                if (optionButton.GetItemText(i) == updateKey.Platform)
+                {
+                    selInd = i;
+                    break;
+                }
+            }
+            optionButton.Selected = selInd;
 			optionButton.Connect("item_selected", this, nameof(Signal_UpdateKeyPlatformEdited));
 			var lineEdit = editor.GetNode<LineEdit>("Id/LineEdit");
 			lineEdit.Text = updateKey.Id;
