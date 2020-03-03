@@ -255,12 +255,7 @@ public class UI : MarginContainer
                 filename = System.IO.Path.GetFileNameWithoutExtension(origFilename) + i + System.IO.Path.GetExtension(origFilename);
 
             System.IO.File.Copy(file, System.IO.Path.Combine(ModProjectDir, filename));
-
-            var resItem = ProjectTree.CreateItem(resourcesRoot);
-            resItem.SetText(0, filename);
-            resItem.SetEditable(0, true);
-            resItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Delete this resource");
-            resourcesNames.Add(resItem, filename);
+            // The file system watcher will handle UI stuff
         }
     }
 
@@ -364,7 +359,7 @@ public class UI : MarginContainer
                 controller.OnResourceDeleted(this, mod, filename);
             }
         }
-		else if (pendingRemoval.GetMeta(Meta.CorrespondingController) != null)
+        else if (pendingRemoval.GetMeta(Meta.CorrespondingController) != null)
 		{
 			var controller = ContentPackController.GetControllerForMod((string) pendingRemoval.GetMeta(Meta.CorrespondingController));
 			var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
@@ -373,7 +368,7 @@ public class UI : MarginContainer
 			else
 				controller.OnRemoved(this, data, pendingRemoval);
 		}
-		pendingRemoval.GetParent().RemoveChild(pendingRemoval);
+    	pendingRemoval.GetParent().RemoveChild(pendingRemoval);
 	}
 	
 	private void Signal_TreeCellActivated()
@@ -457,7 +452,9 @@ public class UI : MarginContainer
             var oldFilename = resourcesNames[edited];
             string newFilename = edited.GetText(0);
 
+            justRenamedInUi = newFilename;
             System.IO.File.Move(System.IO.Path.Combine(ModProjectDir, oldFilename), System.IO.Path.Combine(ModProjectDir, newFilename));
+            resourcesNames[edited] = newFilename;
             foreach ( var mod in ModProject.Mods )
             {
                 var controller = ContentPackController.GetControllerForMod(mod.ContentPackFor);
@@ -559,9 +556,15 @@ public class UI : MarginContainer
         projectDirWatcher.EnableRaisingEvents = true;
     }
 
+    string justRenamedInUi = null;
     private void WatchProjectDir_Create(object sender, FileSystemEventArgs e)
     {
         var filename = System.IO.Path.GetFileName(e.Name);
+        if (filename == justRenamedInUi)
+        {
+            justRenamedInUi = null;
+            return;
+        }
         var ext = System.IO.Path.GetExtension(filename);
         if (ext == ".png" || ext == ".tbin" || ext == ".tmx" || ext == ".json" || ext == ".xnb")
         {
