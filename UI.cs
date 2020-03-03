@@ -275,7 +275,7 @@ public class UI : MarginContainer
 	private void Signal_DependencyIdEdited(string str)
 	{
 		var dep = deps[activeDep];
-		activeDep.SetText(0, str);
+		activeDep.SetText(0, $"{str} {dep.MinimumVersion}");
 		dep.UniqueID = str;
 	}
 	private void Signal_DependencyRequiredToggled(bool state)
@@ -286,7 +286,8 @@ public class UI : MarginContainer
 	private void Signal_DependencyMinimumVersionEdited(string str)
 	{
 		var dep = deps[activeDep];
-		dep.MinimumVersion = str;
+        activeDep.SetText(0, $"{dep.UniqueID} {str}");
+        dep.MinimumVersion = str;
 	}
 
 	private TreeItem activeUpdateKey = null;
@@ -296,13 +297,13 @@ public class UI : MarginContainer
         var str = optionButton.GetItemText(idx);
 
 		var updateKey = updateKeys[activeUpdateKey];
-		activeUpdateKey.SetText(0, str + ":" + updateKey.Id);
+		activeUpdateKey.SetText(0, $"{str}:{updateKey.Id}");
 		updateKey.Platform = str;
 	}
 	private void Signal_UpdateKeyIdEdited(string str)
 	{
 		var updateKey = updateKeys[activeUpdateKey];
-		activeUpdateKey.SetText(0, updateKey.Platform + ":" + str);
+		activeUpdateKey.SetText(0, $"{updateKey.Platform}:{str}");
 		updateKey.Id = str;
 	}
 
