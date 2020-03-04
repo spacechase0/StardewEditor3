@@ -57,6 +57,8 @@ margin_bottom = 560.0
 [node name="ConfirmNewProjectDialog" type="ConfirmationDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
+window_title = "Confirm New Project"
+resizable = true
 
 [node name="Label2" type="Label" parent="ConfirmNewProjectDialog"]
 anchor_left = 0.5
@@ -76,6 +78,8 @@ __meta__ = {
 [node name="ConfirmOpenProjectDialog" type="ConfirmationDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
+window_title = "Confrm Open Project"
+resizable = true
 
 [node name="Label2" type="Label" parent="ConfirmOpenProjectDialog"]
 anchor_left = 0.5
@@ -95,6 +99,8 @@ __meta__ = {
 [node name="PendingRemovalDialog" type="ConfirmationDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
+window_title = "Confirm Item Removal"
+resizable = true
 
 [node name="Label2" type="Label" parent="PendingRemovalDialog"]
 anchor_left = 0.5
@@ -114,7 +120,8 @@ __meta__ = {
 [node name="NewProjectDirectoryDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Open a Directory"
+window_title = "Select Project Directory"
+resizable = true
 dialog_text = "Choose an empty directory for this file."
 mode = 2
 access = 2
@@ -124,7 +131,8 @@ current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
 [node name="BadProjectDirectoryDialog" type="AcceptDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Error"
+window_title = "Bad Project Directory"
+resizable = true
 
 [node name="Label2" type="Label" parent="BadProjectDirectoryDialog"]
 margin_right = 40.0
@@ -138,7 +146,8 @@ __meta__ = {
 [node name="OpenProjectDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Open a File"
+window_title = "Open Project"
+resizable = true
 mode = 0
 access = 2
 filters = PoolStringArray( "project.stardeweditor ; Stardew Editor Project" )
@@ -148,9 +157,20 @@ current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
 [node name="ResourceImportDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Open File(s)"
+window_title = "Import Resource(s)"
+resizable = true
 mode = 1
 access = 2
 filters = PoolStringArray( "*.png ; PNG files", "*.tbin ; tIDE map files", "*.tmx ; Tiled map files", "*.json ; JSON file", "*.xnb ; XNB files" )
+current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
+current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
+
+[node name="ExportProjectDialog" type="FileDialog" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+window_title = "Export Project"
+resizable = true
+mode = 2
+access = 2
 current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
 current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"

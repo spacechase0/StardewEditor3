@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="ContentPackController.cs" />
     <Compile Include="Dependency.cs" />
+    <Compile Include="ExportManifest.cs" />
     <Compile Include="ImageResourceReference.cs" />
     <Compile Include="JsonAssets\Data\BigCraftableData.cs" />
     <Compile Include="JsonAssets\Data\BootsData.cs" />

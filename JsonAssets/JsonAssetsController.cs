@@ -1,4 +1,6 @@
 ﻿using Godot;
+using JsonAssets.Data;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,8 @@ namespace StardewEditor3.JsonAssets
         public const string MOD_NAME = "Json Assets";
         public const string MOD_UNIQUE_ID = "spacechase0.JsonAssets";
         public const string MOD_ABBREVIATION = "JA";
+
+        private readonly Dictionary<TreeItem, ObjectData> objects = new Dictionary<TreeItem, ObjectData>();
 
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
@@ -52,6 +56,32 @@ namespace StardewEditor3.JsonAssets
 
         public override void OnLoad(UI ui, ModData data)
         {
+            // todo
+        }
+
+        public override void OnExport(UI ui, ModData data, string exportPath)
+        {
+            var path = System.IO.Path.Combine(exportPath, $"[{MOD_ABBREVIATION}] {ui.ModProject.Name}");
+            System.IO.Directory.CreateDirectory(path);
+
+            GD.Print("Exporting manifest");
+            ExportManifest manifest = new ExportManifest();
+            manifest.Name = $"[{MOD_ABBREVIATION}] {ui.ModProject.Name}";
+            manifest.Description = ui.ModProject.Description;
+            manifest.Author = ui.ModProject.UniqueId;
+            manifest.Version = ui.ModProject.Version;
+            manifest.UniqueID = ui.ModProject.UniqueId + "." + MOD_ABBREVIATION;
+            manifest.ContentPackFor = new ExportContentPackFor()
+            {
+                UniqueID = MOD_UNIQUE_ID,
+            };
+            manifest.Dependencies = ui.ModProject.Dependencies; // Using the same list/object is fine since we're just immediately serializing it
+            foreach ( var key in ui.ModProject.UpdateKeys )
+            {
+                manifest.UpdateKeys.Add($"{key.Platform}:{key.Id}");
+            }
+            System.IO.File.WriteAllText(System.IO.Path.Combine(path, "manifest.json"), JsonConvert.SerializeObject(manifest, Formatting.Indented));
+
             // todo
         }
 

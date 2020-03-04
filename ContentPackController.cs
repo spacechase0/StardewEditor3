@@ -27,6 +27,8 @@ namespace StardewEditor3
 
         public abstract void OnLoad(UI ui, ModData data);
 
+        public abstract void OnExport(UI ui, ModData data, string exportPath);
+
         public abstract void OnRemoved(UI ui, ModData data, TreeItem entry);
 
         public abstract void OnEditingAreaChanged(UI ui, ModData data, Node area);
