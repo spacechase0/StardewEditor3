@@ -18,13 +18,13 @@ public class UI : MarginContainer
 	public PanelContainer MainEditingArea { get; set; }
 
 	private TreeItem depsRoot;
-	private Dictionary<TreeItem, Dependency> deps = new Dictionary<TreeItem, Dependency>();
+	private readonly Dictionary<TreeItem, Dependency> deps = new Dictionary<TreeItem, Dependency>();
 
 	private TreeItem updateKeysRoot;
-	private Dictionary<TreeItem, UpdateKey> updateKeys = new Dictionary<TreeItem, UpdateKey>();
+	private readonly Dictionary<TreeItem, UpdateKey> updateKeys = new Dictionary<TreeItem, UpdateKey>();
 
     private TreeItem resourcesRoot;
-    private Dictionary<TreeItem, string> resourcesNames = new Dictionary<TreeItem, string>();
+    private readonly Dictionary<TreeItem, string> resourcesNames = new Dictionary<TreeItem, string>();
 
 	private MenuButton fileMenu;
 	private PopupMenu newModMenu;
@@ -160,9 +160,11 @@ public class UI : MarginContainer
         string path = System.IO.Path.Combine(ModProjectDir, "project.stardeweditor");
         GD.Print("Saving to " + path);
 
-        JsonSerializerSettings settings = new JsonSerializerSettings();
-        settings.Formatting = Formatting.Indented;
-        settings.TypeNameHandling = TypeNameHandling.Objects;
+        JsonSerializerSettings settings = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented,
+            TypeNameHandling = TypeNameHandling.Objects,
+        };
 
         System.IO.File.WriteAllText(path, JsonConvert.SerializeObject(ModProject, settings));
         foreach ( var mod in ModProject.Mods )
@@ -189,8 +191,10 @@ public class UI : MarginContainer
         }
         GD.Print("Opening " + path);
 
-        JsonSerializerSettings settings = new JsonSerializerSettings();
-        settings.TypeNameHandling = TypeNameHandling.Objects;
+        JsonSerializerSettings settings = new JsonSerializerSettings()
+        {
+            TypeNameHandling = TypeNameHandling.Objects,
+        };
 
         ModProjectDir = System.IO.Path.GetDirectoryName(path);
         ModProject = JsonConvert.DeserializeObject<Project>(json, settings);
@@ -548,8 +552,10 @@ public class UI : MarginContainer
 
     private void InitFileSystemWatcher()
     {
-        projectDirWatcher = new FileSystemWatcher(ModProjectDir);
-        projectDirWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite;
+        projectDirWatcher = new FileSystemWatcher(ModProjectDir)
+        {
+            NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite,
+        };
         projectDirWatcher.Created += WatchProjectDir_Create;
         projectDirWatcher.Renamed += WatchProjectDir_Rename;
         projectDirWatcher.Deleted += WatchProjectDir_Delete;
