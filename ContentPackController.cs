@@ -35,7 +35,7 @@ namespace StardewEditor3
 
         public abstract void OnResourceDeleted(UI ui, ModData data, string filename);
 
-        private static Dictionary<string, ContentPackController> controllers = GetInitialControllers();
+        private static readonly Dictionary<string, ContentPackController> controllers = GetInitialControllers();
 
         public static string[] GetRegisteredControllerTypes()
         {

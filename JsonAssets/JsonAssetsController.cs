@@ -42,7 +42,7 @@ namespace StardewEditor3.JsonAssets
                 item.SetMeta(Meta.CorrespondingController, ModUniqueId);
             }
 
-            return null;
+            return new JsonAssetsModData();
         }
 
         public override void OnSave(UI ui, ModData data)

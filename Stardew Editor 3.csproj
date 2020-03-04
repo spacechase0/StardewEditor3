@@ -58,7 +58,22 @@
   <ItemGroup>
     <Compile Include="ContentPackController.cs" />
     <Compile Include="Dependency.cs" />
+    <Compile Include="ImageResourceReference.cs" />
+    <Compile Include="JsonAssets\Data\BigCraftableData.cs" />
+    <Compile Include="JsonAssets\Data\BootsData.cs" />
+    <Compile Include="JsonAssets\Data\ClothingData.cs" />
+    <Compile Include="JsonAssets\Data\CropData.cs" />
+    <Compile Include="JsonAssets\Data\BaseData.cs" />
+    <Compile Include="JsonAssets\Data\BaseDataWithTexture.cs" />
+    <Compile Include="JsonAssets\Data\FruitTreeData.cs" />
+    <Compile Include="JsonAssets\Data\HatData.cs" />
+    <Compile Include="JsonAssets\Data\ObjectData.cs" />
+    <Compile Include="JsonAssets\Data\PantsData.cs" />
+    <Compile Include="JsonAssets\Data\ShirtData.cs" />
+    <Compile Include="JsonAssets\Data\TailoringRecipeData.cs" />
+    <Compile Include="JsonAssets\Data\WeaponData.cs" />
     <Compile Include="JsonAssets\JsonAssetsController.cs" />
+    <Compile Include="JsonAssets\JsonAssetsModData.cs" />
     <Compile Include="Lzx\LzxDecoder.cs" />
     <Compile Include="Meta.cs" />
     <Compile Include="ModData.cs" />
@@ -71,6 +86,7 @@
     <Compile Include="Tbin\Vector2.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="UpdateKey.cs" />
+    <Compile Include="Util\Rectangle.cs" />
     <Compile Include="Util\VersionCheck.cs" />
     <Compile Include="XNB\Extensions.cs" />
     <Compile Include="XNB\TypeReaders\ArrayReader.cs" />
