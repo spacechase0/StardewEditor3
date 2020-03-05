@@ -26,29 +26,7 @@ namespace StardewEditor3.JsonAssets
 
         public override ModData OnModCreated(UI ui, TreeItem mod)
         {
-            string[] sections = new string[]
-            {
-                "Objects",
-                "Crops",
-                "Fruit Trees",
-                "Big Craftables",
-                "Hats",
-                "Weapons",
-                "Shirts",
-                "Pants",
-                "Tailoring Recipes",
-                "Boots",
-            };
-
-            foreach ( var section in sections )
-            {
-                var item = ui.ProjectTree.CreateItem(mod);
-                item.SetText(0, section);
-                item.AddButton(0, ui.AddIcon, UI.ADD_BUTTON_INDEX, tooltip: "Add new entry");
-                item.SetMeta(Meta.CorrespondingController, ModUniqueId);
-                roots.Add(section, item);
-            }
-
+            AddSections(ui, mod);
             return new JsonAssetsModData();
         }
 
@@ -57,9 +35,9 @@ namespace StardewEditor3.JsonAssets
             // todo
         }
 
-        public override void OnLoad(UI ui, ModData data)
+        public override void OnLoad(UI ui, ModData data, TreeItem entry)
         {
-            // todo
+            AddSections(ui, entry);
         }
 
         public override void OnExport(UI ui, ModData data_, string exportPath)
@@ -151,6 +129,32 @@ namespace StardewEditor3.JsonAssets
         public override void OnResourceDeleted(UI ui, ModData data, string filename)
         {
             // todo
+        }
+
+        private void AddSections(UI ui, TreeItem entry)
+        {
+            string[] sections = new string[]
+            {
+                "Objects",
+                "Crops",
+                "Fruit Trees",
+                "Big Craftables",
+                "Hats",
+                "Weapons",
+                "Shirts",
+                "Pants",
+                "Tailoring Recipes",
+                "Boots",
+            };
+
+            foreach (var section in sections)
+            {
+                var item = ui.ProjectTree.CreateItem(entry);
+                item.SetText(0, section);
+                item.AddButton(0, ui.AddIcon, UI.ADD_BUTTON_INDEX, tooltip: "Add new entry");
+                item.SetMeta(Meta.CorrespondingController, ModUniqueId);
+                roots.Add(section, item);
+            }
         }
     }
 }

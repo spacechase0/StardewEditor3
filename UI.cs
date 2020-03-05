@@ -233,7 +233,7 @@ public class UI : MarginContainer
 			modItem.SetText(0, $"[{controller.ModAbbreviation}] {ModProject.Name}");
 			modItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this mod");
 			modItem.SetMeta(Meta.CorrespondingController, controller.ModUniqueId);
-			controller.OnLoad(this, mod);
+			controller.OnLoad(this, mod, modItem);
 		}
 
 		foreach ( var filename_ in System.IO.Directory.GetFiles(ModProjectDir) )
