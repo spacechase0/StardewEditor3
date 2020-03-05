@@ -362,6 +362,12 @@ public class UI : MarginContainer
 				var import = GetNode<FileDialog>("ResourceImportDialog");
 				import.PopupCenteredClamped();
 			}
+            else if ( item.GetMeta(Meta.CorrespondingController) != null )
+            {
+                var controller = ContentPackController.GetControllerForMod((string)item.GetParent().GetMeta(Meta.CorrespondingController));
+                var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
+                controller.OnAdded(this, data, item);
+            }
 		}
 	}
 

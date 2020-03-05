@@ -11,7 +11,7 @@ namespace StardewEditor3.Util
 {
     public class IgnorePropertiesOfTypeJsonContractResolver : DefaultContractResolver
     {
-        private IEnumerable<Type> types;
+        private readonly IEnumerable<Type> types;
         public IgnorePropertiesOfTypeJsonContractResolver(IEnumerable<Type> theTypes)
         {
             types = theTypes;

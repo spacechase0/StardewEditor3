@@ -16,6 +16,7 @@ namespace StardewEditor3.JsonAssets
         public const string MOD_UNIQUE_ID = "spacechase0.JsonAssets";
         public const string MOD_ABBREVIATION = "JA";
 
+        private readonly Dictionary<string, TreeItem> roots = new Dictionary<string, TreeItem>();
         private readonly Dictionary<TreeItem, ObjectData> objects = new Dictionary<TreeItem, ObjectData>();
 
         public JsonAssetsController()
@@ -45,6 +46,7 @@ namespace StardewEditor3.JsonAssets
                 item.SetText(0, section);
                 item.AddButton(0, ui.AddIcon, UI.ADD_BUTTON_INDEX, tooltip: "Add new entry");
                 item.SetMeta(Meta.CorrespondingController, ModUniqueId);
+                roots.Add(section, item);
             }
 
             return new JsonAssetsModData();
@@ -68,17 +70,19 @@ namespace StardewEditor3.JsonAssets
             System.IO.Directory.CreateDirectory(path);
 
             GD.Print("Exporting manifest");
-            ExportManifest manifest = new ExportManifest();
-            manifest.Name = $"[{MOD_ABBREVIATION}] {ui.ModProject.Name}";
-            manifest.Description = ui.ModProject.Description;
-            manifest.Author = ui.ModProject.UniqueId;
-            manifest.Version = ui.ModProject.Version;
-            manifest.UniqueID = ui.ModProject.UniqueId + "." + MOD_ABBREVIATION;
-            manifest.ContentPackFor = new ExportContentPackFor()
+            ExportManifest manifest = new ExportManifest()
             {
-                UniqueID = MOD_UNIQUE_ID,
+                Name = $"[{MOD_ABBREVIATION}] {ui.ModProject.Name}",
+                Description = ui.ModProject.Description,
+                Author = ui.ModProject.UniqueId,
+                Version = ui.ModProject.Version,
+                UniqueID = ui.ModProject.UniqueId + "." + MOD_ABBREVIATION,
+                ContentPackFor = new ExportContentPackFor()
+                {
+                    UniqueID = MOD_UNIQUE_ID,
+                },
+                Dependencies = ui.ModProject.Dependencies, // Using the same list/object is fine since we're just immediately serializing it
             };
-            manifest.Dependencies = ui.ModProject.Dependencies; // Using the same list/object is fine since we're just immediately serializing it
             foreach ( var key in ui.ModProject.UpdateKeys )
             {
                 manifest.UpdateKeys.Add($"{key.Platform}:{key.Id}");
@@ -98,9 +102,20 @@ namespace StardewEditor3.JsonAssets
                 string objDir = System.IO.Path.Combine(objPath, obj.Name);
                 System.IO.Directory.CreateDirectory(objDir);
                 System.IO.File.WriteAllText(System.IO.Path.Combine(objDir, "object.json"), JsonConvert.SerializeObject(obj, settings));
-                obj.Texture.MakeImage(ui.ModProjectDir).SavePng(System.IO.Path.Combine(objDir, "object.png"));
-                obj.TextureColor?.MakeImage(ui.ModProjectDir).SavePng(System.IO.Path.Combine(objDir, "color.png"));
+                
+                var image = obj.Texture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(objDir, "object.png"));
+                image.Dispose();
+
+                var colImage = obj.TextureColor?.MakeImage(ui.ModProjectDir);
+                colImage?.SavePng(System.IO.Path.Combine(objDir, "color.png"));
+                colImage?.Dispose();
             }
+        }
+
+        public override void OnAdded(UI ui, ModData data, TreeItem root)
+        {
+
         }
 
         public override void OnRemoved(UI ui, ModData data, TreeItem entry)
