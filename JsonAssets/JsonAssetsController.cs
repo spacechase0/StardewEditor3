@@ -1,6 +1,7 @@
 ﻿using Godot;
 using JsonAssets.Data;
 using Newtonsoft.Json;
+using StardewEditor3.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,8 +60,10 @@ namespace StardewEditor3.JsonAssets
             // todo
         }
 
-        public override void OnExport(UI ui, ModData data, string exportPath)
+        public override void OnExport(UI ui, ModData data_, string exportPath)
         {
+            var data = data_ as JsonAssetsModData;
+
             var path = System.IO.Path.Combine(exportPath, $"[{MOD_ABBREVIATION}] {ui.ModProject.Name}");
             System.IO.Directory.CreateDirectory(path);
 
@@ -82,7 +85,22 @@ namespace StardewEditor3.JsonAssets
             }
             System.IO.File.WriteAllText(System.IO.Path.Combine(path, "manifest.json"), JsonConvert.SerializeObject(manifest, Formatting.Indented));
 
-            // todo
+            JsonSerializerSettings settings = new JsonSerializerSettings()
+            {
+                Formatting = Formatting.Indented,
+                ContractResolver = new IgnorePropertiesOfTypeJsonContractResolver(new Type[] { typeof(ImageResourceReference) }),
+            };
+
+            string objPath = System.IO.Path.Combine(path, "Objects");
+            System.IO.Directory.CreateDirectory(objPath);
+            foreach ( var obj in data.Objects )
+            {
+                string objDir = System.IO.Path.Combine(objPath, obj.Name);
+                System.IO.Directory.CreateDirectory(objDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(objDir, "object.json"), JsonConvert.SerializeObject(obj, settings));
+                obj.Texture.MakeImage(ui.ModProjectDir).SavePng(System.IO.Path.Combine(objDir, "object.png"));
+                obj.TextureColor?.MakeImage(ui.ModProjectDir).SavePng(System.IO.Path.Combine(objDir, "color.png"));
+            }
         }
 
         public override void OnRemoved(UI ui, ModData data, TreeItem entry)
