@@ -113,9 +113,24 @@ namespace StardewEditor3.JsonAssets
             }
         }
 
-        public override void OnAdded(UI ui, ModData data, TreeItem root)
+        public override void OnAdded(UI ui, ModData data_, TreeItem root)
         {
+            var data = data_ as JsonAssetsModData;
 
+            if ( root == roots[ "Objects" ] )
+            {
+                var objData = new ObjectData()
+                {
+                    Name = "Object",
+                };
+                data.Objects.Add(objData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Object");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this object");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                objects.Add(item, objData);
+            }
         }
 
         public override void OnRemoved(UI ui, ModData data, TreeItem entry)
