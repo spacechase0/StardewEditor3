@@ -25,6 +25,7 @@ public class UI : MarginContainer
 
 	private TreeItem resourcesRoot;
 	private readonly Dictionary<TreeItem, string> resourcesNames = new Dictionary<TreeItem, string>();
+    private readonly Dictionary<string, ImageTexture> textureResources = new Dictionary<string, ImageTexture>();
 
 	private MenuButton fileMenu;
 	private PopupMenu newModMenu;
@@ -99,6 +100,30 @@ public class UI : MarginContainer
 		var export = GetNode<FileDialog>("ExportProjectDialog");
 		export.Connect("dir_selected", this, nameof(Signal_ExportProject));
 	}
+
+    public List<string> GetImageList()
+    {
+        var ret = new List<string>();
+        foreach ( var item in resourcesNames )
+        {
+            ret.Add(item.Value);
+        }
+        return ret;
+    }
+
+    public Texture GetTexture(string res)
+    {
+        if ( !textureResources.ContainsKey(res) )
+        {
+            var image = new Image();
+            image.Load(System.IO.Path.Combine(ModProjectDir, res));
+            var tex = new ImageTexture();
+            tex.CreateFromImage(image);
+            textureResources.Add(res, tex);
+        }
+
+        return textureResources[res];
+    }
 
 	private void Signal_CreateNewProject_Pre()
 	{
@@ -471,6 +496,12 @@ public class UI : MarginContainer
 			lineEdit.Connect("text_changed", this, nameof(Signal_UpdateKeyIdEdited));
 			newArea = editor;
 		}
+        else if ( sel.GetMeta(Meta.CorrespondingController) != null )
+        {
+            var controller = ContentPackController.GetControllerForMod((string)sel.GetMeta(Meta.CorrespondingController));
+            var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
+            newArea = controller.CreateMainEditingArea(this, data, sel);
+        }
 
 		if ( newArea != null )
 		{
@@ -589,10 +620,11 @@ public class UI : MarginContainer
 		projectDirWatcher.Created += WatchProjectDir_Create;
 		projectDirWatcher.Renamed += WatchProjectDir_Rename;
 		projectDirWatcher.Deleted += WatchProjectDir_Delete;
-		projectDirWatcher.EnableRaisingEvents = true;
+        projectDirWatcher.Changed += WatchProjectDir_Change;
+        projectDirWatcher.EnableRaisingEvents = true;
 	}
 
-	string justRenamedInUi = null;
+    string justRenamedInUi = null;
 	private void WatchProjectDir_Create(object sender, FileSystemEventArgs e)
 	{
 		var filename = System.IO.Path.GetFileName(e.Name);
@@ -640,5 +672,21 @@ public class UI : MarginContainer
 				return;
 			}
 		}
-	}
+    }
+
+    private void WatchProjectDir_Change(object sender, FileSystemEventArgs e)
+    {
+        var filename = System.IO.Path.GetFileName(e.Name);
+        if ( System.IO.Path.GetExtension(filename) == ".png" )
+        {
+            if ( textureResources.ContainsKey(filename) )
+            {
+                var image = new Image();
+                image.Load(e.Name);
+
+                var tex = textureResources[filename];
+                tex.CreateFromImage(image);
+            }
+        }
+    }
 }

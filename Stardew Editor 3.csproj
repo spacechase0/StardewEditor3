@@ -59,7 +59,7 @@
     <Compile Include="ContentPackController.cs" />
     <Compile Include="Dependency.cs" />
     <Compile Include="ExportManifest.cs" />
-    <Compile Include="ImageResourceReference.cs" />
+    <Compile Include="Util\ImageResourceReference.cs" />
     <Compile Include="JsonAssets\Data\BigCraftableData.cs" />
     <Compile Include="JsonAssets\Data\BootsData.cs" />
     <Compile Include="JsonAssets\Data\ClothingData.cs" />
@@ -88,7 +88,9 @@
     <Compile Include="UI.cs" />
     <Compile Include="UpdateKey.cs" />
     <Compile Include="Util\IgnorePropertiesOfTypeJsonContractResolver.cs" />
+    <Compile Include="Util\IntegerEdit.cs" />
     <Compile Include="Util\Rectangle.cs" />
+    <Compile Include="Util\SubImageEditor.cs" />
     <Compile Include="Util\VersionCheck.cs" />
     <Compile Include="XNB\Extensions.cs" />
     <Compile Include="XNB\TypeReaders\ArrayReader.cs" />

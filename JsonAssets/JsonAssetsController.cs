@@ -19,6 +19,8 @@ namespace StardewEditor3.JsonAssets
         private readonly Dictionary<string, TreeItem> roots = new Dictionary<string, TreeItem>();
         private readonly Dictionary<TreeItem, ObjectData> objects = new Dictionary<TreeItem, ObjectData>();
 
+        private PackedScene ObjectEditor = GD.Load<PackedScene>("res://JsonAssets/ObjectEditor.tscn");
+
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
         {
@@ -114,6 +116,18 @@ namespace StardewEditor3.JsonAssets
         public override void OnRemoved(UI ui, ModData data, TreeItem entry)
         {
             // todo
+        }
+        public override Node CreateMainEditingArea(UI ui, ModData data, TreeItem entry)
+        {
+            Node editor = null;
+
+            if ( objects.ContainsKey(entry) )
+            {
+                editor = ObjectEditor.Instance();
+                // todo - connect values
+            }
+
+            return editor;
         }
 
         public override void OnEditingAreaChanged(UI ui, ModData data, Node area)

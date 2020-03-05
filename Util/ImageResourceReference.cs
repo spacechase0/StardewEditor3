@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StardewEditor3
+namespace StardewEditor3.Util
 {
     public class ImageResourceReference
     {

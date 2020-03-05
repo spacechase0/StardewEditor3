@@ -1,6 +1,7 @@
 ﻿using Godot;
 using Newtonsoft.Json;
 using StardewEditor3;
+using StardewEditor3.Util;
 using System.Collections.Generic;
 
 namespace JsonAssets.Data

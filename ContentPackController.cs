@@ -33,6 +33,8 @@ namespace StardewEditor3
 
         public abstract void OnRemoved(UI ui, ModData data, TreeItem entry);
 
+        public abstract Node CreateMainEditingArea(UI ui, ModData data, TreeItem entry);
+
         public abstract void OnEditingAreaChanged(UI ui, ModData data, Node area);
 
         public abstract void OnResourceRenamed(UI ui, ModData data, string oldFilename, string newFilename);

@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using StardewEditor3;
+using StardewEditor3.Util;
 using System.Collections.Generic;
 
 namespace JsonAssets.Data

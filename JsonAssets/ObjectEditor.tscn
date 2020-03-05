@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Util/SubImageEditor.tscn" type="PackedScene" id=1]
+
+[node name="ObjectEditor" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Texture" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 156.0
+
+[node name="Label" type="Label" parent="Texture"]
+margin_top = 71.0
+margin_right = 150.0
+margin_bottom = 85.0
+rect_min_size = Vector2( 150, 0 )
+text = "Texture:"
+
+[node name="SubImageEditor" parent="Texture" instance=ExtResource( 1 )]
+margin_left = 154.0
+margin_right = 512.0
+margin_bottom = 156.0
+
+[node name="ColorTexture" type="HBoxContainer" parent="."]
+margin_top = 160.0
+margin_right = 1024.0
+margin_bottom = 316.0
+
+[node name="Label" type="Label" parent="ColorTexture"]
+margin_top = 71.0
+margin_right = 153.0
+margin_bottom = 85.0
+rect_min_size = Vector2( 150, 0 )
+text = "Color Texture (optional):"
+
+[node name="SubImageEditor" parent="ColorTexture" instance=ExtResource( 1 )]
+margin_left = 157.0
+margin_right = 515.0
+margin_bottom = 156.0
