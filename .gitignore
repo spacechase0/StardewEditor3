@@ -1,4 +1,5 @@
 bin
+packages
 
 # Godot-specific ignores
 .import/
