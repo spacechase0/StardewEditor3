@@ -49,10 +49,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Main" type="PanelContainer" parent="MenuSeparator/Splitter"]
+[node name="Main" type="ScrollContainer" parent="MenuSeparator/Splitter"]
 margin_left = 262.0
 margin_right = 1024.0
 margin_bottom = 560.0
+
+[node name="PanelContainer" type="PanelContainer" parent="MenuSeparator/Splitter/Main"]
+margin_right = 14.0
+margin_bottom = 14.0
 
 [node name="ConfirmNewProjectDialog" type="ConfirmationDialog" parent="."]
 margin_right = 1024.0

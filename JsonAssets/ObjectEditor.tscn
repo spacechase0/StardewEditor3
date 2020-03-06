@@ -1,43 +1,523 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Util/SubImageEditor.tscn" type="PackedScene" id=1]
+[ext_resource path="res://JsonAssets/BaseWithTextureEditor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=3]
+[ext_resource path="res://JsonAssets/RecipeEditor.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Util/StringListEditor.tscn" type="PackedScene" id=5]
 
-[node name="ObjectEditor" type="VBoxContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="ObjectEditor" instance=ExtResource( 2 )]
 
-[node name="Texture" type="HBoxContainer" parent="."]
+[node name="ColorTexture" type="HBoxContainer" parent="." index="4"]
+margin_top = 244.0
 margin_right = 1024.0
-margin_bottom = 156.0
+margin_bottom = 400.0
 
-[node name="Label" type="Label" parent="Texture"]
+[node name="Label" type="Label" parent="ColorTexture" index="0"]
 margin_top = 71.0
 margin_right = 150.0
 margin_bottom = 85.0
 rect_min_size = Vector2( 150, 0 )
-text = "Texture:"
+text = "Color Texture:"
 
-[node name="SubImageEditor" parent="Texture" instance=ExtResource( 1 )]
+[node name="SubImageEditor" parent="ColorTexture" index="1" instance=ExtResource( 1 )]
 margin_left = 154.0
 margin_right = 512.0
 margin_bottom = 156.0
 
-[node name="ColorTexture" type="HBoxContainer" parent="."]
-margin_top = 160.0
+[node name="Description" type="HBoxContainer" parent="." index="5"]
+margin_top = 404.0
 margin_right = 1024.0
-margin_bottom = 316.0
+margin_bottom = 428.0
 
-[node name="Label" type="Label" parent="ColorTexture"]
-margin_top = 71.0
-margin_right = 153.0
-margin_bottom = 85.0
+[node name="Label" type="Label" parent="Description" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
-text = "Color Texture (optional):"
+text = "Description:"
 
-[node name="SubImageEditor" parent="ColorTexture" instance=ExtResource( 1 )]
-margin_left = 157.0
-margin_right = 515.0
-margin_bottom = 156.0
+[node name="LineEdit" type="LineEdit" parent="Description" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The description of this object."
+
+[node name="Category" type="HBoxContainer" parent="." index="6"]
+margin_top = 432.0
+margin_right = 1024.0
+margin_bottom = 452.0
+
+[node name="Label" type="Label" parent="Category" index="0"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Category:"
+
+[node name="OptionButton" type="OptionButton" parent="Category" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The category of the object."
+text = "Vegetable"
+items = [ "Vegetable", null, false, 0, null, "Fruit", null, false, 1, null, "Flower", null, false, 2, null, "Gem", null, false, 3, null, "Fish", null, false, 4, null, "Egg", null, false, 5, null, "Milk", null, false, 6, null, "Cooking", null, false, 7, null, "Crafting", null, false, 8, null, "Mineral", null, false, 9, null, "Meat", null, false, 10, null, "Metal", null, false, 11, null, "Junk", null, false, 12, null, "Syrup", null, false, 13, null, "MonsterLoot", null, false, 14, null, "ArtisanGoods", null, false, 15, null, "Seeds", null, false, 16, null, "Ring", null, false, 17, null, "AnimalGoods", null, false, 18, null, "Greens", null, false, 19, null, "Artifact", null, false, 20, null ]
+selected = 0
+
+[node name="CategoryTextOverride" type="HBoxContainer" parent="." index="7"]
+margin_top = 456.0
+margin_right = 1024.0
+margin_bottom = 480.0
+
+[node name="Label" type="Label" parent="CategoryTextOverride" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Category Text Override:"
+
+[node name="LineEdit" type="LineEdit" parent="CategoryTextOverride" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "Text override for category text."
+
+[node name="CategoryColorOverride" type="HBoxContainer" parent="." index="8"]
+margin_top = 484.0
+margin_right = 1024.0
+margin_bottom = 504.0
+
+[node name="Label" type="Label" parent="CategoryColorOverride" index="0"]
+margin_top = 3.0
+margin_right = 156.0
+margin_bottom = 17.0
+text = "Category Color Override:"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="CategoryColorOverride" index="1"]
+margin_left = 160.0
+margin_right = 360.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "Color override for category text."
+
+[node name="Price" type="HBoxContainer" parent="." index="9"]
+margin_top = 508.0
+margin_right = 1024.0
+margin_bottom = 532.0
+
+[node name="Label" type="Label" parent="Price" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sell Price:"
+
+[node name="IntegerEdit" parent="Price" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The price of the object."
+
+[node name="CanFlags" type="HBoxContainer" parent="." index="10"]
+margin_top = 536.0
+margin_right = 1024.0
+margin_bottom = 560.0
+
+[node name="Label" type="Label" parent="CanFlags" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Can Trash, Sell, Gift:"
+
+[node name="Trash" type="CheckBox" parent="CanFlags" index="1"]
+margin_left = 154.0
+margin_right = 178.0
+margin_bottom = 24.0
+hint_tooltip = "Whether this object can be trashed or not."
+
+[node name="Sell" type="CheckBox" parent="CanFlags" index="2"]
+margin_left = 182.0
+margin_right = 206.0
+margin_bottom = 24.0
+hint_tooltip = "Whether this object can be sold or not."
+
+[node name="Gift" type="CheckBox" parent="CanFlags" index="3"]
+margin_left = 210.0
+margin_right = 234.0
+margin_bottom = 24.0
+hint_tooltip = "Whether this object can be gifted or not."
+
+[node name="Recipe" type="HBoxContainer" parent="." index="11"]
+margin_top = 564.0
+margin_right = 1024.0
+margin_bottom = 772.0
+
+[node name="Label" type="Label" parent="Recipe" index="0"]
+margin_top = 97.0
+margin_right = 150.0
+margin_bottom = 111.0
+rect_min_size = Vector2( 150, 0 )
+text = "Recipe:"
+
+[node name="RecipeEditor" parent="Recipe" index="1" instance=ExtResource( 4 )]
+margin_left = 154.0
+margin_right = 514.0
+margin_bottom = 208.0
+
+[node name="Edibility" type="HBoxContainer" parent="." index="12"]
+margin_top = 776.0
+margin_right = 1024.0
+margin_bottom = 800.0
+
+[node name="Label" type="Label" parent="Edibility" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Edibility:"
+
+[node name="IntegerEdit" parent="Edibility" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The edibility of this object, if any."
+
+[node name="EdibleIsDrink" type="HBoxContainer" parent="." index="13"]
+margin_top = 804.0
+margin_right = 1024.0
+margin_bottom = 828.0
+
+[node name="Label" type="Label" parent="EdibleIsDrink" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Is Drink:"
+
+[node name="CheckBox" type="CheckBox" parent="EdibleIsDrink" index="1"]
+margin_left = 154.0
+margin_right = 178.0
+margin_bottom = 24.0
+hint_tooltip = "True if this is a drink item, false otherwise."
+
+[node name="FoodBuffs" type="HBoxContainer" parent="." index="14"]
+margin_top = 832.0
+margin_right = 1024.0
+margin_bottom = 1136.0
+
+[node name="Label" type="Label" parent="FoodBuffs" index="0"]
+margin_top = 145.0
+margin_right = 150.0
+margin_bottom = 159.0
+rect_min_size = Vector2( 150, 0 )
+text = "Food Buffs:"
+
+[node name="Buffs" type="VBoxContainer" parent="FoodBuffs" index="1"]
+margin_left = 154.0
+margin_right = 508.0
+margin_bottom = 304.0
+
+[node name="Farming" type="HBoxContainer" parent="FoodBuffs/Buffs" index="0"]
+margin_right = 354.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Farming" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Farming:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Farming" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The farming level buff value."
+
+[node name="Fishing" type="HBoxContainer" parent="FoodBuffs/Buffs" index="1"]
+margin_top = 28.0
+margin_right = 354.0
+margin_bottom = 52.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Fishing" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Fishing:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Fishing" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The fishing level buff value."
+
+[node name="Mining" type="HBoxContainer" parent="FoodBuffs/Buffs" index="2"]
+margin_top = 56.0
+margin_right = 354.0
+margin_bottom = 80.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Mining" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Mining:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Mining" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The mining level buff value."
+
+[node name="Luck" type="HBoxContainer" parent="FoodBuffs/Buffs" index="3"]
+margin_top = 84.0
+margin_right = 354.0
+margin_bottom = 108.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Luck" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Luck:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Luck" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The luck level buff value."
+
+[node name="Foraging" type="HBoxContainer" parent="FoodBuffs/Buffs" index="4"]
+margin_top = 112.0
+margin_right = 354.0
+margin_bottom = 136.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Foraging" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Foraging:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Foraging" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The foraging level buff value."
+
+[node name="MaxStamina" type="HBoxContainer" parent="FoodBuffs/Buffs" index="5"]
+margin_top = 140.0
+margin_right = 354.0
+margin_bottom = 164.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/MaxStamina" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Max Stamina:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/MaxStamina" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The max stamina buff value."
+
+[node name="MagnetRadius" type="HBoxContainer" parent="FoodBuffs/Buffs" index="6"]
+margin_top = 168.0
+margin_right = 354.0
+margin_bottom = 192.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/MagnetRadius" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Magnet Radius:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/MagnetRadius" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The magnet radius buff value."
+
+[node name="Speed" type="HBoxContainer" parent="FoodBuffs/Buffs" index="7"]
+margin_top = 196.0
+margin_right = 354.0
+margin_bottom = 220.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Speed" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Speed:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Speed" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The speed buff value."
+
+[node name="Defense" type="HBoxContainer" parent="FoodBuffs/Buffs" index="8"]
+margin_top = 224.0
+margin_right = 354.0
+margin_bottom = 248.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Defense" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Defense:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Defense" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The defense buff value."
+
+[node name="Attack" type="HBoxContainer" parent="FoodBuffs/Buffs" index="9"]
+margin_top = 252.0
+margin_right = 354.0
+margin_bottom = 276.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Attack" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Attack:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Attack" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The attack buff value."
+
+[node name="Duration" type="HBoxContainer" parent="FoodBuffs/Buffs" index="10"]
+margin_top = 280.0
+margin_right = 354.0
+margin_bottom = 304.0
+
+[node name="Label" type="Label" parent="FoodBuffs/Buffs/Duration" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Duration:"
+
+[node name="IntegerEdit" parent="FoodBuffs/Buffs/Duration" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The duration of the buff, in game minutes."
+
+[node name="PurchasePrice" type="HBoxContainer" parent="." index="15"]
+margin_top = 1140.0
+margin_right = 1024.0
+margin_bottom = 1164.0
+
+[node name="Label" type="Label" parent="PurchasePrice" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Purchase Price:"
+
+[node name="IntegerEdit" parent="PurchasePrice" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The purchase price of this object, if any."
+
+[node name="PurchaseFrom" type="HBoxContainer" parent="." index="16"]
+margin_top = 1168.0
+margin_right = 1024.0
+margin_bottom = 1192.0
+
+[node name="Label" type="Label" parent="PurchaseFrom" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Purchase From:"
+
+[node name="LineEdit" type="LineEdit" parent="PurchaseFrom" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "Who to purchase this object from, if any."
+
+[node name="PurchaseRequirements" type="HBoxContainer" parent="." index="17"]
+margin_top = 1196.0
+margin_right = 1024.0
+margin_bottom = 1216.0
+
+[node name="Label" type="Label" parent="PurchaseRequirements" index="0"]
+margin_top = 3.0
+margin_right = 156.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Purchase Requirements:"
+
+[node name="StringListEditor" parent="PurchaseRequirements" index="1" instance=ExtResource( 5 )]
+margin_left = 160.0
+margin_right = 360.0
+margin_bottom = 20.0
+
+[node name="GiftTastes" type="HBoxContainer" parent="." index="18"]
+margin_top = 1220.0
+margin_right = 1024.0
+margin_bottom = 1234.0
+
+[node name="Label" type="Label" parent="GiftTastes" index="0"]
+margin_right = 150.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 150, 0 )
+text = "Gift Tastes:"
+
+[node name="NameLocalization" type="HBoxContainer" parent="." index="19"]
+margin_top = 1238.0
+margin_right = 1024.0
+margin_bottom = 1252.0
+
+[node name="Label" type="Label" parent="NameLocalization" index="0"]
+margin_right = 150.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 150, 0 )
+text = "Name Localization:"
+
+[node name="DescriptionLocalization" type="HBoxContainer" parent="." index="20"]
+margin_top = 1256.0
+margin_right = 1024.0
+margin_bottom = 1270.0
+
+[node name="Label" type="Label" parent="DescriptionLocalization" index="0"]
+margin_right = 158.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 150, 0 )
+text = "Description Localization:"
+
+[node name="ContextTags" type="HBoxContainer" parent="." index="21"]
+margin_top = 1274.0
+margin_right = 1024.0
+margin_bottom = 1294.0
+
+[node name="Label" type="Label" parent="ContextTags" index="0"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Context Tags:"
+
+[node name="StringListEditor" parent="ContextTags" index="1" instance=ExtResource( 5 )]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 20.0

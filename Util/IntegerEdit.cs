@@ -14,10 +14,10 @@ public class IntegerEdit : LineEdit
 		}
 		set
 		{
-            if (value.HasValue)
-                Text = value.Value.ToString();
-            else
-                Text = "";
+			if (value.HasValue)
+				Text = value.Value.ToString();
+			else
+				Text = "";
 		}
 	}
 

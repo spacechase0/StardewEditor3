@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://JsonAssets/BaseEditor.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Util/SubImageEditor.tscn" type="PackedScene" id=2]
+
+[node name="BaseWithTextureEditor" instance=ExtResource( 1 )]
+
+[node name="Texture" type="HBoxContainer" parent="." index="3"]
+margin_top = 84.0
+margin_right = 1024.0
+margin_bottom = 240.0
+
+[node name="Label" type="Label" parent="Texture" index="0"]
+margin_top = 71.0
+margin_right = 150.0
+margin_bottom = 85.0
+rect_min_size = Vector2( 150, 0 )
+text = "Texture:"
+
+[node name="SubImageEditor" parent="Texture" index="1" instance=ExtResource( 2 )]
+margin_left = 154.0
+margin_right = 512.0
+margin_bottom = 156.0

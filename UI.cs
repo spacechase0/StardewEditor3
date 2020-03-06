@@ -15,7 +15,7 @@ public class UI : MarginContainer
 
 	public Tree ProjectTree { get; set; }
 	public TreeItem ProjectRoot { get; set; }
-	public PanelContainer MainEditingArea { get; set; }
+	public Container MainEditingArea { get; set; }
 
 	private TreeItem depsRoot;
 	private readonly Dictionary<TreeItem, Dependency> deps = new Dictionary<TreeItem, Dependency>();
@@ -25,7 +25,7 @@ public class UI : MarginContainer
 
 	private TreeItem resourcesRoot;
 	private readonly Dictionary<TreeItem, string> resourcesNames = new Dictionary<TreeItem, string>();
-    private readonly Dictionary<string, ImageTexture> textureResources = new Dictionary<string, ImageTexture>();
+	private readonly Dictionary<string, ImageTexture> textureResources = new Dictionary<string, ImageTexture>();
 
 	private MenuButton fileMenu;
 	private PopupMenu newModMenu;
@@ -77,7 +77,7 @@ public class UI : MarginContainer
 		ProjectTree.Connect("item_activated", this, nameof(Signal_TreeCellActivated));
 		ProjectTree.Connect("item_edited", this, nameof(Signal_TreeItemEdited));
 
-		MainEditingArea = GetNode<PanelContainer>("MenuSeparator/Splitter/Main");
+		MainEditingArea = GetNode<Container>("MenuSeparator/Splitter/Main/PanelContainer");
 
 		var confirm = GetNode<ConfirmationDialog>("ConfirmNewProjectDialog");
 		confirm.Connect("confirmed", this, nameof(Signal_CreateNewProject_Pre));
@@ -101,29 +101,29 @@ public class UI : MarginContainer
 		export.Connect("dir_selected", this, nameof(Signal_ExportProject));
 	}
 
-    public List<string> GetImageList()
-    {
-        var ret = new List<string>();
-        foreach ( var item in resourcesNames )
-        {
-            ret.Add(item.Value);
-        }
-        return ret;
-    }
+	public List<string> GetImageList()
+	{
+		var ret = new List<string>();
+		foreach ( var item in resourcesNames )
+		{
+			ret.Add(item.Value);
+		}
+		return ret;
+	}
 
-    public Texture GetTexture(string res)
-    {
-        if ( !textureResources.ContainsKey(res) )
-        {
-            var image = new Image();
-            image.Load(System.IO.Path.Combine(ModProjectDir, res));
-            var tex = new ImageTexture();
-            tex.CreateFromImage(image);
-            textureResources.Add(res, tex);
-        }
+	public Texture GetTexture(string res)
+	{
+		if ( !textureResources.ContainsKey(res) )
+		{
+			var image = new Image();
+			image.Load(System.IO.Path.Combine(ModProjectDir, res));
+			var tex = new ImageTexture();
+			tex.CreateFromImage(image);
+			textureResources.Add(res, tex);
+		}
 
-        return textureResources[res];
-    }
+		return textureResources[res];
+	}
 
 	private void Signal_CreateNewProject_Pre()
 	{
@@ -294,7 +294,7 @@ public class UI : MarginContainer
 
 	private void Signal_ExportProject(string dir)
 	{
-        GD.Print("Exporting...");
+		GD.Print("Exporting...");
 		string path = System.IO.Path.Combine(dir, ModProject.Name);
 		if ( System.IO.Directory.Exists( path ) )
 			System.IO.Directory.Delete(path, true);
@@ -302,7 +302,7 @@ public class UI : MarginContainer
 
 		foreach ( var mod in ModProject.Mods )
 		{
-            GD.Print("Exporting for " + mod.ContentPackFor);
+			GD.Print("Exporting for " + mod.ContentPackFor);
 			var controller = ContentPackController.GetControllerForMod(mod.ContentPackFor);
 			controller.OnExport(this, mod, path);
 		}
@@ -387,12 +387,12 @@ public class UI : MarginContainer
 				var import = GetNode<FileDialog>("ResourceImportDialog");
 				import.PopupCenteredClamped();
 			}
-            else if ( item.GetMeta(Meta.CorrespondingController) != null )
-            {
-                var controller = ContentPackController.GetControllerForMod((string)item.GetParent().GetMeta(Meta.CorrespondingController));
-                var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
-                controller.OnAdded(this, data, item);
-            }
+			else if ( item.GetMeta(Meta.CorrespondingController) != null )
+			{
+				var controller = ContentPackController.GetControllerForMod((string)item.GetParent().GetMeta(Meta.CorrespondingController));
+				var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
+				controller.OnAdded(this, data, item);
+			}
 		}
 	}
 
@@ -496,12 +496,12 @@ public class UI : MarginContainer
 			lineEdit.Connect("text_changed", this, nameof(Signal_UpdateKeyIdEdited));
 			newArea = editor;
 		}
-        else if ( sel.GetMeta(Meta.CorrespondingController) != null )
-        {
-            var controller = ContentPackController.GetControllerForMod((string)sel.GetMeta(Meta.CorrespondingController));
-            var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
-            newArea = controller.CreateMainEditingArea(this, data, sel);
-        }
+		else if ( sel.GetMeta(Meta.CorrespondingController) != null )
+		{
+			var controller = ContentPackController.GetControllerForMod((string)sel.GetMeta(Meta.CorrespondingController));
+			var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
+			newArea = controller.CreateMainEditingArea(this, data, sel);
+		}
 
 		if ( newArea != null )
 		{
@@ -620,11 +620,11 @@ public class UI : MarginContainer
 		projectDirWatcher.Created += WatchProjectDir_Create;
 		projectDirWatcher.Renamed += WatchProjectDir_Rename;
 		projectDirWatcher.Deleted += WatchProjectDir_Delete;
-        projectDirWatcher.Changed += WatchProjectDir_Change;
-        projectDirWatcher.EnableRaisingEvents = true;
+		projectDirWatcher.Changed += WatchProjectDir_Change;
+		projectDirWatcher.EnableRaisingEvents = true;
 	}
 
-    string justRenamedInUi = null;
+	string justRenamedInUi = null;
 	private void WatchProjectDir_Create(object sender, FileSystemEventArgs e)
 	{
 		var filename = System.IO.Path.GetFileName(e.Name);
@@ -672,21 +672,21 @@ public class UI : MarginContainer
 				return;
 			}
 		}
-    }
+	}
 
-    private void WatchProjectDir_Change(object sender, FileSystemEventArgs e)
-    {
-        var filename = System.IO.Path.GetFileName(e.Name);
-        if ( System.IO.Path.GetExtension(filename) == ".png" )
-        {
-            if ( textureResources.ContainsKey(filename) )
-            {
-                var image = new Image();
-                image.Load(e.Name);
+	private void WatchProjectDir_Change(object sender, FileSystemEventArgs e)
+	{
+		var filename = System.IO.Path.GetFileName(e.Name);
+		if ( System.IO.Path.GetExtension(filename) == ".png" )
+		{
+			if ( textureResources.ContainsKey(filename) )
+			{
+				var image = new Image();
+				image.Load(e.Name);
 
-                var tex = textureResources[filename];
-                tex.CreateFromImage(image);
-            }
-        }
-    }
+				var tex = textureResources[filename];
+				tex.CreateFromImage(image);
+			}
+		}
+	}
 }

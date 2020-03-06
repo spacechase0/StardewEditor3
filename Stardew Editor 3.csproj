@@ -90,6 +90,8 @@
     <Compile Include="Util\IgnorePropertiesOfTypeJsonContractResolver.cs" />
     <Compile Include="Util\IntegerEdit.cs" />
     <Compile Include="Util\Rectangle.cs" />
+    <Compile Include="Util\StringListEntryEditor.cs" />
+    <Compile Include="Util\StringListEditor.cs" />
     <Compile Include="Util\SubImageEditor.cs" />
     <Compile Include="Util\VersionCheck.cs" />
     <Compile Include="XNB\Extensions.cs" />

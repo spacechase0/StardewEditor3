@@ -1,0 +1,64 @@
+[gd_scene format=2]
+
+[node name="BaseEditor" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="Name"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Name:"
+
+[node name="LineEdit" type="LineEdit" parent="Name"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The name of the object."
+
+[node name="EnableWithMod" type="HBoxContainer" parent="."]
+margin_top = 28.0
+margin_right = 1024.0
+margin_bottom = 52.0
+
+[node name="Label" type="Label" parent="EnableWithMod"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Enable with Mod:"
+
+[node name="LineEdit" type="LineEdit" parent="EnableWithMod"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "A mod to require for this object to be enabled."
+
+[node name="DisableWithMod" type="HBoxContainer" parent="."]
+margin_top = 56.0
+margin_right = 1024.0
+margin_bottom = 80.0
+
+[node name="Label" type="Label" parent="DisableWithMod"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Disable with Mod:"
+
+[node name="LineEdit" type="LineEdit" parent="DisableWithMod"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "A mod to require for this object to be enabled."
