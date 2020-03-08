@@ -60,6 +60,9 @@
     <Compile Include="Dependency.cs" />
     <Compile Include="ExportManifest.cs" />
     <Compile Include="JsonAssets\GiftTasteEditor.cs" />
+    <Compile Include="JsonAssets\GiftTasteEntryEditor.cs" />
+    <Compile Include="JsonAssets\LocalizationEditor.cs" />
+    <Compile Include="JsonAssets\LocalizationEntryEditor.cs" />
     <Compile Include="Util\ImageResourceReference.cs" />
     <Compile Include="JsonAssets\Data\BigCraftableData.cs" />
     <Compile Include="JsonAssets\Data\BootsData.cs" />

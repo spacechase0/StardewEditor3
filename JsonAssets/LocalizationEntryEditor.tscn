@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://JsonAssets/LocalizationEntryEditor.cs" type="Script" id=1]
+
+[node name="LocalizationEntryEditor" type="HBoxContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="OptionButton" type="OptionButton" parent="."]
+margin_right = 200.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The localization language."
+text = "Japanese"
+items = [ "Japanese", null, false, 0, null, "Russian", null, false, 1, null, "Chinese", null, false, 2, null, "Portugese", null, false, 3, null, "Spanish", null, false, 4, null, "German", null, false, 5, null, "Thai", null, false, 6, null, "French", null, false, 7, null, "Korean", null, false, 8, null, "Italian", null, false, 9, null, "Turkish", null, false, 10, null, "Hungarian", null, false, 11, null ]
+selected = 0
+
+[node name="LineEdit" type="LineEdit" parent="."]
+margin_left = 204.0
+margin_right = 404.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The localized string."
+__meta__ = {
+"_edit_use_anchors_": false,
+"_editor_description_": ""
+}
+
+[node name="DeleteButton" type="Button" parent="."]
+margin_left = 408.0
+margin_right = 463.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 50, 0 )
+hint_tooltip = "Delete this localization entry."
+text = "Delete"
