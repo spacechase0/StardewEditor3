@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Util/SubImageEditor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://JsonAssets/BaseWithTextureEditor.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=3]
 [ext_resource path="res://JsonAssets/RecipeEditor.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Util/StringListEditor.tscn" type="PackedScene" id=5]
+[ext_resource path="res://JsonAssets/GiftTasteEditor.tscn" type="PackedScene" id=6]
 
 [node name="ObjectEditor" instance=ExtResource( 2 )]
 
@@ -475,18 +476,24 @@ margin_bottom = 20.0
 [node name="GiftTastes" type="HBoxContainer" parent="." index="18"]
 margin_top = 1220.0
 margin_right = 1024.0
-margin_bottom = 1234.0
+margin_bottom = 1240.0
 
 [node name="Label" type="Label" parent="GiftTastes" index="0"]
+margin_top = 3.0
 margin_right = 150.0
-margin_bottom = 14.0
+margin_bottom = 17.0
 rect_min_size = Vector2( 150, 0 )
 text = "Gift Tastes:"
 
+[node name="GiftTasteEditor" parent="GiftTastes" index="1" instance=ExtResource( 6 )]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 20.0
+
 [node name="NameLocalization" type="HBoxContainer" parent="." index="19"]
-margin_top = 1238.0
+margin_top = 1244.0
 margin_right = 1024.0
-margin_bottom = 1252.0
+margin_bottom = 1258.0
 
 [node name="Label" type="Label" parent="NameLocalization" index="0"]
 margin_right = 150.0
@@ -495,9 +502,9 @@ rect_min_size = Vector2( 150, 0 )
 text = "Name Localization:"
 
 [node name="DescriptionLocalization" type="HBoxContainer" parent="." index="20"]
-margin_top = 1256.0
+margin_top = 1262.0
 margin_right = 1024.0
-margin_bottom = 1270.0
+margin_bottom = 1276.0
 
 [node name="Label" type="Label" parent="DescriptionLocalization" index="0"]
 margin_right = 158.0
@@ -506,9 +513,9 @@ rect_min_size = Vector2( 150, 0 )
 text = "Description Localization:"
 
 [node name="ContextTags" type="HBoxContainer" parent="." index="21"]
-margin_top = 1274.0
+margin_top = 1280.0
 margin_right = 1024.0
-margin_bottom = 1294.0
+margin_bottom = 1300.0
 
 [node name="Label" type="Label" parent="ContextTags" index="0"]
 margin_top = 3.0

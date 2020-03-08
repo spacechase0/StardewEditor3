@@ -59,6 +59,7 @@
     <Compile Include="ContentPackController.cs" />
     <Compile Include="Dependency.cs" />
     <Compile Include="ExportManifest.cs" />
+    <Compile Include="JsonAssets\GiftTasteEditor.cs" />
     <Compile Include="Util\ImageResourceReference.cs" />
     <Compile Include="JsonAssets\Data\BigCraftableData.cs" />
     <Compile Include="JsonAssets\Data\BootsData.cs" />
