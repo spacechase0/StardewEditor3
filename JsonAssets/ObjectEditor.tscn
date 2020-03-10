@@ -133,7 +133,7 @@ margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
-text = "Can Trash, Sell, Gift:"
+text = "Can Trash, Gift:"
 
 [node name="Trash" type="CheckBox" parent="CanFlags" index="1"]
 margin_left = 154.0
@@ -141,15 +141,9 @@ margin_right = 178.0
 margin_bottom = 24.0
 hint_tooltip = "Whether this object can be trashed or not."
 
-[node name="Sell" type="CheckBox" parent="CanFlags" index="2"]
+[node name="Gift" type="CheckBox" parent="CanFlags" index="2"]
 margin_left = 182.0
 margin_right = 206.0
-margin_bottom = 24.0
-hint_tooltip = "Whether this object can be sold or not."
-
-[node name="Gift" type="CheckBox" parent="CanFlags" index="3"]
-margin_left = 210.0
-margin_right = 234.0
 margin_bottom = 24.0
 hint_tooltip = "Whether this object can be gifted or not."
 

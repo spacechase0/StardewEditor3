@@ -124,7 +124,7 @@ __meta__ = {
 [node name="NewProjectDirectoryDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Select Project Directory"
+window_title = "Open a Directory"
 resizable = true
 dialog_text = "Choose an empty directory for this file."
 mode = 2
@@ -139,8 +139,10 @@ window_title = "Bad Project Directory"
 resizable = true
 
 [node name="Label2" type="Label" parent="BadProjectDirectoryDialog"]
-margin_right = 40.0
-margin_bottom = 14.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 1016.0
+margin_bottom = 564.0
 text = "Bad project directory.
 The directory must be empty."
 __meta__ = {
@@ -150,7 +152,7 @@ __meta__ = {
 [node name="OpenProjectDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Open Project"
+window_title = "Open a File"
 resizable = true
 mode = 0
 access = 2
@@ -161,7 +163,7 @@ current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
 [node name="ResourceImportDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Import Resource(s)"
+window_title = "Open File(s)"
 resizable = true
 mode = 1
 access = 2
@@ -172,7 +174,7 @@ current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
 [node name="ExportProjectDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Export Project"
+window_title = "Open a Directory"
 resizable = true
 mode = 2
 access = 2

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace StardewEditor3
 {
-    public abstract class ContentPackController
+    public abstract class ContentPackController : Godot.Object /* so we can connect to signals */
     {
         public string ModName { get; }
         public string ModUniqueId { get; }

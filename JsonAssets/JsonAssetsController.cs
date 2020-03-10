@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace StardewEditor3.JsonAssets
 {
-    public class JsonAssetsController : ContentPackController
+    public partial class JsonAssetsController : ContentPackController
     {
         public const string MOD_NAME = "Json Assets";
         public const string MOD_UNIQUE_ID = "spacechase0.JsonAssets";
@@ -19,7 +19,10 @@ namespace StardewEditor3.JsonAssets
         private readonly Dictionary<string, TreeItem> roots = new Dictionary<string, TreeItem>();
         private readonly Dictionary<TreeItem, ObjectData> objects = new Dictionary<TreeItem, ObjectData>();
 
-        private PackedScene ObjectEditor = GD.Load<PackedScene>("res://JsonAssets/ObjectEditor.tscn");
+        private TreeItem activeEntry;
+        private Node activeEditor;
+
+        private readonly PackedScene ObjectEditor = GD.Load<PackedScene>("res://JsonAssets/ObjectEditor.tscn");
 
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
@@ -72,7 +75,7 @@ namespace StardewEditor3.JsonAssets
             JsonSerializerSettings settings = new JsonSerializerSettings()
             {
                 Formatting = Formatting.Indented,
-                ContractResolver = new IgnorePropertiesOfTypeJsonContractResolver(new Type[] { typeof(ImageResourceReference) }),
+                ContractResolver = new JsonAssetsJsonContractResolver(),
             };
 
             string objPath = System.IO.Path.Combine(path, "Objects");
@@ -119,20 +122,19 @@ namespace StardewEditor3.JsonAssets
         }
         public override Node CreateMainEditingArea(UI ui, ModData data, TreeItem entry)
         {
-            Node editor = null;
-
+            activeEntry = entry;
             if ( objects.ContainsKey(entry) )
             {
-                editor = ObjectEditor.Instance();
-                // todo - connect values
+                activeEditor = ObjectEditor.Instance();
+                DoObjectEditorConnections(activeEditor, entry);
             }
 
-            return editor;
+            return activeEditor;
         }
 
         public override void OnEditingAreaChanged(UI ui, ModData data, Node area)
         {
-            // todo
+            activeEditor = null;
         }
 
         public override void OnResourceRenamed(UI ui, ModData data, string oldFilename, string newFilename)

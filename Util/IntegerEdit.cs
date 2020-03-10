@@ -4,13 +4,13 @@ using System;
 public class IntegerEdit : LineEdit
 {
 	[Signal]
-	public delegate void int_edited(int value);
+	public delegate void int_edited(bool has, long value);
 
-	public int? Value
+	public long? Value
 	{
 		get
 		{
-			return string.IsNullOrEmpty(Text) ? null : (int?)int.Parse(Text);
+			return string.IsNullOrEmpty(Text) ? null : (long?)long.Parse(Text);
 		}
 		set
 		{
@@ -32,7 +32,7 @@ public class IntegerEdit : LineEdit
 
 		for ( int i = 0; i < text.Length; ++i )
 		{
-			if ( !char.IsDigit( text[ i ] ) )
+			if ( !char.IsDigit( text[ i ] ) && !(text[i] == '-' && i == 0) )
 			{
 				text = text.Remove(i, 1);
 				--i;
@@ -42,6 +42,6 @@ public class IntegerEdit : LineEdit
 		Text = text;
 		CaretPosition = cursorPos;
 
-		EmitSignal(nameof(int_edited), int.Parse(text));
+		EmitSignal(nameof(int_edited), text != "", text == "" ? 0 : long.Parse(text));
 	}
 }

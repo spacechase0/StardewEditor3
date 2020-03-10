@@ -19,7 +19,7 @@ namespace StardewEditor3.Util
 
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
-            JsonProperty prop = base.CreateProperty(member, memberSerialization);
+            var prop = base.CreateProperty(member, memberSerialization);
             prop.ShouldSerialize = (x) => !types.Contains(prop.PropertyType);
             return prop;
         }

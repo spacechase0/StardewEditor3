@@ -20,7 +20,7 @@ namespace JsonAssets.Data
 
         public int Price { get; set; }
 
-        public Color DefaultColor { get; set; } = new Color(255 / 255f, 235 / 255f, 203 / 255f);
+        public Color DefaultColor { get; set; } = new Color(255, 235, 203);
         public bool Dyeable { get; set; } = false;
 
         public string Metadata { get; set; } = "";
