@@ -15,7 +15,7 @@ namespace StardewEditor3.JsonAssets
 {
     public class JsonAssetsJsonContractResolver : IgnorePropertiesOfTypeJsonContractResolver
     {
-        private JsonAssetsColorConverter colorConverter = new JsonAssetsColorConverter();
+        private readonly JsonAssetsColorConverter colorConverter = new JsonAssetsColorConverter();
 
         public JsonAssetsJsonContractResolver()
         : base(new Type[] { typeof(ImageResourceReference) })

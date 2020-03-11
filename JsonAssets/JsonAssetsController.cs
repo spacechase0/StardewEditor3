@@ -82,6 +82,11 @@ namespace StardewEditor3.JsonAssets
             System.IO.Directory.CreateDirectory(objPath);
             foreach ( var obj in data.Objects )
             {
+                if (obj.Recipe.ResultCount == 0)
+                    obj.Recipe = null;
+                if (obj.EdibleBuffs.Duration == 0)
+                    obj.EdibleBuffs = null;
+
                 string objDir = System.IO.Path.Combine(objPath, obj.Name);
                 System.IO.Directory.CreateDirectory(objDir);
                 System.IO.File.WriteAllText(System.IO.Path.Combine(objDir, "object.json"), JsonConvert.SerializeObject(obj, settings));
@@ -93,6 +98,11 @@ namespace StardewEditor3.JsonAssets
                 var colImage = obj.TextureColor?.MakeImage(ui.ModProjectDir);
                 colImage?.SavePng(System.IO.Path.Combine(objDir, "color.png"));
                 colImage?.Dispose();
+
+                if (obj.Recipe == null)
+                    obj.Recipe = new ObjectData.Recipe_();
+                if (obj.EdibleBuffs == null)
+                    obj.EdibleBuffs = new ObjectData.FoodBuffs_();
             }
         }
 

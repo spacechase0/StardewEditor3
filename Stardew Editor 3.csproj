@@ -61,6 +61,8 @@
     <Compile Include="ExportManifest.cs" />
     <Compile Include="JsonAssets\GiftTasteEditor.cs" />
     <Compile Include="JsonAssets\GiftTasteEntryEditor.cs" />
+    <Compile Include="JsonAssets\IngredientEntryEditor.cs" />
+    <Compile Include="JsonAssets\IngredientListEditor.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_Objects.cs" />
     <Compile Include="JsonAssets\JsonAssetsJsonContractResolver.cs" />
     <Compile Include="JsonAssets\LocalizationEditor.cs" />

@@ -89,7 +89,7 @@ namespace JsonAssets.Data
 
         public int Edibility { get; set; } = -300;
         public bool EdibleIsDrink { get; set; } = false;
-        public FoodBuffs_ EdibleBuffs = new FoodBuffs_();
+        public FoodBuffs_ EdibleBuffs { get; set; } = new FoodBuffs_();
 
         public bool CanPurchase { get; set; } = false;
         public int PurchasePrice { get; set; }

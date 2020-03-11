@@ -3,12 +3,10 @@ using System;
 
 public class LocalizationEditor : VBoxContainer
 {
-	private PackedScene LocalizationEntryEditor;
+	private readonly PackedScene LocalizationEntryEditor = GD.Load<PackedScene>("res://JsonAssets/LocalizationEntryEditor.tscn");
 
 	public override void _Ready()
 	{
-		LocalizationEntryEditor = GD.Load<PackedScene>("res://JsonAssets/LocalizationEntryEditor.tscn");
-
 		GetNode<Button>("AddButton").Connect("pressed", this, nameof(Signal_AddEntry));
 	}
 

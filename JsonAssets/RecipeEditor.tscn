@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Util/StringListEditor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://JsonAssets/IngredientListEditor.tscn" type="PackedScene" id=3]
 
 [node name="RecipeEditor" type="VBoxContainer"]
 margin_right = 40.0
@@ -78,7 +79,7 @@ margin_bottom = 17.0
 rect_min_size = Vector2( 150, 0 )
 text = "Ingredients:"
 
-[node name="StringListEditor" parent="Ingredients" instance=ExtResource( 2 )]
+[node name="IngredientListEditor" parent="Ingredients" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 margin_bottom = 20.0
@@ -138,19 +139,19 @@ margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The NPC to purchase this recipe from, if any."
 
-[node name="Purchase Requirements" type="HBoxContainer" parent="."]
+[node name="PurchaseRequirements" type="HBoxContainer" parent="."]
 margin_top = 188.0
 margin_right = 360.0
 margin_bottom = 208.0
 
-[node name="Label" type="Label" parent="Purchase Requirements"]
+[node name="Label" type="Label" parent="PurchaseRequirements"]
 margin_top = 3.0
 margin_right = 156.0
 margin_bottom = 17.0
 rect_min_size = Vector2( 150, 0 )
 text = "Purchase Requirements:"
 
-[node name="StringListEditor" parent="Purchase Requirements" instance=ExtResource( 2 )]
+[node name="StringListEditor" parent="PurchaseRequirements" instance=ExtResource( 2 )]
 margin_left = 160.0
 margin_right = 360.0
 margin_bottom = 20.0
