@@ -10,7 +10,7 @@ public class SubImageEditor : HBoxContainer
 
 	private Func<string, Texture> getTexture;
 
-    private ImageResourceReference pendingStartValue;
+	private ImageResourceReference pendingStartValue;
 
 	private OptionButton resourceSelect;
 	private IntegerEdit subrectX;
@@ -44,8 +44,8 @@ public class SubImageEditor : HBoxContainer
 			InitResources(ui.GetImageList(), ui.GetTexture);
 		}
 
-        if (pendingStartValue != null)
-            SetValues(pendingStartValue);
+		if (pendingStartValue != null)
+			SetValues(pendingStartValue);
 	}
 
 	public void InitResources(List<string> resourceList, Func<string, Texture> getTextureFunc)
@@ -62,37 +62,37 @@ public class SubImageEditor : HBoxContainer
 
 	public void SetValues(ImageResourceReference imageRef)
 	{
-        pendingStartValue = imageRef;
+		pendingStartValue = imageRef;
 
-        if ( resourceSelect != null )
-        {
-            if (imageRef == null)
-            {
-                resourceSelect.Selected = -1;
-                subrectX.Value = null;
-                subrectY.Value = null;
-                subrectW.Value = null;
-                subrectH.Value = null;
-                return;
-            }
+		if ( resourceSelect != null )
+		{
+			if (imageRef == null)
+			{
+				resourceSelect.Selected = -1;
+				subrectX.Value = null;
+				subrectY.Value = null;
+				subrectW.Value = null;
+				subrectH.Value = null;
+				return;
+			}
 
-            for (int i = 0; i < resourceSelect.GetItemCount(); ++i)
-            {
-                if (resourceSelect.GetItemText(i) == imageRef.Resource)
-                {
-                    resourceSelect.Selected = i;
-                    if (imageRef.SubRect.HasValue)
-                    {
-                        subrectX.Value = (int)imageRef.SubRect.Value.Position.x;
-                        subrectY.Value = (int)imageRef.SubRect.Value.Position.y;
-                        subrectW.Value = (int)imageRef.SubRect.Value.Size.x;
-                        subrectH.Value = (int)imageRef.SubRect.Value.Size.y;
-                    }
-                    ResetTexturePreview();
-                    return;
-                }
-            }
-        }
+			for (int i = 0; i < resourceSelect.GetItemCount(); ++i)
+			{
+				if (resourceSelect.GetItemText(i) == imageRef.Resource)
+				{
+					resourceSelect.Selected = i;
+					if (imageRef.SubRect.HasValue)
+					{
+						subrectX.Value = (int)imageRef.SubRect.Value.Position.x;
+						subrectY.Value = (int)imageRef.SubRect.Value.Position.y;
+						subrectW.Value = (int)imageRef.SubRect.Value.Size.x;
+						subrectH.Value = (int)imageRef.SubRect.Value.Size.y;
+					}
+					ResetTexturePreview();
+					return;
+				}
+			}
+		}
 	}
 
 	public ImageResourceReference GetImageRef()
@@ -125,10 +125,14 @@ public class SubImageEditor : HBoxContainer
 
 	private void Signal_ResetSubRect()
 	{
-		subrectX.Value = null;
-		subrectY.Value = null;
-		subrectW.Value = null;
-		subrectH.Value = null;
+        if (subrectX.Editable)
+    		subrectX.Value = null;
+        if (subrectY.Editable)
+            subrectY.Value = null;
+        if (subrectW.Editable)
+            subrectW.Value = null;
+        if (subrectH.Editable)
+            subrectH.Value = null;
 		EmitSignal(nameof(image_changed), this);
 		ResetTexturePreview();
 	}

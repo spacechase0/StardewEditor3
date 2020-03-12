@@ -4,7 +4,7 @@ using StardewEditor3;
 using StardewEditor3.Util;
 using System.Collections.Generic;
 
-namespace JsonAssets.Data
+namespace StardewEditor3.JsonAssets.Data
 {
     public class CropData : BaseDataWithTexture
     {

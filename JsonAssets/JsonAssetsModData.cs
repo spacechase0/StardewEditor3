@@ -1,4 +1,4 @@
-﻿using JsonAssets.Data;
+﻿using StardewEditor3.JsonAssets.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

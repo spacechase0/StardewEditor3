@@ -1,5 +1,6 @@
 ﻿using Godot;
-using JsonAssets.Data;
+using StardewEditor3.JsonAssets.Data;
+using StardewEditor3.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,265 +17,208 @@ namespace StardewEditor3.JsonAssets
         {
             activeObj = objects[entry];
             if (activeObj.Recipe == null)
-                activeObj.Recipe = new ObjectData.Recipe_();
+                activeObj.Recipe = new RecipeData();
             if (activeObj.EdibleBuffs == null)
                 activeObj.EdibleBuffs = new ObjectData.FoodBuffs_();
 
-            var lineEdit = editor.GetNode<LineEdit>("Name/LineEdit");
-            lineEdit.Text = activeObj.Name;
-            lineEdit.Connect("text_changed", this, nameof(Signal_ObjectNameEdited));
-
-            lineEdit = editor.GetNode<LineEdit>("EnableWithMod/LineEdit");
-            lineEdit.Text = activeObj.EnableWithMod;
-            lineEdit.Connect("text_changed", this, nameof(Signal_ObjectEnableWithModEdited));
-
-            lineEdit = editor.GetNode<LineEdit>("DisableWithMod/LineEdit");
-            lineEdit.Text = activeObj.DisableWithMod;
-            lineEdit.Connect("text_changed", this, nameof(Signal_ObjectDisableWithModEdited));
-
-            var imageEditor = editor.GetNode<SubImageEditor>("Texture/SubImageEditor");
-            var intEdit = imageEditor.GetNode<IntegerEdit>("Values/SubRectWidth/IntegerEdit");
+            DoObjectConnections(editor, activeObj);
+            var intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            intEdit = imageEditor.GetNode<IntegerEdit>("Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            imageEditor.SetValues(activeObj.Texture);
-            imageEditor.Connect(nameof(SubImageEditor.image_changed), this, nameof(Signal_ObjectTextureEdited));
-
-            imageEditor = editor.GetNode<SubImageEditor>("ColorTexture/SubImageEditor");
-            intEdit = imageEditor.GetNode<IntegerEdit>("Values/SubRectWidth/IntegerEdit");
+            intEdit = editor.GetNode<IntegerEdit>("TextureColor/SubImageEditor/Values/SubRectWidth/IntegerEdit");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            intEdit = imageEditor.GetNode<IntegerEdit>("Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<IntegerEdit>("TextureColor/SubImageEditor/Values/SubRectHeight/IntegerEdit");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            imageEditor.SetValues(activeObj.TextureColor);
-            imageEditor.Connect(nameof(SubImageEditor.image_changed), this, nameof(Signal_ObjectColorTextureEdited));
+        }
 
-            lineEdit = editor.GetNode<LineEdit>("Description/LineEdit");
-            lineEdit.Text = activeObj.Description;
-            lineEdit.Connect("text_changed", this, nameof(Signal_ObjectDescriptionEdited));
-
-            var optionButton = editor.GetNode<OptionButton>("Category/OptionButton");
-            int selInd = 0;
-            for (int i = 0; i < optionButton.GetItemCount(); ++i)
+        private void DoObjectConnections<T>(Node editor, T obj)
+        {
+            foreach (var prop in obj.GetType().GetProperties())
             {
-                if (optionButton.GetItemText(i) == activeObj.Category.ToString())
+                if (Attribute.IsDefined(prop, typeof(DoNotAutoConnectAttribute)))
+                    continue;
+
+                if ( prop.Name == "SkillUnlockName" )
                 {
-                    selInd = i;
-                    break;
+                    string path = prop.Name + "/OptionButton";
+                    var optionButton = editor.GetNode<OptionButton>(path);
+                    int selInd = 0;
+                    for (int i = 0; i < optionButton.GetItemCount(); ++i)
+                    {
+                        if (optionButton.GetItemText(i) == (string) prop.GetValue(obj))
+                        {
+                            selInd = i;
+                            break;
+                        }
+                    }
+                    optionButton.Selected = selInd;
+                    var lambda = new LambdaWrapper<int>((idx) =>
+                    {
+                        var str = optionButton.GetItemText(idx);
+                        prop.SetValue(obj, str);
+                    });
+                    lambda.SelfConnect(optionButton, "item_selected");
+                }
+
+                else if (prop.PropertyType == typeof(string))
+                {
+                    string path = prop.Name + "/LineEdit";
+                    var lineEdit = editor.GetNode<LineEdit>(path);
+                    lineEdit.Text = (string)prop.GetValue(obj);
+                    var lambda = new LambdaWrapper<string>((str) => prop.SetValue(obj, str));
+                    if (prop.Name == "Name")
+                    {
+                        lambda = new LambdaWrapper<string>((str) =>
+                        {
+                            GD.Print("edited name");
+                            activeEntry.SetText(0, str);
+                            prop.SetValue(obj, str);
+                        });
+                    }
+                    lambda.SelfConnect(lineEdit, "text_changed");
+                }
+                else if (prop.PropertyType == typeof(int))
+                {
+                    string path = prop.Name + "/IntegerEdit";
+                    var intEdit = editor.GetNode<IntegerEdit>(path);
+                    intEdit.Value = (long?)(int)prop.GetValue(obj);
+                    var lambda = new LambdaWrapper<bool, long>((has, value) => prop.SetValue(obj, (int)value));
+                    if (prop.Name == "Price")
+                    {
+                        lambda = new LambdaWrapper<bool, long>((has, value) =>
+                        {
+                            obj.GetType().GetProperty("CanSell").SetValue(obj, has);
+                            prop.SetValue(obj, (int)value);
+                        });
+                    }
+                    else if (prop.Name == "Edibility")
+                    {
+                        var val = intEdit.Value;
+                        intEdit.Value = val == -300 ? null : (long?)val;
+                        lambda = new LambdaWrapper<bool, long>((has, value) =>
+                        {
+                            prop.SetValue(obj, has ? (int)value : -300);
+                        });
+                    }
+                    else if ( prop.Name == "PurchasePrice" )
+                    {
+                        lambda = new LambdaWrapper<bool, long>((has, value) =>
+                        {
+                            obj.GetType().GetProperty("CanPurchase").SetValue(obj, has);
+                            prop.SetValue(obj, (int)value);
+                        });
+                    }
+                    lambda.SelfConnect(intEdit, nameof(IntegerEdit.int_edited));
+                }
+                else if ( prop.PropertyType == typeof(bool))
+                {
+                    string path = prop.Name + "/CheckBox";
+                    if (prop.Name.StartsWith("Can"))
+                        path = "CanFlags/" + prop.Name.Substring(3);
+                    var checkBox = editor.GetNode<CheckBox>(path);
+                    checkBox.Pressed = (bool) prop.GetValue(obj);
+                    var lambda = new LambdaWrapper<bool>((value) => prop.SetValue(obj, value));
+                    lambda.SelfConnect(checkBox, "toggled");
+                }
+                else if ( prop.PropertyType.IsEnum )
+                {
+                    string path = prop.Name + "/OptionButton";
+                    var optionButton = editor.GetNode<OptionButton>(path);
+                    int selInd = 0;
+                    for (int i = 0; i < optionButton.GetItemCount(); ++i)
+                    {
+                        if (optionButton.GetItemText(i) == prop.GetValue(obj).ToString())
+                        {
+                            selInd = i;
+                            break;
+                        }
+                    }
+                    optionButton.Selected = selInd;
+                    var lambda = new LambdaWrapper<int>((idx) =>
+                    {
+                        var str = optionButton.GetItemText(idx);
+                        prop.SetValue(obj, Enum.Parse(prop.PropertyType, str));
+                    });
+                    lambda.SelfConnect(optionButton, "item_selected");
+                }
+                else if (prop.PropertyType == typeof(Color))
+                {
+                    string path = prop.Name + "/ColorPickerButton";
+                    var colorPicker = editor.GetNode<ColorPickerButton>(path);
+                    colorPicker.Color = (Color)prop.GetValue(obj);
+                    var lambda = new LambdaWrapper<Color>((color) => prop.SetValue(obj, color));
+                    lambda.SelfConnect(colorPicker, "color_changed");
+                }
+                else if ( prop.PropertyType == typeof(List<string>) )
+                {
+                    string path = prop.Name + "/StringListEditor";
+                    var stringsEditor = editor.GetNode<StringListEditor>(path);
+                    var strings = (List<string>)prop.GetValue(obj);
+                    foreach (var entry in strings)
+                        stringsEditor.AddString(entry);
+                    var lambdaAdd = new LambdaWrapper(() => strings.Add(""));
+                    var lambdaDelete = new LambdaWrapper<int> ((ind) => strings.RemoveAt(ind));
+                    var lambdaEdit = new LambdaWrapper<int, string>((ind, str) => strings[ind] = str);
+                    lambdaAdd.SelfConnect(stringsEditor, nameof(StringListEditor.entry_added));
+                    lambdaDelete.SelfConnect(stringsEditor, nameof(StringListEditor.entry_deleted));
+                    lambdaEdit.SelfConnect(stringsEditor, nameof(StringListEditor.entry_changed));
+                }
+                else if ( prop.PropertyType == typeof(ImageResourceReference) )
+                {
+                    string path = prop.Name + "/SubImageEditor";
+                    var imageEditor = editor.GetNode<SubImageEditor>(path);
+                    imageEditor.SetValues((ImageResourceReference)prop.GetValue(obj));
+                    var lambda = new LambdaWrapper<SubImageEditor>((ie) => prop.SetValue(obj, ie.GetImageRef()));
+                    if ( prop.Name == "TextureColor" )
+                    {
+                        lambda = new LambdaWrapper<SubImageEditor>((ie) =>
+                        {
+                            var ir = ie.GetImageRef();
+                            obj.GetType().GetProperty("IsColored").SetValue(obj, !string.IsNullOrEmpty(ir.Resource));
+                            prop.SetValue(obj, ir);
+                        });
+                    }
+                    lambda.SelfConnect(imageEditor, nameof(SubImageEditor.image_changed));
+                }
+                else if ( prop.PropertyType == typeof(RecipeData) )
+                {
+                    string path = prop.Name + "/RecipeEditor";
+                    var recipeEditor = editor.GetNode(path);
+                    DoObjectConnections(recipeEditor, (RecipeData) prop.GetValue(obj));
+                }
+                else if ( prop.PropertyType == typeof(List<RecipeData.Ingredient>) )
+                {
+                    string path = prop.Name + "/IngredientListEditor";
+                    var ingredEditor = editor.GetNode<IngredientListEditor>(path);
+                    var ingreds = (List<RecipeData.Ingredient>)prop.GetValue(obj);
+                    foreach (var ingred in ingreds)
+                        ingredEditor.AddEntry(ingred.Object?.ToString(), ingred.Count);
+                    var lambdaAdd = new LambdaWrapper(() => ingreds.Add(new RecipeData.Ingredient()));
+                    var lambdaDelete = new LambdaWrapper<int>((ind) => ingreds.RemoveAt(ind));
+                    var lambdaEdit = new LambdaWrapper<int, string, int>((idx, ingred, count) =>
+                    {
+                        if (int.TryParse(ingred, out int ingredId))
+                            ingreds[idx].Object = ingredId;
+                        else
+                            ingreds[idx].Object = ingred;
+                        ingreds[idx].Count = count;
+                    });
+                    lambdaAdd.SelfConnect(ingredEditor, nameof(IngredientListEditor.entry_added));
+                    lambdaDelete.SelfConnect(ingredEditor, nameof(IngredientListEditor.entry_deleted));
+                    lambdaEdit.SelfConnect(ingredEditor, nameof(IngredientListEditor.entry_changed));
+                }
+                else if ( prop.PropertyType == typeof(ObjectData.FoodBuffs_) )
+                {
+                    string path = prop.Name + "/Buffs";
+                    var buffsCountainer = editor.GetNode(path);
+                    DoObjectConnections(buffsCountainer, prop.GetValue(obj));
                 }
             }
-            optionButton.Selected = selInd;
-            optionButton.Connect("item_selected", this, nameof(Signal_ObjectCategoryEdited));
-
-            lineEdit = editor.GetNode<LineEdit>("CategoryTextOverride/LineEdit");
-            lineEdit.Text = activeObj.CategoryTextOverride;
-            lineEdit.Connect("text_changed", this, nameof(Signal_ObjectCategoryTextOverrideEdited));
-
-            var colorPicker = editor.GetNode<ColorPickerButton>("CategoryColorOverride/ColorPickerButton");
-            colorPicker.Color = activeObj.CategoryColorOverride;
-            colorPicker.Connect("color_changed", this, nameof(Signal_ObjectCategoryColorOverrideEdited));
-
-            intEdit = editor.GetNode<IntegerEdit>("Price/IntegerEdit");
-            intEdit.Value = activeObj.CanSell ? (long?) activeObj.Price : null;
-            intEdit.Connect("int_edited", this, nameof(Signal_ObjectSellPriceEdited));
-
-            var checkBox = editor.GetNode<CheckBox>("CanFlags/Trash");
-            checkBox.Pressed = activeObj.CanTrash;
-            checkBox.Connect("toggled", this, nameof(Signal_ObjectCanTrashEdited));
-
-            checkBox = editor.GetNode<CheckBox>("CanFlags/Gift");
-            checkBox.Pressed = activeObj.CanBeGifted;
-            checkBox.Connect("toggled", this, nameof(Signal_ObjectCanGiftEdited));
-
-            optionButton = editor.GetNode<OptionButton>("Recipe/RecipeEditor/SkillUnlockName/OptionButton");
-            selInd = -1;
-            for (int i = 0; i < optionButton.GetItemCount(); ++i)
-            {
-                if (optionButton.GetItemText(i) == activeObj.Recipe.SkillUnlockName?.ToString())
-                {
-                    selInd = i;
-                    break;
-                }
-            }
-            optionButton.Selected = selInd;
-            optionButton.Connect("item_selected", this, nameof(Signal_ObjectRecipeSkillUnlockNameEdited));
-
-            intEdit = editor.GetNode<IntegerEdit>("Recipe/RecipeEditor/SkillUnlockLevel/IntegerEdit");
-            intEdit.Value = activeObj.Recipe.SkillUnlockLevel != -1 ? (long?) activeObj.Recipe.SkillUnlockLevel : null;
-            intEdit.Connect("int_edited", this, nameof(Signal_ObjectRecipeSkillUnlockLevelEdited));
-            
-            intEdit = editor.GetNode<IntegerEdit>("Recipe/RecipeEditor/ResultCount/IntegerEdit");
-            intEdit.Value = activeObj.Recipe.ResultCount;
-            intEdit.Connect("int_edited", this, nameof(Signal_ObjectRecipeResultCountEdited));
-
-            var ingredEditor = editor.GetNode<IngredientListEditor>("Recipe/RecipeEditor/Ingredients/IngredientListEditor");
-            foreach ( var ingred in activeObj.Recipe.Ingredients )
-                ingredEditor.AddEntry(ingred.Object?.ToString(), ingred.Count);
-            ingredEditor.Connect(nameof(IngredientListEditor.entry_added), this, nameof(Signal_ObjectRecipeIngredientAdded));
-            ingredEditor.Connect(nameof(IngredientListEditor.entry_deleted), this, nameof(Signal_ObjectRecipeIngredientDeleted));
-            ingredEditor.Connect(nameof(IngredientListEditor.entry_changed), this, nameof(Signal_ObjectRecipeIngredientEdited));
-
-            checkBox = editor.GetNode<CheckBox>("Recipe/RecipeEditor/IsDefault/CheckBox");
-            checkBox.Pressed = activeObj.Recipe.IsDefault;
-            checkBox.Connect("toggled", this, nameof(Signal_ObjectRecipeIsDefaultEdited));
-
-            intEdit = editor.GetNode<IntegerEdit>("Recipe/RecipeEditor/PurchasePrice/IntegerEdit");
-            intEdit.Value = activeObj.CanPurchase ? (long?) activeObj.PurchasePrice : null;
-            intEdit.Connect("int_edited", this, nameof(Signal_ObjectRecipePurchasePriceEdited));
-
-            lineEdit = editor.GetNode<LineEdit>("Recipe/RecipeEditor/PurchaseFrom/LineEdit");
-            lineEdit.Text = activeObj.PurchaseFrom;
-            lineEdit.Connect("text_changed", this, nameof(Signal_ObjectRecipePurchaseFromEdited));
-
-            var stringsEditor = editor.GetNode<StringListEditor>("Recipe/RecipeEditor/PurchaseRequirements/StringListEditor");
-            foreach (var req in activeObj.Recipe.PurchaseRequirements)
-                stringsEditor.AddString(req);
-            stringsEditor.Connect(nameof(StringListEditor.entry_added), this, nameof(Signal_ObjectRecipePurchaseRequirementAdded));
-            stringsEditor.Connect(nameof(StringListEditor.entry_deleted), this, nameof(Signal_ObjectRecipePurchaseRequirementDeleted));
-            stringsEditor.Connect(nameof(StringListEditor.entry_changed), this, nameof(Signal_ObjectRecipePurchaseRequirementEdited));
-        }
-
-        private void Signal_ObjectNameEdited(string str)
-        {
-            activeObj.Name = str;
-            activeEntry.SetText(0, str);
-        }
-
-        private void Signal_ObjectEnableWithModEdited(string str)
-        {
-            activeObj.EnableWithMod = str;
-        }
-
-        private void Signal_ObjectDisableWithModEdited(string str)
-        {
-            activeObj.DisableWithMod = str;
-        }
-
-        private void Signal_ObjectTextureEdited(SubImageEditor imageEditor)
-        {
-            activeObj.Texture = imageEditor.GetImageRef();
-        }
-
-        private void Signal_ObjectColorTextureEdited(SubImageEditor imageEditor)
-        {
-            activeObj.TextureColor = imageEditor.GetImageRef();
-        }
-
-        private void Signal_ObjectDescriptionEdited(string str)
-        {
-            activeObj.Description = str;
-        }
-
-        private void Signal_ObjectCategoryEdited(int idx)
-        {
-            var optionButton = activeEditor.GetNode<OptionButton>("Category/OptionButton");
-            var str = optionButton.GetItemText(idx);
-
-            activeObj.Category = ( ObjectData.Category_ ) Enum.Parse(typeof(ObjectData.Category_), str);
-        }
-
-        private void Signal_ObjectCategoryTextOverrideEdited(string str)
-        {
-            activeObj.CategoryTextOverride = str;
-        }
-
-        private void Signal_ObjectCategoryColorOverrideEdited(Color col)
-        {
-            activeObj.CategoryColorOverride = col;
-        }
-
-        private void Signal_ObjectSellPriceEdited(bool has, long value)
-        {
-            if ( has )
-            {
-                activeObj.CanSell = true;
-                activeObj.Price = (int) value;
-            }
-            else
-            {
-                activeObj.CanSell = false;
-            }
-        }
-
-        private void Signal_ObjectCanTrashEdited(bool value)
-        {
-            activeObj.CanTrash = value;
-        }
-
-        private void Signal_ObjectCanGiftEdited(bool value)
-        {
-            activeObj.CanBeGifted = value;
-        }
-
-        private void Signal_ObjectRecipeSkillUnlockNameEdited(int idx)
-        {
-            var optionButton = activeEditor.GetNode<OptionButton>("Recipe/RecipeEditor/SkillUnlockName/OptionButton");
-            var str = optionButton.GetItemText(idx);
-
-            activeObj.Recipe.SkillUnlockName = str;
-        }
-
-        private void Signal_ObjectRecipeSkillUnlockLevelEdited(bool _has, long value)
-        {
-            activeObj.Recipe.SkillUnlockLevel = (int) value;
-        }
-
-        private void Signal_ObjectRecipeResultCountEdited(bool _has, long value)
-        {
-            activeObj.Recipe.ResultCount = (int) value;
-        }
-
-        private void Signal_ObjectRecipeIngredientAdded()
-        {
-            activeObj.Recipe.Ingredients.Add(new ObjectData.Recipe_.Ingredient());
-        }
-
-        private void Signal_ObjectRecipeIngredientDeleted(int ind)
-        {
-            activeObj.Recipe.Ingredients.RemoveAt(ind);
-        }
-
-        private void Signal_ObjectRecipeIngredientEdited(int ind, string ingred, int amt)
-        {
-            if (int.TryParse(ingred, out int ingredId))
-                activeObj.Recipe.Ingredients[ind].Object = ingredId;
-            else
-                activeObj.Recipe.Ingredients[ind].Object = ingred;
-            activeObj.Recipe.Ingredients[ind].Count = amt;
-        }
-
-        private void Signal_ObjectRecipeIsDefaultEdited(bool value)
-        {
-            activeObj.Recipe.IsDefault = value;
-        }
-
-        private void Signal_ObjectRecipePurchasePriceEdited(bool has, long value)
-        {
-            activeObj.CanPurchase = has;
-            activeObj.PurchasePrice = (int) value;
-        }
-
-        private void Signal_ObjectRecipePurchaseFromEdited(string str)
-        {
-            activeObj.PurchaseFrom = str;
-        }
-
-        private void Signal_ObjectRecipePurchaseRequirementAdded()
-        {
-            activeObj.Recipe.PurchaseRequirements.Add("");
-        }
-
-        private void Signal_ObjectRecipePurchaseRequirementDeleted(int ind)
-        {
-            activeObj.Recipe.PurchaseRequirements.RemoveAt(ind);
-        }
-
-        private void Signal_ObjectRecipePurchaseRequirementEdited(int ind, string str)
-        {
-            activeObj.Recipe.PurchaseRequirements[ind] = str;
         }
     }
 }

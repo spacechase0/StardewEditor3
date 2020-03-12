@@ -10,10 +10,10 @@ public class IngredientListEditor : VBoxContainer
 	[Signal]
 	public delegate void entry_changed(int entry, string newIngred, int newAmt);
 
-    private readonly PackedScene IngredientEntryEditorScene = GD.Load<PackedScene>("res://JsonAssets/IngredientEntryEditor.tscn");
+	private readonly PackedScene IngredientEntryEditorScene = GD.Load<PackedScene>("res://JsonAssets/IngredientEntryEditor.tscn");
 
 
-    public override void _Ready()
+	public override void _Ready()
 	{
 		GetNode<Button>("AddButton").Connect("pressed", this, nameof(Signal_AddEntry));
 	}

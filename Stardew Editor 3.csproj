@@ -59,6 +59,7 @@
     <Compile Include="ContentPackController.cs" />
     <Compile Include="Dependency.cs" />
     <Compile Include="ExportManifest.cs" />
+    <Compile Include="JsonAssets\Data\RecipeData.cs" />
     <Compile Include="JsonAssets\GiftTasteEditor.cs" />
     <Compile Include="JsonAssets\GiftTasteEntryEditor.cs" />
     <Compile Include="JsonAssets\IngredientEntryEditor.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="JsonAssets\JsonAssetsJsonContractResolver.cs" />
     <Compile Include="JsonAssets\LocalizationEditor.cs" />
     <Compile Include="JsonAssets\LocalizationEntryEditor.cs" />
+    <Compile Include="Util\DoNotAutoConnectAttribute.cs" />
     <Compile Include="Util\ImageResourceReference.cs" />
     <Compile Include="JsonAssets\Data\BigCraftableData.cs" />
     <Compile Include="JsonAssets\Data\BootsData.cs" />
@@ -97,6 +99,7 @@
     <Compile Include="UpdateKey.cs" />
     <Compile Include="Util\IgnorePropertiesOfTypeJsonContractResolver.cs" />
     <Compile Include="Util\IntegerEdit.cs" />
+    <Compile Include="Util\LambdaWrapper.cs" />
     <Compile Include="Util\Rectangle.cs" />
     <Compile Include="Util\StringListEntryEditor.cs" />
     <Compile Include="Util\StringListEditor.cs" />

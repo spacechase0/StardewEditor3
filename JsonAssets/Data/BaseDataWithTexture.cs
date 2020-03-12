@@ -2,7 +2,7 @@
 using StardewEditor3;
 using StardewEditor3.Util;
 
-namespace JsonAssets.Data
+namespace StardewEditor3.JsonAssets.Data
 {
     public abstract class BaseDataWithTexture : BaseData
     {

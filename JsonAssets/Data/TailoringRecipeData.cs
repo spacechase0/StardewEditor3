@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JsonAssets.Data
+namespace StardewEditor3.JsonAssets.Data
 {
     public class TailoringRecipeData
     {

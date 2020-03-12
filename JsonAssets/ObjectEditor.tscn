@@ -10,19 +10,19 @@
 
 [node name="ObjectEditor" instance=ExtResource( 2 )]
 
-[node name="ColorTexture" type="HBoxContainer" parent="." index="4"]
+[node name="TextureColor" type="HBoxContainer" parent="." index="4"]
 margin_top = 244.0
 margin_right = 1024.0
 margin_bottom = 400.0
 
-[node name="Label" type="Label" parent="ColorTexture" index="0"]
+[node name="Label" type="Label" parent="TextureColor" index="0"]
 margin_top = 71.0
 margin_right = 150.0
 margin_bottom = 85.0
 rect_min_size = Vector2( 150, 0 )
 text = "Color Texture:"
 
-[node name="SubImageEditor" parent="ColorTexture" index="1" instance=ExtResource( 1 )]
+[node name="SubImageEditor" parent="TextureColor" index="1" instance=ExtResource( 1 )]
 margin_left = 154.0
 margin_right = 512.0
 margin_bottom = 156.0
@@ -141,7 +141,7 @@ margin_right = 178.0
 margin_bottom = 24.0
 hint_tooltip = "Whether this object can be trashed or not."
 
-[node name="Gift" type="CheckBox" parent="CanFlags" index="2"]
+[node name="BeGifted" type="CheckBox" parent="CanFlags" index="2"]
 margin_left = 182.0
 margin_right = 206.0
 margin_bottom = 24.0
@@ -200,215 +200,215 @@ margin_right = 178.0
 margin_bottom = 24.0
 hint_tooltip = "True if this is a drink item, false otherwise."
 
-[node name="FoodBuffs" type="HBoxContainer" parent="." index="14"]
+[node name="EdibleBuffs" type="HBoxContainer" parent="." index="14"]
 margin_top = 832.0
 margin_right = 1024.0
 margin_bottom = 1136.0
 
-[node name="Label" type="Label" parent="FoodBuffs" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs" index="0"]
 margin_top = 145.0
 margin_right = 150.0
 margin_bottom = 159.0
 rect_min_size = Vector2( 150, 0 )
 text = "Food Buffs:"
 
-[node name="Buffs" type="VBoxContainer" parent="FoodBuffs" index="1"]
+[node name="Buffs" type="VBoxContainer" parent="EdibleBuffs" index="1"]
 margin_left = 154.0
 margin_right = 508.0
 margin_bottom = 304.0
 
-[node name="Farming" type="HBoxContainer" parent="FoodBuffs/Buffs" index="0"]
+[node name="Farming" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="0"]
 margin_right = 354.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Farming" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Farming" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Farming:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Farming" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Farming" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The farming level buff value."
 
-[node name="Fishing" type="HBoxContainer" parent="FoodBuffs/Buffs" index="1"]
+[node name="Fishing" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="1"]
 margin_top = 28.0
 margin_right = 354.0
 margin_bottom = 52.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Fishing" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Fishing" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Fishing:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Fishing" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Fishing" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The fishing level buff value."
 
-[node name="Mining" type="HBoxContainer" parent="FoodBuffs/Buffs" index="2"]
+[node name="Mining" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="2"]
 margin_top = 56.0
 margin_right = 354.0
 margin_bottom = 80.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Mining" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Mining" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Mining:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Mining" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Mining" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The mining level buff value."
 
-[node name="Luck" type="HBoxContainer" parent="FoodBuffs/Buffs" index="3"]
+[node name="Luck" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="3"]
 margin_top = 84.0
 margin_right = 354.0
 margin_bottom = 108.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Luck" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Luck" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Luck:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Luck" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Luck" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The luck level buff value."
 
-[node name="Foraging" type="HBoxContainer" parent="FoodBuffs/Buffs" index="4"]
+[node name="Foraging" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="4"]
 margin_top = 112.0
 margin_right = 354.0
 margin_bottom = 136.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Foraging" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Foraging" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Foraging:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Foraging" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Foraging" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The foraging level buff value."
 
-[node name="MaxStamina" type="HBoxContainer" parent="FoodBuffs/Buffs" index="5"]
+[node name="MaxStamina" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="5"]
 margin_top = 140.0
 margin_right = 354.0
 margin_bottom = 164.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/MaxStamina" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/MaxStamina" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Max Stamina:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/MaxStamina" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/MaxStamina" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The max stamina buff value."
 
-[node name="MagnetRadius" type="HBoxContainer" parent="FoodBuffs/Buffs" index="6"]
+[node name="MagnetRadius" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="6"]
 margin_top = 168.0
 margin_right = 354.0
 margin_bottom = 192.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/MagnetRadius" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/MagnetRadius" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Magnet Radius:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/MagnetRadius" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/MagnetRadius" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The magnet radius buff value."
 
-[node name="Speed" type="HBoxContainer" parent="FoodBuffs/Buffs" index="7"]
+[node name="Speed" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="7"]
 margin_top = 196.0
 margin_right = 354.0
 margin_bottom = 220.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Speed" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Speed" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Speed:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Speed" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Speed" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The speed buff value."
 
-[node name="Defense" type="HBoxContainer" parent="FoodBuffs/Buffs" index="8"]
+[node name="Defense" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="8"]
 margin_top = 224.0
 margin_right = 354.0
 margin_bottom = 248.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Defense" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Defense" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Defense:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Defense" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Defense" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The defense buff value."
 
-[node name="Attack" type="HBoxContainer" parent="FoodBuffs/Buffs" index="9"]
+[node name="Attack" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="9"]
 margin_top = 252.0
 margin_right = 354.0
 margin_bottom = 276.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Attack" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Attack" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Attack:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Attack" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Attack" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The attack buff value."
 
-[node name="Duration" type="HBoxContainer" parent="FoodBuffs/Buffs" index="10"]
+[node name="Duration" type="HBoxContainer" parent="EdibleBuffs/Buffs" index="10"]
 margin_top = 280.0
 margin_right = 354.0
 margin_bottom = 304.0
 
-[node name="Label" type="Label" parent="FoodBuffs/Buffs/Duration" index="0"]
+[node name="Label" type="Label" parent="EdibleBuffs/Buffs/Duration" index="0"]
 margin_top = 5.0
 margin_right = 150.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Duration:"
 
-[node name="IntegerEdit" parent="FoodBuffs/Buffs/Duration" index="1" instance=ExtResource( 3 )]
+[node name="IntegerEdit" parent="EdibleBuffs/Buffs/Duration" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0
 margin_right = 354.0
 rect_min_size = Vector2( 200, 0 )

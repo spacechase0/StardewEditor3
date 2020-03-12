@@ -1,4 +1,4 @@
-﻿namespace JsonAssets.Data
+﻿namespace StardewEditor3.JsonAssets.Data
 {
     public abstract class BaseData
     {

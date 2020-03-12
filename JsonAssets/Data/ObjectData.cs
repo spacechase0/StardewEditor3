@@ -2,10 +2,11 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using StardewEditor3;
+using StardewEditor3.JsonAssets.Data;
 using StardewEditor3.Util;
 using System.Collections.Generic;
 
-namespace JsonAssets.Data
+namespace StardewEditor3.JsonAssets.Data
 {
     public class ObjectData : BaseDataWithTexture
     {
@@ -37,27 +38,6 @@ namespace JsonAssets.Data
             Artifact,
         }
 
-        public class Recipe_
-        {
-            public class Ingredient
-            {
-                public object Object { get; set; }
-                public int Count { get; set; }
-            }
-
-            public string SkillUnlockName { get; set; } = null;
-            public int SkillUnlockLevel { get; set; } = -1;
-
-            public int ResultCount { get; set; } = 1;
-            public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
-
-            public bool IsDefault { get; set; } = false;
-            public bool CanPurchase { get; set; } = false;
-            public int PurchasePrice { get; set; }
-            public string PurchaseFrom { get; set; } = "Gus";
-            public List<string> PurchaseRequirements { get; set; } = new List<string>();
-        }
-
         public class FoodBuffs_
         {
             public int Farming { get; set; } = 0;
@@ -77,20 +57,23 @@ namespace JsonAssets.Data
         public Category_ Category { get; set; }
         public string CategoryTextOverride { get; set; }
         public Color CategoryColorOverride { get; set; } = new Color(0, 0, 0, 0);
+        [DoNotAutoConnect]
         public bool IsColored { get; set; } = false;
 
         public int Price { get; set; }
 
         public bool CanTrash { get; set; } = true;
+        [DoNotAutoConnect]
         public bool CanSell { get; set; } = true;
         public bool CanBeGifted { get; set; } = true;
 
-        public Recipe_ Recipe { get; set; }
+        public RecipeData Recipe { get; set; }
 
         public int Edibility { get; set; } = -300;
         public bool EdibleIsDrink { get; set; } = false;
         public FoodBuffs_ EdibleBuffs { get; set; } = new FoodBuffs_();
 
+        [DoNotAutoConnect]
         public bool CanPurchase { get; set; } = false;
         public int PurchasePrice { get; set; }
         public string PurchaseFrom { get; set; } = "Pierre";
@@ -98,17 +81,17 @@ namespace JsonAssets.Data
 
         public class GiftTastes_
         {
-            public List<string> Love = new List<string>();
-            public List<string> Like = new List<string>();
-            public List<string> Neutral = new List<string>();
-            public List<string> Dislike = new List<string>();
-            public List<string> Hate = new List<string>();
+            public List<string> Love { get; set; } = new List<string>();
+            public List<string> Like { get; set; } = new List<string>();
+            public List<string> Neutral { get; set; } = new List<string>();
+            public List<string> Dislike { get; set; } = new List<string>();
+            public List<string> Hate { get; set; } = new List<string>();
         }
-        public GiftTastes_ GiftTastes;
+        public GiftTastes_ GiftTastes { get; set; }
 
-        public Dictionary<string, string> NameLocalization = new Dictionary<string, string>();
-        public Dictionary<string, string> DescriptionLocalization = new Dictionary<string, string>();
+        public Dictionary<string, string> NameLocalization { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> DescriptionLocalization { get; set; } = new Dictionary<string, string>();
 
-        public List<string> ContextTags = new List<string>();
+        public List<string> ContextTags { get; set; }  = new List<string>();
     }
 }

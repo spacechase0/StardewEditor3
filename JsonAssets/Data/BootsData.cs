@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 
-namespace JsonAssets.Data
+namespace StardewEditor3.JsonAssets.Data
 {
     public class BootsData : BaseDataWithTexture
     {

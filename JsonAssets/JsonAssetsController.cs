@@ -1,6 +1,6 @@
 ﻿using Godot;
-using JsonAssets.Data;
 using Newtonsoft.Json;
+using StardewEditor3.JsonAssets.Data;
 using StardewEditor3.Util;
 using System;
 using System.Collections.Generic;
@@ -100,7 +100,7 @@ namespace StardewEditor3.JsonAssets
                 colImage?.Dispose();
 
                 if (obj.Recipe == null)
-                    obj.Recipe = new ObjectData.Recipe_();
+                    obj.Recipe = new RecipeData();
                 if (obj.EdibleBuffs == null)
                     obj.EdibleBuffs = new ObjectData.FoodBuffs_();
             }
