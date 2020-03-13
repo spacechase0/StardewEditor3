@@ -20,6 +20,8 @@ namespace StardewEditor3.JsonAssets
                 activeObj.Recipe = new RecipeData();
             if (activeObj.EdibleBuffs == null)
                 activeObj.EdibleBuffs = new ObjectData.FoodBuffs_();
+            if (activeObj.GiftTastes == null)
+                activeObj.GiftTastes = new ObjectData.GiftTastes_();
 
             DoObjectConnections(editor, activeObj);
             var intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
@@ -215,8 +217,82 @@ namespace StardewEditor3.JsonAssets
                 else if ( prop.PropertyType == typeof(ObjectData.FoodBuffs_) )
                 {
                     string path = prop.Name + "/Buffs";
-                    var buffsCountainer = editor.GetNode(path);
-                    DoObjectConnections(buffsCountainer, prop.GetValue(obj));
+                    var buffsContainer = editor.GetNode(path);
+                    DoObjectConnections(buffsContainer, prop.GetValue(obj));
+                }
+                else if (prop.PropertyType == typeof(ObjectData.GiftTastes_))
+                {
+                    string path = prop.Name + "/GiftTasteEditor";
+                    var giftsEditor = editor.GetNode<GiftTasteEditor>(path);
+                    var gifts = (ObjectData.GiftTastes_)prop.GetValue(obj);
+                    var entries = new List<Pair<string, string>>();
+                    foreach (var giftProp in gifts.GetType().GetProperties())
+                    {
+                        var tasteEntries = (List<string>) giftProp.GetValue(gifts);
+                        foreach (var taste in tasteEntries)
+                        {
+                            giftsEditor.AddEntry(taste, giftProp.Name);
+                            entries.Add(new Pair<string, string>(taste, giftProp.Name));
+                        }
+                    }
+                    var lambdaAdd = new LambdaWrapper(() => entries.Add(new Pair<string, string>("", "Neutral")));
+                    var lambdaDelete = new LambdaWrapper<int>((idx) =>
+                    {
+                        var entry = entries[idx];
+                        entries.RemoveAt(idx);
+                        if (entry.First != "")
+                            ((List<string>)gifts.GetType().GetProperty(entry.First).GetValue(gifts)).Remove(entry.Second);
+                    });
+                    var lambdaEdit = new LambdaWrapper<int, string, string>((idx, npc, likedness) =>
+                    {
+                        var entry = entries[idx];
+                        if ( entry.First != "" )
+                            ((List<string>)gifts.GetType().GetProperty(entry.First).GetValue(gifts)).Remove(entry.Second);
+                        ((List<string>)gifts.GetType().GetProperty(likedness).GetValue(gifts)).Add(npc);
+                        entries[idx].First = likedness;
+                        entries[idx].Second = npc;
+
+                    });
+                    lambdaAdd.SelfConnect(giftsEditor, nameof(GiftTasteEditor.entry_added));
+                    lambdaDelete.SelfConnect(giftsEditor, nameof(GiftTasteEditor.entry_deleted));
+                    lambdaEdit.SelfConnect(giftsEditor, nameof(GiftTasteEditor.entry_changed));
+                }
+                else if (prop.PropertyType == typeof(Dictionary<string, string>))
+                {
+                    string path = prop.Name + "/LocalizationEditor";
+                    var locEditor = editor.GetNode<LocalizationEditor>(path);
+                    var locs = (Dictionary<string, string>)prop.GetValue(obj);
+                    var entries = new List<Pair<string, string>>();
+                    foreach (var loc in locs)
+                    {
+                        locEditor.AddEntry(loc.Key, loc.Value);
+                        entries.Add(new Pair<string, string>(loc.Key, loc.Value));
+                    }
+                    var lambdaAdd = new LambdaWrapper(() => entries.Add(new Pair<string, string>("", "")));
+                    var lambdaDelete = new LambdaWrapper<int>((idx) =>
+                    {
+                        entries.RemoveAt(idx);
+                        locs.Clear();
+                        foreach ( var entry in entries )
+                        {
+                            if (!locs.ContainsKey(entry.First))
+                                locs.Add(entry.First, entry.Second);
+                        }
+                    });
+                    var lambdaEdit = new LambdaWrapper<int, string, string>((idx, lang, str) =>
+                    {
+                        entries[idx].First = lang;
+                        entries[idx].Second = str;
+                        locs.Clear();
+                        foreach ( var entry in entries )
+                        {
+                            if (!locs.ContainsKey(entry.First))
+                                locs.Add(entry.First, entry.Second);
+                        }
+                    });
+                    lambdaAdd.SelfConnect(locEditor, nameof(LocalizationEditor.entry_added));
+                    lambdaDelete.SelfConnect(locEditor, nameof(LocalizationEditor.entry_deleted));
+                    lambdaEdit.SelfConnect(locEditor, nameof(LocalizationEditor.entry_changed));
                 }
             }
         }

@@ -23,7 +23,7 @@ margin_bottom = 40.0
 rect_min_size = Vector2( 150, 0 )
 hint_tooltip = "The preference level."
 text = "Neutral"
-items = [ "Neutral", null, false, 0, null, "Liked", null, false, 1, null, "Loved", null, false, 2, null, "Disliked", null, false, 3, null, "Hated", null, false, 4, null ]
+items = [ "Neutral", null, false, 0, null, "Like", null, false, 1, null, "Love", null, false, 2, null, "Dislike", null, false, 3, null, "Hate", null, false, 4, null ]
 selected = 0
 __meta__ = {
 "_edit_use_anchors_": false

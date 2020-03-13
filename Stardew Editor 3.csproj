@@ -100,6 +100,7 @@
     <Compile Include="Util\IgnorePropertiesOfTypeJsonContractResolver.cs" />
     <Compile Include="Util\IntegerEdit.cs" />
     <Compile Include="Util\LambdaWrapper.cs" />
+    <Compile Include="Util\Pair.cs" />
     <Compile Include="Util\Rectangle.cs" />
     <Compile Include="Util\StringListEntryEditor.cs" />
     <Compile Include="Util\StringListEditor.cs" />

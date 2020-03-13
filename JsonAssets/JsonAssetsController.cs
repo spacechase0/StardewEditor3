@@ -86,6 +86,9 @@ namespace StardewEditor3.JsonAssets
                     obj.Recipe = null;
                 if (obj.EdibleBuffs.Duration == 0)
                     obj.EdibleBuffs = null;
+                if (obj.GiftTastes.Love.Count == 0 && obj.GiftTastes.Like.Count == 0 && obj.GiftTastes.Neutral.Count == 0 &&
+                    obj.GiftTastes.Dislike.Count == 0 && obj.GiftTastes.Hate.Count == 0)
+                    obj.GiftTastes = null;
 
                 string objDir = System.IO.Path.Combine(objPath, obj.Name);
                 System.IO.Directory.CreateDirectory(objDir);
@@ -103,6 +106,8 @@ namespace StardewEditor3.JsonAssets
                     obj.Recipe = new RecipeData();
                 if (obj.EdibleBuffs == null)
                     obj.EdibleBuffs = new ObjectData.FoodBuffs_();
+                if (obj.GiftTastes == null)
+                    obj.GiftTastes = new ObjectData.GiftTastes_();
             }
         }
 
