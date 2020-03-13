@@ -9,7 +9,7 @@ namespace StardewEditor3
     public class Dependency
     {
         public string UniqueID { get; set; }
-        public bool IsRequired { get; set; }
+        public bool IsRequired { get; set; } = true;
         public string MinimumVersion { get; set; }
     }
 }

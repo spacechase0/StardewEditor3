@@ -562,7 +562,7 @@ public class UI : MarginContainer
 			lineEdit.Connect("text_changed", this, nameof(Signal_UpdateKeyIdEdited));
 			newArea = editor;
 		}
-		else if ( sel.GetMeta(Meta.CorrespondingController) != null )
+		else if ( sel.HasMeta(Meta.CorrespondingController) )
 		{
 			var controller = ContentPackController.GetControllerForMod((string)sel.GetMeta(Meta.CorrespondingController));
 			var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
