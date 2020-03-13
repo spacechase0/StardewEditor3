@@ -68,11 +68,13 @@ public class UI : MarginContainer
 		filePopup.SetItemDisabled(1, true);
 		filePopup.AddSeparator();
 		filePopup.AddItem("Save");
-		filePopup.AddItem("Open");
+        filePopup.SetItemDisabled(3, true);
+        filePopup.AddItem("Open");
 		filePopup.AddSeparator();
 		filePopup.AddItem("Export");
+        filePopup.SetItemDisabled(6, true);
 
-		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
+        ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
 		ProjectTree.Connect("button_pressed", this, nameof(Signal_TreeButtonPressed));
 		ProjectTree.Connect("item_activated", this, nameof(Signal_TreeCellActivated));
 		ProjectTree.Connect("item_edited", this, nameof(Signal_TreeItemEdited));
@@ -176,6 +178,8 @@ public class UI : MarginContainer
 		resourcesRoot.AddButton(0, AddIcon, ADD_BUTTON_INDEX, tooltip: "Import a resource");
 
 		fileMenu.GetPopup().SetItemDisabled(1, false);
+		fileMenu.GetPopup().SetItemDisabled(3, false);
+		fileMenu.GetPopup().SetItemDisabled(6, false);
 
 		if (!loading)
 		{
