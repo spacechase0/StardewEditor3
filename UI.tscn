@@ -174,9 +174,14 @@ current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
 [node name="ExportProjectDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Open a Directory"
+window_title = "Export to Directory"
 resizable = true
 mode = 2
 access = 2
 current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
 current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
+
+[node name="ProjectValidationErrorsDialog" type="AcceptDialog" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+window_title = "Project Validation Errors"

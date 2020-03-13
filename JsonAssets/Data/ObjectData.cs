@@ -56,7 +56,7 @@ namespace StardewEditor3.JsonAssets.Data
         public string Description { get; set; }
         public Category_ Category { get; set; }
         public string CategoryTextOverride { get; set; }
-        public Color CategoryColorOverride { get; set; } = new Color(0, 0, 0, 0);
+        public Color? CategoryColorOverride { get; set; } = new Color(0, 0, 0, 0);
         [DoNotAutoConnect]
         public bool IsColored { get; set; } = false;
 

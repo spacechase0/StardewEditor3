@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace StardewEditor3.JsonAssets
@@ -43,6 +44,37 @@ namespace StardewEditor3.JsonAssets
         public override void OnLoad(UI ui, ModData data, TreeItem entry)
         {
             AddSections(ui, entry);
+        }
+
+        private Regex nameRegex = new Regex(@"^[a-zA-Z0-9_.,\-]+$", RegexOptions.Compiled);
+        private Regex tagRegex = new Regex(@"^[a-zA-Z_]+$", RegexOptions.Compiled);
+        public override void OnValidate(UI ui, ModData data_, List<string> errors)
+        {
+            var data = data_ as JsonAssetsModData;
+
+            foreach (var obj in data.Objects)
+            {
+                if (!nameRegex.IsMatch(obj.Name))
+                    errors.Add($"Object name \"{obj.Name}\" must only contain basic english characters.");
+                if (obj.Texture == null || string.IsNullOrEmpty(obj.Texture.Resource))
+                    errors.Add($"Object \"{obj.Name}\" must have a texture.");
+                if (obj.Description != null && obj.Description.Contains('/'))
+                    errors.Add($"Object description for \"{obj.Name}\" must not contain slashes.");
+                if (obj.CategoryTextOverride != null && obj.CategoryTextOverride.Contains('/'))
+                    errors.Add($"Object category text override for \"{obj.Name}\" must not contain slashes.");
+
+                // todo - validate ingredient names?
+                // todo - validate purchase requirements
+
+                if (obj.ContextTags != null)
+                {
+                    foreach (var tag in obj.ContextTags)
+                    {
+                        if (!tagRegex.IsMatch(tag))
+                            errors.Add($"Object \"{obj.Name}\" has invalid context tag: " + tag);
+                    }
+                }
+            }
         }
 
         public override void OnExport(UI ui, ModData data_, string exportPath)
@@ -89,6 +121,11 @@ namespace StardewEditor3.JsonAssets
                 if (obj.GiftTastes.Love.Count == 0 && obj.GiftTastes.Like.Count == 0 && obj.GiftTastes.Neutral.Count == 0 &&
                     obj.GiftTastes.Dislike.Count == 0 && obj.GiftTastes.Hate.Count == 0)
                     obj.GiftTastes = null;
+
+                if (obj.CategoryTextOverride == "")
+                    obj.CategoryTextOverride = null;
+                if (obj.CategoryColorOverride?.a == 0)
+                    obj.CategoryColorOverride = null;
 
                 string objDir = System.IO.Path.Combine(objPath, obj.Name);
                 System.IO.Directory.CreateDirectory(objDir);

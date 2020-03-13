@@ -5,6 +5,7 @@ using StardewEditor3.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 public class UI : MarginContainer
 {
@@ -68,13 +69,21 @@ public class UI : MarginContainer
 		filePopup.SetItemDisabled(1, true);
 		filePopup.AddSeparator();
 		filePopup.AddItem("Save");
-        filePopup.SetItemDisabled(3, true);
-        filePopup.AddItem("Open");
+		var keyHelper = new InputEventKey();
+		keyHelper.Scancode = (uint) KeyList.S;
+		keyHelper.Control = true;
+		filePopup.SetItemAccelerator(3, keyHelper.GetScancodeWithModifiers());
+		filePopup.SetItemDisabled(3, true);
+		filePopup.AddItem("Open");
+		keyHelper.Scancode = (uint) KeyList.O;
+		filePopup.SetItemAccelerator(4, keyHelper.GetScancodeWithModifiers());
 		filePopup.AddSeparator();
 		filePopup.AddItem("Export");
-        filePopup.SetItemDisabled(6, true);
+		keyHelper.Scancode = (uint) KeyList.E;
+		filePopup.SetItemAccelerator(6, keyHelper.GetScancodeWithModifiers());
+		filePopup.SetItemDisabled(6, true);
 
-        ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
+		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
 		ProjectTree.Connect("button_pressed", this, nameof(Signal_TreeButtonPressed));
 		ProjectTree.Connect("item_activated", this, nameof(Signal_TreeCellActivated));
 		ProjectTree.Connect("item_edited", this, nameof(Signal_TreeItemEdited));
@@ -296,8 +305,61 @@ public class UI : MarginContainer
 		}
 	}
 
+	private Regex idRegex = new Regex(@"^[a-zA-Z0-9_.\-]+$", RegexOptions.Compiled);
+	private Regex semVerRegex = new Regex(@"^[0-9]+\.[0-9]+(\.[0-9]+)?(-[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
+	private List<string> DoValidation()
+	{
+		GD.Print("Validating...");
+
+		var ret = new List<string>();
+
+		if (string.IsNullOrEmpty(ModProject.UniqueId) || !idRegex.IsMatch(ModProject.UniqueId))
+			ret.Add("Invalid project unique ID");
+		if (string.IsNullOrEmpty(ModProject.Version) || !semVerRegex.IsMatch(ModProject.Version))
+			ret.Add("Invalid project version");
+
+		foreach ( var dep in ModProject.Dependencies )
+		{
+			if (string.IsNullOrEmpty(dep.UniqueID) || !idRegex.IsMatch(dep.UniqueID))
+				ret.Add("Invalid dependency unique ID: " + dep.UniqueID);
+			if (!string.IsNullOrEmpty(dep.MinimumVersion) && !semVerRegex.IsMatch(dep.MinimumVersion))
+				ret.Add($"Invalid dependency version for dependency {dep.UniqueID}: {dep.MinimumVersion}");
+		}
+
+		foreach ( var key in ModProject.UpdateKeys )
+		{
+			if (key.Platform != "GitHub" && !int.TryParse(key.Id, out int _))
+				ret.Add($"Update key for {key.Platform} must be an integer.");
+		}
+
+		foreach (var mod in ModProject.Mods)
+		{
+			GD.Print("Validating for " + mod.ContentPackFor);
+			var controller = ContentPackController.GetControllerForMod(mod.ContentPackFor);
+			var errors = new List<string>();
+			controller.OnValidate(this, mod, errors);
+			ret.AddRange(errors);
+		}
+
+		return ret;
+	}
+
 	private void Signal_ExportProject(string dir)
 	{
+		var validationErrors = DoValidation();
+		if (validationErrors.Count > 0)
+		{
+			string str = "The following errors were found when validating your project:\n\n";
+			foreach (var error in validationErrors)
+				str += error + "\n";
+
+			var popup = GetNode<AcceptDialog>("ProjectValidationErrorsDialog");
+			popup.DialogText = str;
+			popup.PopupCenteredClamped();
+
+			return;
+		}
+
 		GD.Print("Exporting...");
 		string path = System.IO.Path.Combine(dir, ModProject.Name);
 		if ( System.IO.Directory.Exists( path ) )
