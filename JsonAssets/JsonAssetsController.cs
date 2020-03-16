@@ -180,7 +180,7 @@ namespace StardewEditor3.JsonAssets
                 int e = 2;
                 foreach ( var imageRef in big.ReserveExtraIndices )
                 {
-                    var extraImage = big.Texture.MakeImage(ui.ModProjectDir);
+                    var extraImage = imageRef.MakeImage(ui.ModProjectDir);
                     extraImage.SavePng(System.IO.Path.Combine(bigPath, $"big-craftable-{e}.png"));
                     extraImage.Dispose();
                     ++e;
@@ -303,7 +303,41 @@ namespace StardewEditor3.JsonAssets
                 if (Attribute.IsDefined(prop, typeof(DoNotAutoConnectAttribute)))
                     continue;
 
-                if (prop.Name == "SkillUnlockName")
+                // Data-specific stuff
+                if ( obj is BigCraftableData && prop.Name == "ReserveExtraIndices")
+                {
+                    string path = prop.Name + "/SubImageEditor";
+                    var imageEditor = editor.GetNode<SubImageEditor>(path);
+
+                    var refs = (List<ImageResourceReference>)prop.GetValue(obj);
+                    ImageResourceReference baseRef = new ImageResourceReference();
+                    if ( refs.Count > 0 )
+                    {
+                        baseRef.Resource = refs[0].Resource;
+                        baseRef.SubRect = new Rect2(refs[0].SubRect.Value.Position, 16 * refs.Count, 32);
+                    }
+
+                    imageEditor.SetValues(baseRef);
+                    var lambda = new LambdaWrapper<SubImageEditor>((ie) =>
+                    {
+                        refs.Clear();
+                        var value = ie.GetImageRef();
+                        if (string.IsNullOrEmpty(value.Resource) || !value.SubRect.HasValue)
+                            return;
+
+                        for (int i = 0; i < value.SubRect.Value.Size.x / 16; ++i)
+                        {
+                            ImageResourceReference iref = new ImageResourceReference();
+                            iref.Resource = value.Resource;
+                            iref.SubRect = new Rect2(value.SubRect.Value.Position.x + i * 16, value.SubRect.Value.Position.y, 16, 32);
+                            refs.Add(iref);
+                        }
+                    });
+                    lambda.SelfConnect(imageEditor, nameof(SubImageEditor.image_changed));
+                }   
+
+                // Everything else
+                else if (prop.Name == "SkillUnlockName")
                 {
                     string path = prop.Name + "/OptionButton";
                     var optionButton = editor.GetNode<OptionButton>(path);
@@ -551,10 +585,6 @@ namespace StardewEditor3.JsonAssets
                     lambdaAdd.SelfConnect(locEditor, nameof(LocalizationEditor.entry_added));
                     lambdaDelete.SelfConnect(locEditor, nameof(LocalizationEditor.entry_deleted));
                     lambdaEdit.SelfConnect(locEditor, nameof(LocalizationEditor.entry_changed));
-                }
-                else if (prop.PropertyType == typeof(List<ImageResourceReference>))
-                {
-                    // todo
                 }
             }
         }

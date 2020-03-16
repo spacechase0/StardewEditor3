@@ -26,6 +26,9 @@ namespace StardewEditor3.JsonAssets
             intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
             intEdit.Value = 32;
             intEdit.Editable = false;
+            intEdit = editor.GetNode<IntegerEdit>("ReserveExtraIndices/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit.Value = 32;
+            intEdit.Editable = false;
         }
     }
 }

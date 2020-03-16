@@ -1,28 +1,36 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=1]
 [ext_resource path="res://JsonAssets/BaseWithTextureEditor.tscn" type="PackedScene" id=2]
 [ext_resource path="res://JsonAssets/LocalizationEditor.tscn" type="PackedScene" id=3]
 [ext_resource path="res://JsonAssets/RecipeEditor.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Util/StringListEditor.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Util/SubImageEditor.tscn" type="PackedScene" id=6]
 
 [node name="BigCraftableEditor" instance=ExtResource( 2 )]
 
 [node name="ReserveExtraIndices" type="HBoxContainer" parent="." index="4"]
 margin_top = 244.0
 margin_right = 1024.0
-margin_bottom = 275.0
+margin_bottom = 400.0
 
 [node name="Label" type="Label" parent="ReserveExtraIndices" index="0"]
-margin_right = 138.0
-margin_bottom = 31.0
+margin_top = 62.0
+margin_right = 150.0
+margin_bottom = 93.0
+rect_min_size = Vector2( 150, 0 )
 text = "Reserve Extra Texture
 Indices:"
 
+[node name="SubImageEditor" parent="ReserveExtraIndices" index="1" instance=ExtResource( 6 )]
+margin_left = 154.0
+margin_right = 512.0
+margin_bottom = 156.0
+
 [node name="Description" type="HBoxContainer" parent="." index="5"]
-margin_top = 279.0
+margin_top = 404.0
 margin_right = 1024.0
-margin_bottom = 303.0
+margin_bottom = 428.0
 
 [node name="Label" type="Label" parent="Description" index="0"]
 margin_top = 5.0
@@ -39,9 +47,9 @@ rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The description of the big craftable."
 
 [node name="ProvidesLight" type="HBoxContainer" parent="." index="6"]
-margin_top = 307.0
+margin_top = 432.0
 margin_right = 1024.0
-margin_bottom = 331.0
+margin_bottom = 456.0
 
 [node name="Label" type="Label" parent="ProvidesLight" index="0"]
 margin_top = 5.0
@@ -57,9 +65,9 @@ margin_bottom = 24.0
 hint_tooltip = "If the big craftable provides light or not."
 
 [node name="Recipe" type="HBoxContainer" parent="." index="7"]
-margin_top = 335.0
+margin_top = 460.0
 margin_right = 1024.0
-margin_bottom = 543.0
+margin_bottom = 668.0
 
 [node name="Label" type="Label" parent="Recipe" index="0"]
 margin_top = 97.0
@@ -74,9 +82,9 @@ margin_right = 514.0
 margin_bottom = 208.0
 
 [node name="PurchasePrice" type="HBoxContainer" parent="." index="8"]
-margin_top = 547.0
+margin_top = 672.0
 margin_right = 1024.0
-margin_bottom = 571.0
+margin_bottom = 696.0
 
 [node name="Label" type="Label" parent="PurchasePrice" index="0"]
 margin_top = 5.0
@@ -92,9 +100,9 @@ rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The purchase price of this big craftable."
 
 [node name="PurchaseFrom" type="HBoxContainer" parent="." index="9"]
-margin_top = 575.0
+margin_top = 700.0
 margin_right = 1024.0
-margin_bottom = 599.0
+margin_bottom = 724.0
 
 [node name="Label" type="Label" parent="PurchaseFrom" index="0"]
 margin_top = 5.0
@@ -111,9 +119,9 @@ rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The NPC to purchase this big craftable from."
 
 [node name="PurchaseRequirements" type="HBoxContainer" parent="." index="10"]
-margin_top = 603.0
+margin_top = 728.0
 margin_right = 1024.0
-margin_bottom = 623.0
+margin_bottom = 748.0
 
 [node name="Label" type="Label" parent="PurchaseRequirements" index="0"]
 margin_top = 3.0
@@ -128,9 +136,9 @@ margin_right = 360.0
 margin_bottom = 20.0
 
 [node name="NameLocalization" type="HBoxContainer" parent="." index="11"]
-margin_top = 627.0
+margin_top = 752.0
 margin_right = 1024.0
-margin_bottom = 647.0
+margin_bottom = 772.0
 
 [node name="Label" type="Label" parent="NameLocalization" index="0"]
 margin_top = 3.0
@@ -145,9 +153,9 @@ margin_right = 304.0
 margin_bottom = 20.0
 
 [node name="DescriptionLocalization" type="HBoxContainer" parent="." index="12"]
-margin_top = 651.0
+margin_top = 776.0
 margin_right = 1024.0
-margin_bottom = 671.0
+margin_bottom = 796.0
 
 [node name="Label" type="Label" parent="DescriptionLocalization" index="0"]
 margin_top = 3.0
