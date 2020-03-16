@@ -16,6 +16,7 @@ namespace StardewEditor3.JsonAssets
     public class JsonAssetsJsonContractResolver : IgnorePropertiesOfTypeJsonContractResolver
     {
         private readonly JsonAssetsColorConverter colorConverter = new JsonAssetsColorConverter();
+        private readonly JsonAssetsBigCraftableExtraIndicesConverter extraIndicesConverter = new JsonAssetsBigCraftableExtraIndicesConverter();
 
         public JsonAssetsJsonContractResolver()
         : base(new Type[] { typeof(ImageResourceReference) })
@@ -27,6 +28,8 @@ namespace StardewEditor3.JsonAssets
         {
             if (objectType == typeof(Color))
                 return colorConverter;
+            else if (objectType == typeof(List<ImageResourceReference>))
+                return extraIndicesConverter;
             return base.ResolveContractConverter(objectType);
         }
     }
@@ -45,6 +48,19 @@ namespace StardewEditor3.JsonAssets
         public override void WriteJson(JsonWriter writer, Color value, JsonSerializer serializer)
         {
             serializer.Serialize(writer, $"{value.r8}, {value.g8}, {value.b8}, {value.a8}");
+        }
+    }
+
+    internal class JsonAssetsBigCraftableExtraIndicesConverter : JsonConverter<List<ImageResourceReference>>
+    {
+        public override List<ImageResourceReference> ReadJson(JsonReader reader, Type objectType, List<ImageResourceReference> existingValue, bool hasExistingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteJson(JsonWriter writer, List<ImageResourceReference> value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value.Count);
         }
     }
 }

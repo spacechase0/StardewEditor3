@@ -174,7 +174,7 @@ current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
 [node name="ExportProjectDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Export to Directory"
+window_title = "Open a Directory"
 resizable = true
 mode = 2
 access = 2

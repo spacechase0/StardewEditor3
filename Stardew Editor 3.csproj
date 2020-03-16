@@ -65,6 +65,7 @@
     <Compile Include="JsonAssets\IngredientEntryEditor.cs" />
     <Compile Include="JsonAssets\IngredientListEditor.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_Objects.cs" />
+    <Compile Include="JsonAssets\JsonAssetsController_BigCraftables.cs" />
     <Compile Include="JsonAssets\JsonAssetsJsonContractResolver.cs" />
     <Compile Include="JsonAssets\LocalizationEditor.cs" />
     <Compile Include="JsonAssets\LocalizationEntryEditor.cs" />

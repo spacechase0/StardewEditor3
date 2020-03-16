@@ -12,12 +12,14 @@ namespace StardewEditor3.JsonAssets.Data
 
 		public string Description { get; set; }
 
+        [DoNotAutoConnect]
 		public int Price { get; set; }
 
 		public bool ProvidesLight { get; set; } = false;
 
 		public RecipeData Recipe { get; set; }
 
+        [DoNotAutoConnect]
 		public bool CanPurchase { get; set; } = false;
 		public int PurchasePrice { get; set; }
 		public string PurchaseFrom { get; set; } = "Pierre";
