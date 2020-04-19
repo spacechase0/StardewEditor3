@@ -8,7 +8,7 @@ namespace StardewEditor3.JsonAssets.Data
 {
     public class CropData : BaseDataWithTexture
     {
-        public ImageResourceReference giantTex;
+        public ImageResourceReference GiantTexture { get; set; }
 
         public object Product { get; set; }
         public string SeedName { get; set; }

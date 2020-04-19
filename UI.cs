@@ -69,9 +69,11 @@ public class UI : MarginContainer
 		filePopup.SetItemDisabled(1, true);
 		filePopup.AddSeparator();
 		filePopup.AddItem("Save");
-		var keyHelper = new InputEventKey();
-		keyHelper.Scancode = (uint) KeyList.S;
-		keyHelper.Control = true;
+		var keyHelper = new InputEventKey()
+		{
+			Scancode = (uint)KeyList.S,
+			Control = true,
+		};
 		filePopup.SetItemAccelerator(3, keyHelper.GetScancodeWithModifiers());
 		filePopup.SetItemDisabled(3, true);
 		filePopup.AddItem("Open");
@@ -305,8 +307,8 @@ public class UI : MarginContainer
 		}
 	}
 
-	private Regex idRegex = new Regex(@"^[a-zA-Z0-9_.\-]+$", RegexOptions.Compiled);
-	private Regex semVerRegex = new Regex(@"^[0-9]+\.[0-9]+(\.[0-9]+)?(-[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
+	private readonly Regex idRegex = new Regex(@"^[a-zA-Z0-9_.\-]+$", RegexOptions.Compiled);
+	private readonly Regex semVerRegex = new Regex(@"^[0-9]+\.[0-9]+(\.[0-9]+)?(-[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
 	private List<string> DoValidation()
 	{
 		GD.Print("Validating...");
@@ -679,15 +681,22 @@ public class UI : MarginContainer
 
 	private void InitFileSystemWatcher()
 	{
-		projectDirWatcher = new FileSystemWatcher(ModProjectDir)
+		try
 		{
-			NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite,
-		};
-		projectDirWatcher.Created += WatchProjectDir_Create;
-		projectDirWatcher.Renamed += WatchProjectDir_Rename;
-		projectDirWatcher.Deleted += WatchProjectDir_Delete;
-		projectDirWatcher.Changed += WatchProjectDir_Change;
-		projectDirWatcher.EnableRaisingEvents = true;
+			projectDirWatcher = new FileSystemWatcher(ModProjectDir)
+			{
+				NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite,
+			};
+			projectDirWatcher.Created += WatchProjectDir_Create;
+			projectDirWatcher.Renamed += WatchProjectDir_Rename;
+			projectDirWatcher.Deleted += WatchProjectDir_Delete;
+			projectDirWatcher.Changed += WatchProjectDir_Change;
+			projectDirWatcher.EnableRaisingEvents = true;
+		}
+		catch ( Exception e )
+		{
+			GD.PrintErr("Problem doing file system watcher: " + e);
+		}
 	}
 
 	string justRenamedInUi = null;

@@ -43,13 +43,35 @@ namespace StardewEditor3.JsonAssets
             // todo
         }
 
-        public override void OnLoad(UI ui, ModData data, TreeItem entry)
+        public override void OnLoad(UI ui, ModData data_, TreeItem entry)
         {
+            var data = data_ as JsonAssetsModData;
+
             AddSections(ui, entry);
+
+            var objRoot = roots["Objects"];
+            foreach ( var obj in data.Objects )
+            {
+                var item = ui.ProjectTree.CreateItem(objRoot);
+                item.SetText(0, obj.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this object");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                objects.Add(item, obj);
+            }
+
+            var bigRoot = roots["Big Craftables"];
+            foreach (var big in data.BigCraftables)
+            {
+                var item = ui.ProjectTree.CreateItem(bigRoot);
+                item.SetText(0, big.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this big craftable");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                bigs.Add(item, big);
+            }
         }
 
-        private Regex nameRegex = new Regex(@"^[a-zA-Z0-9_.,\- ]+$", RegexOptions.Compiled);
-        private Regex tagRegex = new Regex(@"^[a-zA-Z_]+$", RegexOptions.Compiled);
+        private readonly Regex nameRegex = new Regex(@"^[a-zA-Z0-9_.,\- ]+$", RegexOptions.Compiled);
+        private readonly Regex tagRegex = new Regex(@"^[a-zA-Z_]+$", RegexOptions.Compiled);
         public override void OnValidate(UI ui, ModData data_, List<string> errors)
         {
             var data = data_ as JsonAssetsModData;
@@ -59,7 +81,10 @@ namespace StardewEditor3.JsonAssets
                 if (!nameRegex.IsMatch(obj.Name))
                     errors.Add($"Object name \"{obj.Name}\" must only contain basic english characters.");
                 if (obj.Texture == null || string.IsNullOrEmpty(obj.Texture.Resource))
+                {
+                    GD.Print("debug:texture for " + obj.Name + " is " + obj.Texture + " " + obj.Texture?.Resource);
                     errors.Add($"Object \"{obj.Name}\" must have a texture.");
+                }
                 if (obj.Description != null && obj.Description.Contains('/'))
                     errors.Add($"Object description for \"{obj.Name}\" must not contain slashes.");
                 if (obj.CategoryTextOverride != null && obj.CategoryTextOverride.Contains('/'))
@@ -327,9 +352,11 @@ namespace StardewEditor3.JsonAssets
 
                         for (int i = 0; i < value.SubRect.Value.Size.x / 16; ++i)
                         {
-                            ImageResourceReference iref = new ImageResourceReference();
-                            iref.Resource = value.Resource;
-                            iref.SubRect = new Rect2(value.SubRect.Value.Position.x + i * 16, value.SubRect.Value.Position.y, 16, 32);
+                            ImageResourceReference iref = new ImageResourceReference()
+                            {
+                                Resource = value.Resource,
+                                SubRect = new Rect2(value.SubRect.Value.Position.x + i * 16, value.SubRect.Value.Position.y, 16, 32),
+                            };
                             refs.Add(iref);
                         }
                     });
