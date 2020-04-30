@@ -36,7 +36,7 @@ namespace StardewEditor3.JsonAssets.Data
 
         public bool CanTrash { get; set; } = true;
 
-        public Dictionary<string, string> NameLocalization = new Dictionary<string, string>();
-        public Dictionary<string, string> DescriptionLocalization = new Dictionary<string, string>();
+        public Dictionary<string, string> NameLocalization { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> DescriptionLocalization { get; set; } = new Dictionary<string, string>();
     }
 }

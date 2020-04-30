@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://Util/IntListEditor.cs" type="Script" id=1]
+[ext_resource path="res://Util/ColorListEditor.cs" type="Script" id=1]
 
-[node name="IntListEditor" type="VBoxContainer"]
+[node name="ColorListEditor" type="VBoxContainer"]
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 1 )
@@ -11,7 +11,7 @@ __meta__ = {
 }
 
 [node name="AddButton" type="Button" parent="."]
-margin_right = 150.0
+margin_right = 200.0
 margin_bottom = 20.0
-rect_min_size = Vector2( 150, 0 )
+rect_min_size = Vector2( 200, 0 )
 text = "Add new"

@@ -19,8 +19,8 @@ namespace StardewEditor3.JsonAssets.Data
         public string PurchaseFrom { get; set; } = "Marlon";
         public List<string> PurchaseRequirements { get; set; } = new List<string>();
 
-        public Dictionary<string, string> NameLocalization = new Dictionary<string, string>();
-        public Dictionary<string, string> DescriptionLocalization = new Dictionary<string, string>();
+        public Dictionary<string, string> NameLocalization { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> DescriptionLocalization { get; set; } = new Dictionary<string, string>();
         
         public int Defense { get; set; }
         public int Immunity { get; set; }

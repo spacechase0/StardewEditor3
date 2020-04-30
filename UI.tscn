@@ -129,8 +129,8 @@ resizable = true
 dialog_text = "Choose an empty directory for this file."
 mode = 2
 access = 2
-current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
-current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
+current_dir = "G:/StardewValley/StardewEditor3"
+current_path = "G:/StardewValley/StardewEditor3/"
 
 [node name="BadProjectDirectoryDialog" type="AcceptDialog" parent="."]
 margin_right = 1024.0
@@ -157,8 +157,8 @@ resizable = true
 mode = 0
 access = 2
 filters = PoolStringArray( "project.stardeweditor ; Stardew Editor Project" )
-current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
-current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
+current_dir = "G:/StardewValley/StardewEditor3"
+current_path = "G:/StardewValley/StardewEditor3/"
 
 [node name="ResourceImportDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
@@ -168,8 +168,8 @@ resizable = true
 mode = 1
 access = 2
 filters = PoolStringArray( "*.png ; PNG files", "*.tbin ; tIDE map files", "*.tmx ; Tiled map files", "*.json ; JSON file", "*.xnb ; XNB files" )
-current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
-current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
+current_dir = "G:/StardewValley/StardewEditor3"
+current_path = "G:/StardewValley/StardewEditor3/"
 
 [node name="ExportProjectDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
@@ -178,8 +178,8 @@ window_title = "Open a Directory"
 resizable = true
 mode = 2
 access = 2
-current_dir = "C:/Users/space/Programming/StardewValley/StardewEditor3"
-current_path = "C:/Users/space/Programming/StardewValley/StardewEditor3/"
+current_dir = "G:/StardewValley/StardewEditor3"
+current_path = "G:/StardewValley/StardewEditor3/"
 
 [node name="ProjectValidationErrorsDialog" type="AcceptDialog" parent="."]
 margin_right = 1024.0

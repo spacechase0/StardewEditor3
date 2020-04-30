@@ -20,12 +20,14 @@ namespace StardewEditor3.JsonAssets
         private readonly Dictionary<string, TreeItem> roots = new Dictionary<string, TreeItem>();
         private readonly Dictionary<TreeItem, ObjectData> objects = new Dictionary<TreeItem, ObjectData>();
         private readonly Dictionary<TreeItem, BigCraftableData> bigs = new Dictionary<TreeItem, BigCraftableData>();
+        private readonly Dictionary<TreeItem, CropData> crops = new Dictionary<TreeItem, CropData>();
 
         private TreeItem activeEntry;
         private Node activeEditor;
 
         private readonly PackedScene ObjectEditor = GD.Load<PackedScene>("res://JsonAssets/ObjectEditor.tscn");
         private readonly PackedScene BigCraftableEditor = GD.Load<PackedScene>("res://JsonAssets/BigCraftableEditor.tscn");
+        private readonly PackedScene CropEditor = GD.Load<PackedScene>("res://JsonAssets/CropEditor.tscn");
 
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
@@ -67,6 +69,17 @@ namespace StardewEditor3.JsonAssets
                 item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this big craftable");
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 bigs.Add(item, big);
+            }
+
+
+            var cropRoot = roots["Crops"];
+            foreach (var crop in data.Crops)
+            {
+                var item = ui.ProjectTree.CreateItem(cropRoot);
+                item.SetText(0, crop.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this crop");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                crops.Add(item, crop);
             }
         }
 
@@ -114,6 +127,24 @@ namespace StardewEditor3.JsonAssets
 
                 // todo - validate ingredient names?
                 // todo - validate purchase requirements
+            }
+
+            foreach (var crop in data.Crops)
+            {
+                if (!nameRegex.IsMatch(crop.Name))
+                    errors.Add($"Crop name \"{crop.Name}\" must only contain basic english characters.");
+                if (crop.Texture == null || string.IsNullOrEmpty(crop.Texture.Resource))
+                    errors.Add($"Crop \"{crop.Name}\" must have a texture.");
+                if (crop.SeedTexture == null || string.IsNullOrEmpty(crop.SeedTexture.Resource))
+                    errors.Add($"Crop \"{crop.Name}\" must have a seed texture.");
+                if (!nameRegex.IsMatch(crop.SeedName))
+                    errors.Add($"Crop seed name \"{crop.Name}\" must only contain basic english characters.");
+                if (crop.SeedDescription != null && crop.SeedDescription.Contains('/'))
+                    errors.Add($"Crop seed description for \"{crop.SeedDescription}\" must not contain slashes.");
+
+                // todo - validate seasons
+                // todo - validate phases
+                // todo - validate seed purchase requirements
             }
         }
 
@@ -194,25 +225,52 @@ namespace StardewEditor3.JsonAssets
                 if (big.Recipe.ResultCount == 0)
                     big.Recipe = null;
 
-                string objDir = System.IO.Path.Combine(bigPath, big.Name);
-                System.IO.Directory.CreateDirectory(bigPath);
-                System.IO.File.WriteAllText(System.IO.Path.Combine(bigPath, "big-craftable.json"), JsonConvert.SerializeObject(big, settings));
+                string bigDir = System.IO.Path.Combine(bigPath, big.Name);
+                System.IO.Directory.CreateDirectory(bigDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(bigDir, "big-craftable.json"), JsonConvert.SerializeObject(big, settings));
 
                 var image = big.Texture.MakeImage(ui.ModProjectDir);
-                image.SavePng(System.IO.Path.Combine(bigPath, "big-craftable.png"));
+                image.SavePng(System.IO.Path.Combine(bigDir, "big-craftable.png"));
                 image.Dispose();
 
                 int e = 2;
                 foreach ( var imageRef in big.ReserveExtraIndices )
                 {
                     var extraImage = imageRef.MakeImage(ui.ModProjectDir);
-                    extraImage.SavePng(System.IO.Path.Combine(bigPath, $"big-craftable-{e}.png"));
+                    extraImage.SavePng(System.IO.Path.Combine(bigDir, $"big-craftable-{e}.png"));
                     extraImage.Dispose();
                     ++e;
                 }
 
                 if (big.Recipe == null)
                     big.Recipe = new RecipeData();
+            }
+            
+            string cropPath = System.IO.Path.Combine(path, "Crops");
+            System.IO.Directory.CreateDirectory(cropPath);
+            foreach (var crop in data.Crops)
+            {
+                if (crop.Bonus.MinimumPerHarvest == 0)
+                    crop.Bonus = null;
+
+                string cropDir = System.IO.Path.Combine(cropPath, crop.Name);
+                System.IO.Directory.CreateDirectory(cropDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(cropDir, "crop.json"), JsonConvert.SerializeObject(crop, settings));
+
+                var image = crop.Texture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(cropDir, "crop.png"));
+                image.Dispose();
+                
+                var seedsImage = crop.SeedTexture.MakeImage(ui.ModProjectDir);
+                seedsImage.SavePng(System.IO.Path.Combine(cropDir, "seeds.png"));
+                seedsImage.Dispose();
+
+                var giantImage = crop.GiantTexture?.MakeImage(ui.ModProjectDir);
+                giantImage?.SavePng(System.IO.Path.Combine(cropDir, "giant.png"));
+                giantImage?.Dispose();
+
+                if (crop.Bonus == null)
+                    crop.Bonus = new CropData.Bonus_();
             }
         }
 
@@ -248,6 +306,20 @@ namespace StardewEditor3.JsonAssets
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 bigs.Add(item, bigData);
             }
+            else if (root == roots["Crops"])
+            {
+                var cropData = new CropData()
+                {
+                    Name = "Crop",
+                };
+                data.Crops.Add(cropData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Crop");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this crop");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                crops.Add(item, cropData);
+            }
         }
 
         public override void OnRemoved(UI ui, ModData data_, TreeItem entry)
@@ -263,6 +335,11 @@ namespace StardewEditor3.JsonAssets
                 data.BigCraftables.Remove(bigs[entry]);
                 bigs.Remove(entry);
             }
+            else if ( crops.ContainsKey(entry) )
+            {
+                data.Crops.Remove(crops[entry]);
+                crops.Remove(entry);
+            }
         }
         public override Node CreateMainEditingArea(UI ui, ModData data, TreeItem entry)
         {
@@ -276,6 +353,11 @@ namespace StardewEditor3.JsonAssets
             {
                 activeEditor = BigCraftableEditor.Instance();
                 DoBigCraftableEditorConnections(activeEditor, entry);
+            }
+            else if (crops.ContainsKey(entry))
+            {
+                activeEditor = CropEditor.Instance();
+                DoCropsEditorConnections(activeEditor, entry);
             }
 
             return activeEditor;
@@ -361,7 +443,45 @@ namespace StardewEditor3.JsonAssets
                         }
                     });
                     lambda.SelfConnect(imageEditor, nameof(SubImageEditor.image_changed));
-                }   
+                }
+                else if ( obj is CropData && prop.Name == "Product" )
+                {
+                    var cropData = obj as CropData;
+
+                    var lineEdit = editor.GetNode<LineEdit>(prop.Name + "/LineEdit");
+                    lineEdit.Text = cropData.Product?.ToString() ?? "";
+
+                    var lambda = new LambdaWrapper<string>((str) =>
+                    {
+                        if (int.TryParse(str, out int i))
+                            cropData.Product = i;
+                        else
+                            cropData.Product = str;
+                    });
+                    lambda.SelfConnect(lineEdit, "text_changed");
+                }
+                else if ( obj is CropData && prop.Name == "Seasons" )
+                {
+                    var cropData = obj as CropData;
+
+                    string[] seasons = new string[] { "Spring", "Summer", "Fall", "Winter" };
+                    foreach ( var season in seasons )
+                    {
+                        var checkbox = editor.GetNode<CheckBox>(prop.Name + "/" + season);
+                        if (cropData.Seasons.Contains(season.ToLower()))
+                            checkbox.Pressed = true;
+
+                        var lambda = new LambdaWrapper<bool>((state) =>
+                        {
+                            if (state)
+                                cropData.Seasons.Add(season.ToLower());
+                            else
+                                cropData.Seasons.Remove(season.ToLower());
+                        });
+                        lambda.SelfConnect(checkbox, "toggled");
+                    }
+                }
+
 
                 // Everything else
                 else if (prop.Name == "SkillUnlockName")
@@ -396,7 +516,6 @@ namespace StardewEditor3.JsonAssets
                     {
                         lambda = new LambdaWrapper<string>((str) =>
                         {
-                            GD.Print("edited name");
                             activeEntry.SetText(0, str);
                             prop.SetValue(obj, str);
                         });
@@ -434,6 +553,19 @@ namespace StardewEditor3.JsonAssets
                             prop.SetValue(obj, (int)value);
                         });
                     }
+                    lambda.SelfConnect(intEdit, nameof(IntegerEdit.int_edited));
+                }
+                else if (prop.PropertyType == typeof(double))
+                {
+                    if ( !editor.HasNode(prop.Name + "/PercentLabel") )
+                    {
+                        GD.PrintErr("Doubles not supported except in percents with IntegerEdit");
+                        continue;
+                    }
+                    string path = prop.Name + "/IntegerEdit";
+                    var intEdit = editor.GetNode<IntegerEdit>(path);
+                    intEdit.Value = (long?)(int)((double)prop.GetValue(obj) * 100);
+                    var lambda = new LambdaWrapper<bool, long>((has, value) => prop.SetValue(obj, ((int)value) / 100.0));
                     lambda.SelfConnect(intEdit, nameof(IntegerEdit.int_edited));
                 }
                 else if (prop.PropertyType == typeof(bool))
@@ -489,6 +621,20 @@ namespace StardewEditor3.JsonAssets
                     lambdaDelete.SelfConnect(stringsEditor, nameof(StringListEditor.entry_deleted));
                     lambdaEdit.SelfConnect(stringsEditor, nameof(StringListEditor.entry_changed));
                 }
+                else if (prop.PropertyType == typeof(List<Color>))
+                {
+                    string path = prop.Name + "/ColorListEditor";
+                    var colorsEditor = editor.GetNode<ColorListEditor>(path);
+                    var colors = (List<Color>)prop.GetValue(obj);
+                    foreach (var entry in colors)
+                        colorsEditor.AddColor(entry);
+                    var lambdaAdd = new LambdaWrapper(() => colors.Add(Colors.Black));
+                    var lambdaDelete = new LambdaWrapper<int>((ind) => colors.RemoveAt(ind));
+                    var lambdaEdit = new LambdaWrapper<int, Color>((ind, col) => colors[ind] = col);
+                    lambdaAdd.SelfConnect(colorsEditor, nameof(StringListEditor.entry_added));
+                    lambdaDelete.SelfConnect(colorsEditor, nameof(StringListEditor.entry_deleted));
+                    lambdaEdit.SelfConnect(colorsEditor, nameof(StringListEditor.entry_changed));
+                }
                 else if (prop.PropertyType == typeof(ImageResourceReference))
                 {
                     string path = prop.Name + "/SubImageEditor";
@@ -510,7 +656,7 @@ namespace StardewEditor3.JsonAssets
                 {
                     string path = prop.Name + "/RecipeEditor";
                     var recipeEditor = editor.GetNode(path);
-                    DoObjectConnections(recipeEditor, (RecipeData)prop.GetValue(obj));
+                    DoEditorConnections(recipeEditor, (RecipeData)prop.GetValue(obj));
                 }
                 else if (prop.PropertyType == typeof(List<RecipeData.Ingredient>))
                 {
@@ -537,7 +683,7 @@ namespace StardewEditor3.JsonAssets
                 {
                     string path = prop.Name + "/Buffs";
                     var buffsContainer = editor.GetNode(path);
-                    DoObjectConnections(buffsContainer, prop.GetValue(obj));
+                    DoEditorConnections(buffsContainer, prop.GetValue(obj));
                 }
                 else if (prop.PropertyType == typeof(ObjectData.GiftTastes_))
                 {
@@ -575,6 +721,12 @@ namespace StardewEditor3.JsonAssets
                     lambdaAdd.SelfConnect(giftsEditor, nameof(GiftTasteEditor.entry_added));
                     lambdaDelete.SelfConnect(giftsEditor, nameof(GiftTasteEditor.entry_deleted));
                     lambdaEdit.SelfConnect(giftsEditor, nameof(GiftTasteEditor.entry_changed));
+                }
+                else if (prop.PropertyType == typeof(CropData.Bonus_))
+                {
+                    string path = prop.Name + "/BonusEditor";
+                    var bonusContainer = editor.GetNode(path);
+                    DoEditorConnections(bonusContainer, prop.GetValue(obj));
                 }
                 else if (prop.PropertyType == typeof(Dictionary<string, string>))
                 {

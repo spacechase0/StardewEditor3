@@ -15,7 +15,7 @@ namespace StardewEditor3.JsonAssets.Data
         public int SaplingPurchasePrice { get; set; }
         public string SaplingPurchaseFrom { get; set; } = "Pierre";
 
-        public Dictionary<string, string> SaplingNameLocalization = new Dictionary<string, string>();
-        public Dictionary<string, string> SaplingDescriptionLocalization = new Dictionary<string, string>();
+        public Dictionary<string, string> SaplingNameLocalization { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> SaplingDescriptionLocalization { get; set; } = new Dictionary<string, string>();
     }
 }

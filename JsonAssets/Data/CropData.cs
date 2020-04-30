@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using StardewEditor3;
 using StardewEditor3.Util;
 using System.Collections.Generic;
@@ -8,12 +9,14 @@ namespace StardewEditor3.JsonAssets.Data
 {
     public class CropData : BaseDataWithTexture
     {
+        public ImageResourceReference SeedTexture { get; set; }
         public ImageResourceReference GiantTexture { get; set; }
 
         public object Product { get; set; }
         public string SeedName { get; set; }
         public string SeedDescription { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum CropType_
         {
             Normal,
@@ -42,7 +45,7 @@ namespace StardewEditor3.JsonAssets.Data
         public int SeedSellPrice { get; set; } = -1;
         public string SeedPurchaseFrom { get; set; } = "Pierre";
         
-        public Dictionary<string, string> SeedNameLocalization = new Dictionary<string, string>();
-        public Dictionary<string, string> SeedDescriptionLocalization = new Dictionary<string, string>();
+        public Dictionary<string, string> SeedNameLocalization { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> SeedDescriptionLocalization { get; set; } = new Dictionary<string, string>();
     }
 }
