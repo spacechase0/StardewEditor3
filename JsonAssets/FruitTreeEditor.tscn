@@ -1,0 +1,191 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://JsonAssets/BaseWithTextureEditor.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Util/StringListEditor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=3]
+[ext_resource path="res://JsonAssets/LocalizationEditor.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Util/SubImageEditor.tscn" type="PackedScene" id=5]
+
+[node name="FruitTreeEditor" instance=ExtResource( 1 )]
+
+[node name="SaplingTexture" type="HBoxContainer" parent="." index="4"]
+margin_top = 244.0
+margin_right = 1024.0
+margin_bottom = 400.0
+
+[node name="Label" type="Label" parent="SaplingTexture" index="0"]
+margin_top = 71.0
+margin_right = 150.0
+margin_bottom = 85.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sapling Texture:"
+
+[node name="SubImageEditor" parent="SaplingTexture" index="1" instance=ExtResource( 5 )]
+margin_left = 154.0
+margin_right = 512.0
+margin_bottom = 156.0
+
+[node name="Product" type="HBoxContainer" parent="." index="5"]
+margin_top = 404.0
+margin_right = 1024.0
+margin_bottom = 428.0
+
+[node name="Label" type="Label" parent="Product" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Product:"
+
+[node name="LineEdit" type="LineEdit" parent="Product" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "What this fruit tree produces."
+
+[node name="SaplingName" type="HBoxContainer" parent="." index="6"]
+margin_top = 432.0
+margin_right = 1024.0
+margin_bottom = 456.0
+
+[node name="Label" type="Label" parent="SaplingName" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sapling Name:"
+
+[node name="LineEdit" type="LineEdit" parent="SaplingName" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The name of this fruit tree's sapling."
+
+[node name="SaplingDescription" type="HBoxContainer" parent="." index="7"]
+margin_top = 460.0
+margin_right = 1024.0
+margin_bottom = 484.0
+
+[node name="Label" type="Label" parent="SaplingDescription" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sapling Description:"
+
+[node name="LineEdit" type="LineEdit" parent="SaplingDescription" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The description of this fruit tree's sapling."
+
+[node name="Season" type="HBoxContainer" parent="." index="8"]
+margin_top = 488.0
+margin_right = 1024.0
+margin_bottom = 508.0
+
+[node name="Label" type="Label" parent="Season" index="0"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Season:"
+
+[node name="OptionButton" type="OptionButton" parent="Season" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The season this fruit tree produces."
+text = "spring"
+items = [ "spring", null, false, 0, null, "summer", null, false, 1, null, "fall", null, false, 2, null, "winter", null, false, 3, null ]
+selected = 0
+
+[node name="SaplingPurchaseRequirements" type="HBoxContainer" parent="." index="9"]
+margin_top = 512.0
+margin_right = 1024.0
+margin_bottom = 532.0
+
+[node name="Label" type="Label" parent="SaplingPurchaseRequirements" index="0"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sapling Purchase Reqs:"
+
+[node name="StringListEditor" parent="SaplingPurchaseRequirements" index="1" instance=ExtResource( 2 )]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 20.0
+
+[node name="SaplingPurchasePrice" type="HBoxContainer" parent="." index="10"]
+margin_top = 536.0
+margin_right = 1024.0
+margin_bottom = 560.0
+
+[node name="Label" type="Label" parent="SaplingPurchasePrice" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sapling Purchase Price:"
+
+[node name="IntegerEdit" parent="SaplingPurchasePrice" index="1" instance=ExtResource( 3 )]
+margin_left = 154.0
+margin_right = 354.0
+rect_min_size = Vector2( 200, 0 )
+
+[node name="SaplingPurchaseFrom" type="HBoxContainer" parent="." index="11"]
+margin_top = 564.0
+margin_right = 1024.0
+margin_bottom = 588.0
+
+[node name="Label" type="Label" parent="SaplingPurchaseFrom" index="0"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sapling Purchase From:"
+
+[node name="LineEdit" type="LineEdit" parent="SaplingPurchaseFrom" index="1"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+
+[node name="SaplingNameLocalization" type="HBoxContainer" parent="." index="12"]
+margin_top = 592.0
+margin_right = 1024.0
+margin_bottom = 612.0
+
+[node name="Label" type="Label" parent="SaplingNameLocalization" index="0"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sapling Name Loc.:"
+
+[node name="LocalizationEditor" parent="SaplingNameLocalization" index="1" instance=ExtResource( 4 )]
+margin_left = 154.0
+margin_right = 304.0
+margin_bottom = 20.0
+
+[node name="SaplingDescriptionLocalization" type="HBoxContainer" parent="." index="13"]
+margin_top = 616.0
+margin_right = 1024.0
+margin_bottom = 636.0
+
+[node name="Label" type="Label" parent="SaplingDescriptionLocalization" index="0"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Sapling Desc. Loc.:"
+
+[node name="LocalizationEditor" parent="SaplingDescriptionLocalization" index="1" instance=ExtResource( 4 )]
+margin_left = 154.0
+margin_right = 304.0
+margin_bottom = 20.0

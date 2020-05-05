@@ -162,7 +162,7 @@ margin_top = 3.0
 margin_right = 150.0
 margin_bottom = 17.0
 rect_min_size = Vector2( 150, 0 )
-text = "Name Localization:"
+text = "Desc. Localization:"
 
 [node name="LocalizationEditor" parent="DescriptionLocalization" index="1" instance=ExtResource( 3 )]
 margin_left = 154.0

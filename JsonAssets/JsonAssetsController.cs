@@ -21,6 +21,7 @@ namespace StardewEditor3.JsonAssets
         private readonly Dictionary<TreeItem, ObjectData> objects = new Dictionary<TreeItem, ObjectData>();
         private readonly Dictionary<TreeItem, BigCraftableData> bigs = new Dictionary<TreeItem, BigCraftableData>();
         private readonly Dictionary<TreeItem, CropData> crops = new Dictionary<TreeItem, CropData>();
+        private readonly Dictionary<TreeItem, FruitTreeData> trees = new Dictionary<TreeItem, FruitTreeData>();
 
         private TreeItem activeEntry;
         private Node activeEditor;
@@ -28,6 +29,7 @@ namespace StardewEditor3.JsonAssets
         private readonly PackedScene ObjectEditor = GD.Load<PackedScene>("res://JsonAssets/ObjectEditor.tscn");
         private readonly PackedScene BigCraftableEditor = GD.Load<PackedScene>("res://JsonAssets/BigCraftableEditor.tscn");
         private readonly PackedScene CropEditor = GD.Load<PackedScene>("res://JsonAssets/CropEditor.tscn");
+        private readonly PackedScene FruitTreeEditor = GD.Load<PackedScene>("res://JsonAssets/FruitTreeEditor.tscn");
 
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
@@ -60,6 +62,26 @@ namespace StardewEditor3.JsonAssets
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 objects.Add(item, obj);
             }
+            
+            var cropRoot = roots["Crops"];
+            foreach (var crop in data.Crops)
+            {
+                var item = ui.ProjectTree.CreateItem(cropRoot);
+                item.SetText(0, crop.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this crop");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                crops.Add(item, crop);
+            }
+
+            var treeRoot = roots["Fruit Trees"];
+            foreach (var tree in data.FruitTrees)
+            {
+                var item = ui.ProjectTree.CreateItem(treeRoot);
+                item.SetText(0, tree.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this fruit tree");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                trees.Add(item, tree);
+            }
 
             var bigRoot = roots["Big Craftables"];
             foreach (var big in data.BigCraftables)
@@ -69,17 +91,6 @@ namespace StardewEditor3.JsonAssets
                 item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this big craftable");
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 bigs.Add(item, big);
-            }
-
-
-            var cropRoot = roots["Crops"];
-            foreach (var crop in data.Crops)
-            {
-                var item = ui.ProjectTree.CreateItem(cropRoot);
-                item.SetText(0, crop.Name);
-                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this crop");
-                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
-                crops.Add(item, crop);
             }
         }
 
@@ -145,6 +156,22 @@ namespace StardewEditor3.JsonAssets
                 // todo - validate seasons
                 // todo - validate phases
                 // todo - validate seed purchase requirements
+            }
+            
+            foreach (var tree in data.FruitTrees)
+            {
+                if (!nameRegex.IsMatch(tree.Name))
+                    errors.Add($"Fruit tree name \"{tree.Name}\" must only contain basic english characters.");
+                if (tree.Texture == null || string.IsNullOrEmpty(tree.Texture.Resource))
+                    errors.Add($"Fruit tree \"{tree.Name}\" must have a texture.");
+                if (tree.SaplingTexture == null || string.IsNullOrEmpty(tree.SaplingTexture.Resource))
+                    errors.Add($"Fruit tree \"{tree.Name}\" must have a seed texture.");
+                if (!nameRegex.IsMatch(tree.SaplingName))
+                    errors.Add($"Fruit tree sapling name \"{tree.Name}\" must only contain basic english characters.");
+                if (tree.SaplingDescription != null && tree.SaplingDescription.Contains('/'))
+                    errors.Add($"Fruit tree sapling description for \"{tree.SaplingDescription}\" must not contain slashes.");
+                
+                // todo - validate sapling purchase requirements
             }
         }
 
@@ -272,6 +299,24 @@ namespace StardewEditor3.JsonAssets
                 if (crop.Bonus == null)
                     crop.Bonus = new CropData.Bonus_();
             }
+
+
+            string treePath = System.IO.Path.Combine(path, "FruitTrees");
+            System.IO.Directory.CreateDirectory(treePath);
+            foreach (var tree in data.FruitTrees)
+            {
+                string treeDir = System.IO.Path.Combine(treePath, tree.Name);
+                System.IO.Directory.CreateDirectory(treeDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(treeDir, "tree.json"), JsonConvert.SerializeObject(tree, settings));
+
+                var image = tree.Texture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(treeDir, "tree.png"));
+                image.Dispose();
+
+                var seedsImage = tree.SaplingTexture.MakeImage(ui.ModProjectDir);
+                seedsImage.SavePng(System.IO.Path.Combine(treeDir, "sapling.png"));
+                seedsImage.Dispose();
+            }
         }
 
         public override void OnAdded(UI ui, ModData data_, TreeItem root)
@@ -320,6 +365,20 @@ namespace StardewEditor3.JsonAssets
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 crops.Add(item, cropData);
             }
+            else if (root == roots["Fruit Trees"])
+            {
+                var treeData = new FruitTreeData()
+                {
+                    Name = "Fruit Tree",
+                };
+                data.FruitTrees.Add(treeData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Fruit Tree");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this fruit tree");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                trees.Add(item, treeData);
+            }
         }
 
         public override void OnRemoved(UI ui, ModData data_, TreeItem entry)
@@ -340,6 +399,11 @@ namespace StardewEditor3.JsonAssets
                 data.Crops.Remove(crops[entry]);
                 crops.Remove(entry);
             }
+            else if ( trees.ContainsKey(entry) )
+            {
+                data.FruitTrees.Remove(trees[entry]);
+                trees.Remove(entry);
+            }
         }
         public override Node CreateMainEditingArea(UI ui, ModData data, TreeItem entry)
         {
@@ -358,6 +422,11 @@ namespace StardewEditor3.JsonAssets
             {
                 activeEditor = CropEditor.Instance();
                 DoCropsEditorConnections(activeEditor, entry);
+            }
+            else if (trees.ContainsKey(entry))
+            {
+                activeEditor = FruitTreeEditor.Instance();
+                DoFruitTreesEditorConnections(activeEditor, entry);
             }
 
             return activeEditor;
@@ -480,6 +549,43 @@ namespace StardewEditor3.JsonAssets
                         });
                         lambda.SelfConnect(checkbox, "toggled");
                     }
+                }
+                else if (obj is FruitTreeData && prop.Name == "Product")
+                {
+                    var treeData = obj as FruitTreeData;
+
+                    var lineEdit = editor.GetNode<LineEdit>(prop.Name + "/LineEdit");
+                    lineEdit.Text = treeData.Product?.ToString() ?? "";
+
+                    var lambda = new LambdaWrapper<string>((str) =>
+                    {
+                        if (int.TryParse(str, out int i))
+                            treeData.Product = i;
+                        else
+                            treeData.Product = str;
+                    });
+                    lambda.SelfConnect(lineEdit, "text_changed");
+                }
+                else if ( obj is FruitTreeData && prop.Name == "Season" )
+                {
+                    string path = prop.Name + "/OptionButton";
+                    var optionButton = editor.GetNode<OptionButton>(path);
+                    int selInd = 0;
+                    for (int i = 0; i < optionButton.GetItemCount(); ++i)
+                    {
+                        if (optionButton.GetItemText(i) == (string)prop.GetValue(obj))
+                        {
+                            selInd = i;
+                            break;
+                        }
+                    }
+                    optionButton.Selected = selInd;
+                    var lambda = new LambdaWrapper<int>((idx) =>
+                    {
+                        var str = optionButton.GetItemText(idx);
+                        prop.SetValue(obj, str);
+                    });
+                    lambda.SelfConnect(optionButton, "item_selected");
                 }
 
 
