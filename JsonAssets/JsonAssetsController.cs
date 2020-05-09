@@ -23,6 +23,7 @@ namespace StardewEditor3.JsonAssets
         private readonly Dictionary<TreeItem, CropData> crops = new Dictionary<TreeItem, CropData>();
         private readonly Dictionary<TreeItem, FruitTreeData> trees = new Dictionary<TreeItem, FruitTreeData>();
         private readonly Dictionary<TreeItem, HatData> hats = new Dictionary<TreeItem, HatData>();
+        private readonly Dictionary<TreeItem, WeaponData> weapons = new Dictionary<TreeItem, WeaponData>();
 
         private TreeItem activeEntry;
         private Node activeEditor;
@@ -32,6 +33,7 @@ namespace StardewEditor3.JsonAssets
         private readonly PackedScene CropEditor = GD.Load<PackedScene>("res://JsonAssets/CropEditor.tscn");
         private readonly PackedScene FruitTreeEditor = GD.Load<PackedScene>("res://JsonAssets/FruitTreeEditor.tscn");
         private readonly PackedScene HatEditor = GD.Load<PackedScene>("res://JsonAssets/HatEditor.tscn");
+        private readonly PackedScene WeaponEditor = GD.Load<PackedScene>("res://JsonAssets/WeaponEditor.tscn");
 
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
@@ -104,6 +106,16 @@ namespace StardewEditor3.JsonAssets
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 hats.Add(item, hat);
             }
+
+            var weaponRoot = roots["Weapons"];
+            foreach (var weapon in data.Weapons)
+            {
+                var item = ui.ProjectTree.CreateItem(weaponRoot);
+                item.SetText(0, weapon.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this weapon");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                weapons.Add(item, weapon);
+            }
         }
 
         private readonly Regex nameRegex = new Regex(@"^[a-zA-Z0-9_.,\- ]+$", RegexOptions.Compiled);
@@ -117,10 +129,7 @@ namespace StardewEditor3.JsonAssets
                 if (!nameRegex.IsMatch(obj.Name))
                     errors.Add($"Object name \"{obj.Name}\" must only contain basic english characters.");
                 if (obj.Texture == null || string.IsNullOrEmpty(obj.Texture.Resource))
-                {
-                    GD.Print("debug:texture for " + obj.Name + " is " + obj.Texture + " " + obj.Texture?.Resource);
                     errors.Add($"Object \"{obj.Name}\" must have a texture.");
-                }
                 if (obj.Description != null && obj.Description.Contains('/'))
                     errors.Add($"Object description for \"{obj.Name}\" must not contain slashes.");
                 if (obj.CategoryTextOverride != null && obj.CategoryTextOverride.Contains('/'))
@@ -185,14 +194,27 @@ namespace StardewEditor3.JsonAssets
                 
                 // todo - validate sapling purchase requirements
             }
-
-
+            
             foreach (var hat in data.Hats)
             {
                 if (!nameRegex.IsMatch(hat.Name))
                     errors.Add($"Hat name \"{hat.Name}\" must only contain basic english characters.");
+                if (hat.Texture == null || string.IsNullOrEmpty(hat.Texture.Resource))
+                    errors.Add($"Hat \"{hat.Name}\" must have a texture.");
                 if (hat.Description != null && hat.Description.Contains('/'))
                     errors.Add($"Hat description for \"{hat.Name}\" must not contain slashes.");
+            }
+
+            foreach (var weapon in data.Weapons)
+            {
+                if (!nameRegex.IsMatch(weapon.Name))
+                    errors.Add($"Weapon name \"{weapon.Name}\" must only contain basic english characters.");
+                if (weapon.Texture == null || string.IsNullOrEmpty(weapon.Texture.Resource))
+                    errors.Add($"Weapon \"{weapon.Name}\" must have a texture.");
+                if (weapon.Description != null && weapon.Description.Contains('/'))
+                    errors.Add($"Weapon description for \"{weapon.Name}\" must not contain slashes.");
+
+                // todo - validate purchase requirements
             }
         }
 
@@ -350,6 +372,19 @@ namespace StardewEditor3.JsonAssets
                 image.SavePng(System.IO.Path.Combine(hatDir, "hat.png"));
                 image.Dispose();
             }
+
+            string weaponPath = System.IO.Path.Combine(path, "Hats");
+            System.IO.Directory.CreateDirectory(weaponPath);
+            foreach (var weapon in data.Weapons)
+            {
+                string weaponDir = System.IO.Path.Combine(weaponPath, weapon.Name);
+                System.IO.Directory.CreateDirectory(weaponDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(weaponDir, "weapon.json"), JsonConvert.SerializeObject(weapon, settings));
+
+                var image = weapon.Texture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(weaponDir, "weapon.png"));
+                image.Dispose();
+            }
         }
 
         public override void OnAdded(UI ui, ModData data_, TreeItem root)
@@ -426,6 +461,20 @@ namespace StardewEditor3.JsonAssets
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 hats.Add(item, hatData);
             }
+            else if (root == roots["Weapons"])
+            {
+                var weaponData = new WeaponData()
+                {
+                    Name = "Weapon",
+                };
+                data.Weapons.Add(weaponData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Weapon");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this weapon");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                weapons.Add(item, weaponData);
+            }
         }
 
         public override void OnRemoved(UI ui, ModData data_, TreeItem entry)
@@ -456,6 +505,11 @@ namespace StardewEditor3.JsonAssets
                 data.Hats.Remove(hats[entry]);
                 hats.Remove(entry);
             }
+            else if (weapons.ContainsKey(entry))
+            {
+                data.Weapons.Remove(weapons[entry]);
+                weapons.Remove(entry);
+            }
         }
         public override Node CreateMainEditingArea(UI ui, ModData data, TreeItem entry)
         {
@@ -484,6 +538,11 @@ namespace StardewEditor3.JsonAssets
             {
                 activeEditor = HatEditor.Instance();
                 DoHatEditorConnections(activeEditor, entry);
+            }
+            else if (weapons.ContainsKey(entry))
+            {
+                activeEditor = WeaponEditor.Instance();
+                DoWeaponEditorConnections(activeEditor, entry);
             }
 
             activeEditor.SetMeta(Meta.CorrespondingController, ModUniqueId);
@@ -723,16 +782,27 @@ namespace StardewEditor3.JsonAssets
                 }
                 else if (prop.PropertyType == typeof(double))
                 {
-                    if ( !editor.HasNode(prop.Name + "/PercentLabel") )
-                    {
-                        GD.PrintErr("Doubles not supported except in percents with IntegerEdit");
-                        continue;
-                    }
                     string path = prop.Name + "/IntegerEdit";
-                    var intEdit = editor.GetNode<IntegerEdit>(path);
-                    intEdit.Value = (long?)(int)((double)prop.GetValue(obj) * 100);
-                    var lambda = new LambdaWrapper<bool, long>((has, value) => prop.SetValue(obj, ((int)value) / 100.0));
-                    lambda.SelfConnect(intEdit, nameof(IntegerEdit.int_edited));
+                    if (editor.HasNode(path))
+                    {
+                        if (!editor.HasNode(prop.Name + "/PercentLabel"))
+                        {
+                            GD.PrintErr("Doubles not supported except in percents with IntegerEdit");
+                            continue;
+                        }
+                        var intEdit = editor.GetNode<IntegerEdit>(path);
+                        intEdit.Value = (long?)(int)((double)prop.GetValue(obj) * 100);
+                        var lambda = new LambdaWrapper<bool, long>((has, value) => prop.SetValue(obj, ((int)value) / 100.0));
+                        lambda.SelfConnect(intEdit, nameof(IntegerEdit.int_edited));
+                    }
+                    else
+                    {
+                        path = prop.Name + "/SpinBox";
+                        var doubleEdit = editor.GetNode<SpinBox>(path);
+                        doubleEdit.Value = (double)prop.GetValue(obj) * (editor.HasNode(prop.Name + "/PercentLabel") ? 100 : 1);
+                        var lambda = new LambdaWrapper<float>((value) => prop.SetValue(obj, ((double)value) / (editor.HasNode(prop.Name + "/PercentLabel") ? 100.0 : 1.0)));
+                        lambda.SelfConnect(doubleEdit, "value_changed");
+                    }
                 }
                 else if (prop.PropertyType == typeof(bool))
                 {

@@ -34,7 +34,7 @@ namespace StardewEditor3.JsonAssets.Data
         public bool CanPurchase { get; set; } = false;
         public int PurchasePrice { get; set; }
         public string PurchaseFrom { get; set; } = "Pierre";
-        public IList<string> PurchaseRequirements { get; set; } = new List<string>();
+        public List<string> PurchaseRequirements { get; set; } = new List<string>();
 
         public bool CanTrash { get; set; } = true;
 
