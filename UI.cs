@@ -672,7 +672,7 @@ public class UI : MarginContainer
 		var child = MainEditingArea.GetChild(0);
 		if (child.GetMeta(Meta.CorrespondingController) != null)
 		{
-			var controller = ContentPackController.GetControllerForMod((string)pendingRemoval.GetMeta(Meta.CorrespondingController));
+			var controller = ContentPackController.GetControllerForMod((string)child.GetMeta(Meta.CorrespondingController));
 			var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
 			controller.OnEditingAreaChanged(this, data, child);
 		}

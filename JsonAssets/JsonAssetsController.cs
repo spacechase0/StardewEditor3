@@ -429,6 +429,7 @@ namespace StardewEditor3.JsonAssets
                 DoFruitTreesEditorConnections(activeEditor, entry);
             }
 
+            activeEditor.SetMeta(Meta.CorrespondingController, ModUniqueId);
             return activeEditor;
         }
 

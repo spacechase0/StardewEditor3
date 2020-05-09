@@ -16,6 +16,7 @@ namespace StardewEditor3.JsonAssets.Data
         public ImageResourceReference FemaleTexture { get; set; }
 
         public string Description { get; set; }
+        [DoNotAutoConnect]
         public bool HasFemaleVariant { get; set; } = false;
 
         public int Price { get; set; }

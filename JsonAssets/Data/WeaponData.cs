@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using StardewEditor3.Util;
 using System.Collections.Generic;
 
 namespace StardewEditor3.JsonAssets.Data
@@ -29,6 +30,7 @@ namespace StardewEditor3.JsonAssets.Data
         public double CritChance { get; set; }
         public double CritMultiplier { get; set; }
 
+        [DoNotAutoConnect]
         public bool CanPurchase { get; set; } = false;
         public int PurchasePrice { get; set; }
         public string PurchaseFrom { get; set; } = "Pierre";
