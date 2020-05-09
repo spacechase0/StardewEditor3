@@ -22,6 +22,7 @@ namespace StardewEditor3.JsonAssets
         private readonly Dictionary<TreeItem, BigCraftableData> bigs = new Dictionary<TreeItem, BigCraftableData>();
         private readonly Dictionary<TreeItem, CropData> crops = new Dictionary<TreeItem, CropData>();
         private readonly Dictionary<TreeItem, FruitTreeData> trees = new Dictionary<TreeItem, FruitTreeData>();
+        private readonly Dictionary<TreeItem, HatData> hats = new Dictionary<TreeItem, HatData>();
 
         private TreeItem activeEntry;
         private Node activeEditor;
@@ -30,6 +31,7 @@ namespace StardewEditor3.JsonAssets
         private readonly PackedScene BigCraftableEditor = GD.Load<PackedScene>("res://JsonAssets/BigCraftableEditor.tscn");
         private readonly PackedScene CropEditor = GD.Load<PackedScene>("res://JsonAssets/CropEditor.tscn");
         private readonly PackedScene FruitTreeEditor = GD.Load<PackedScene>("res://JsonAssets/FruitTreeEditor.tscn");
+        private readonly PackedScene HatEditor = GD.Load<PackedScene>("res://JsonAssets/HatEditor.tscn");
 
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
@@ -91,6 +93,16 @@ namespace StardewEditor3.JsonAssets
                 item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this big craftable");
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 bigs.Add(item, big);
+            }
+
+            var hatRoot = roots["Hats"];
+            foreach (var hat in data.Hats)
+            {
+                var item = ui.ProjectTree.CreateItem(hatRoot);
+                item.SetText(0, hat.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this hat");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                hats.Add(item, hat);
             }
         }
 
@@ -167,11 +179,20 @@ namespace StardewEditor3.JsonAssets
                 if (tree.SaplingTexture == null || string.IsNullOrEmpty(tree.SaplingTexture.Resource))
                     errors.Add($"Fruit tree \"{tree.Name}\" must have a seed texture.");
                 if (!nameRegex.IsMatch(tree.SaplingName))
-                    errors.Add($"Fruit tree sapling name \"{tree.Name}\" must only contain basic english characters.");
+                    errors.Add($"Fruit tree sapling name for \"{tree.Name}\" must only contain basic english characters.");
                 if (tree.SaplingDescription != null && tree.SaplingDescription.Contains('/'))
-                    errors.Add($"Fruit tree sapling description for \"{tree.SaplingDescription}\" must not contain slashes.");
+                    errors.Add($"Fruit tree sapling description for \"{tree.Name}\" must not contain slashes.");
                 
                 // todo - validate sapling purchase requirements
+            }
+
+
+            foreach (var hat in data.Hats)
+            {
+                if (!nameRegex.IsMatch(hat.Name))
+                    errors.Add($"Hat name \"{hat.Name}\" must only contain basic english characters.");
+                if (hat.Description != null && hat.Description.Contains('/'))
+                    errors.Add($"Hat description for \"{hat.Name}\" must not contain slashes.");
             }
         }
 
@@ -244,34 +265,6 @@ namespace StardewEditor3.JsonAssets
                 if (obj.GiftTastes == null)
                     obj.GiftTastes = new ObjectData.GiftTastes_();
             }
-
-            string bigPath = System.IO.Path.Combine(path, "BigCraftables");
-            System.IO.Directory.CreateDirectory(bigPath);
-            foreach (var big in data.BigCraftables)
-            {
-                if (big.Recipe.ResultCount == 0)
-                    big.Recipe = null;
-
-                string bigDir = System.IO.Path.Combine(bigPath, big.Name);
-                System.IO.Directory.CreateDirectory(bigDir);
-                System.IO.File.WriteAllText(System.IO.Path.Combine(bigDir, "big-craftable.json"), JsonConvert.SerializeObject(big, settings));
-
-                var image = big.Texture.MakeImage(ui.ModProjectDir);
-                image.SavePng(System.IO.Path.Combine(bigDir, "big-craftable.png"));
-                image.Dispose();
-
-                int e = 2;
-                foreach ( var imageRef in big.ReserveExtraIndices )
-                {
-                    var extraImage = imageRef.MakeImage(ui.ModProjectDir);
-                    extraImage.SavePng(System.IO.Path.Combine(bigDir, $"big-craftable-{e}.png"));
-                    extraImage.Dispose();
-                    ++e;
-                }
-
-                if (big.Recipe == null)
-                    big.Recipe = new RecipeData();
-            }
             
             string cropPath = System.IO.Path.Combine(path, "Crops");
             System.IO.Directory.CreateDirectory(cropPath);
@@ -300,7 +293,6 @@ namespace StardewEditor3.JsonAssets
                     crop.Bonus = new CropData.Bonus_();
             }
 
-
             string treePath = System.IO.Path.Combine(path, "FruitTrees");
             System.IO.Directory.CreateDirectory(treePath);
             foreach (var tree in data.FruitTrees)
@@ -316,6 +308,47 @@ namespace StardewEditor3.JsonAssets
                 var seedsImage = tree.SaplingTexture.MakeImage(ui.ModProjectDir);
                 seedsImage.SavePng(System.IO.Path.Combine(treeDir, "sapling.png"));
                 seedsImage.Dispose();
+            }
+
+            string bigPath = System.IO.Path.Combine(path, "BigCraftables");
+            System.IO.Directory.CreateDirectory(bigPath);
+            foreach (var big in data.BigCraftables)
+            {
+                if (big.Recipe.ResultCount == 0)
+                    big.Recipe = null;
+
+                string bigDir = System.IO.Path.Combine(bigPath, big.Name);
+                System.IO.Directory.CreateDirectory(bigDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(bigDir, "big-craftable.json"), JsonConvert.SerializeObject(big, settings));
+
+                var image = big.Texture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(bigDir, "big-craftable.png"));
+                image.Dispose();
+
+                int e = 2;
+                foreach (var imageRef in big.ReserveExtraIndices)
+                {
+                    var extraImage = imageRef.MakeImage(ui.ModProjectDir);
+                    extraImage.SavePng(System.IO.Path.Combine(bigDir, $"big-craftable-{e}.png"));
+                    extraImage.Dispose();
+                    ++e;
+                }
+
+                if (big.Recipe == null)
+                    big.Recipe = new RecipeData();
+            }
+
+            string hatPath = System.IO.Path.Combine(path, "Hats");
+            System.IO.Directory.CreateDirectory(hatPath);
+            foreach (var hat in data.Hats)
+            {
+                string hatDir = System.IO.Path.Combine(hatPath, hat.Name);
+                System.IO.Directory.CreateDirectory(hatDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(hatDir, "hat.json"), JsonConvert.SerializeObject(hat, settings));
+
+                var image = hat.Texture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(hatDir, "hat.png"));
+                image.Dispose();
             }
         }
 
@@ -336,20 +369,6 @@ namespace StardewEditor3.JsonAssets
                 item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this object");
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 objects.Add(item, objData);
-            }
-            else if ( root == roots[ "Big Craftables" ] )
-            {
-                var bigData = new BigCraftableData()
-                {
-                    Name = "Big Craftable",
-                };
-                data.BigCraftables.Add(bigData);
-
-                var item = ui.ProjectTree.CreateItem(root);
-                item.SetText(0, "Big Craftable");
-                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this big craftable");
-                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
-                bigs.Add(item, bigData);
             }
             else if (root == roots["Crops"])
             {
@@ -379,6 +398,34 @@ namespace StardewEditor3.JsonAssets
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 trees.Add(item, treeData);
             }
+            else if (root == roots["Big Craftables"])
+            {
+                var bigData = new BigCraftableData()
+                {
+                    Name = "Big Craftable",
+                };
+                data.BigCraftables.Add(bigData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Big Craftable");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this big craftable");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                bigs.Add(item, bigData);
+            }
+            else if (root == roots["Hats"])
+            {
+                var hatData = new HatData()
+                {
+                    Name = "Hat",
+                };
+                data.Hats.Add(hatData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Hat");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this hat");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                hats.Add(item, hatData);
+            }
         }
 
         public override void OnRemoved(UI ui, ModData data_, TreeItem entry)
@@ -388,11 +435,6 @@ namespace StardewEditor3.JsonAssets
             {
                 data.Objects.Remove(objects[entry]);
                 objects.Remove(entry);
-            }
-            else if (bigs.ContainsKey(entry))
-            {
-                data.BigCraftables.Remove(bigs[entry]);
-                bigs.Remove(entry);
             }
             else if ( crops.ContainsKey(entry) )
             {
@@ -404,6 +446,16 @@ namespace StardewEditor3.JsonAssets
                 data.FruitTrees.Remove(trees[entry]);
                 trees.Remove(entry);
             }
+            else if (bigs.ContainsKey(entry))
+            {
+                data.BigCraftables.Remove(bigs[entry]);
+                bigs.Remove(entry);
+            }
+            else if (hats.ContainsKey(entry))
+            {
+                data.Hats.Remove(hats[entry]);
+                hats.Remove(entry);
+            }
         }
         public override Node CreateMainEditingArea(UI ui, ModData data, TreeItem entry)
         {
@@ -412,11 +464,6 @@ namespace StardewEditor3.JsonAssets
             {
                 activeEditor = ObjectEditor.Instance();
                 DoObjectEditorConnections(activeEditor, entry);
-            }
-            else if (bigs.ContainsKey(entry))
-            {
-                activeEditor = BigCraftableEditor.Instance();
-                DoBigCraftableEditorConnections(activeEditor, entry);
             }
             else if (crops.ContainsKey(entry))
             {
@@ -427,6 +474,16 @@ namespace StardewEditor3.JsonAssets
             {
                 activeEditor = FruitTreeEditor.Instance();
                 DoFruitTreesEditorConnections(activeEditor, entry);
+            }
+            else if (bigs.ContainsKey(entry))
+            {
+                activeEditor = BigCraftableEditor.Instance();
+                DoBigCraftableEditorConnections(activeEditor, entry);
+            }
+            else if (hats.ContainsKey(entry))
+            {
+                activeEditor = HatEditor.Instance();
+                DoHatEditorConnections(activeEditor, entry);
             }
 
             activeEditor.SetMeta(Meta.CorrespondingController, ModUniqueId);
@@ -656,7 +713,9 @@ namespace StardewEditor3.JsonAssets
                     {
                         lambda = new LambdaWrapper<bool, long>((has, value) =>
                         {
-                            obj.GetType().GetProperty("CanPurchase").SetValue(obj, has);
+                            var canProp = obj.GetType().GetProperty("CanPurchase");
+                            if (canProp != null)
+                                canProp.SetValue(obj, has);
                             prop.SetValue(obj, (int)value);
                         });
                     }
