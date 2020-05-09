@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://JsonAssets/BaseWithTextureEditor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Util/StringListEditor.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=3]
 [ext_resource path="res://JsonAssets/LocalizationEditor.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Util/SubImageEditor.tscn" type="PackedScene" id=5]
 
@@ -133,10 +132,15 @@ margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Sapling Purchase Price:"
 
-[node name="IntegerEdit" parent="SaplingPurchasePrice" index="1" instance=ExtResource( 3 )]
+[node name="SpinBox" type="SpinBox" parent="SaplingPurchasePrice" index="1"]
 margin_left = 154.0
 margin_right = 354.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The purchase price of the sapling."
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="SaplingPurchaseFrom" type="HBoxContainer" parent="." index="11"]
 margin_top = 564.0

@@ -1,6 +1,5 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Util/IntListEntryEditor.cs" type="Script" id=2]
 
 [node name="IntListEntryEditor" type="HBoxContainer"]
@@ -11,14 +10,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="IntegerEdit" parent="." instance=ExtResource( 1 )]
-margin_right = 200.0
+[node name="SpinBox" type="SpinBox" parent="."]
+margin_right = 74.0
 margin_bottom = 40.0
-rect_min_size = Vector2( 200, 0 )
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="DeleteButton" type="Button" parent="."]
-margin_left = 204.0
-margin_right = 354.0
+margin_left = 78.0
+margin_right = 228.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 150, 0 )
 hint_tooltip = "Delete this entry."

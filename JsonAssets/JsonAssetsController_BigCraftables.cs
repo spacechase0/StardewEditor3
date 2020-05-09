@@ -20,13 +20,13 @@ namespace StardewEditor3.JsonAssets
                 activeBig.Recipe = new RecipeData();
 
             DoEditorConnections(editor, activeBig);
-            var intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
+            var intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectWidth/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 32;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("ReserveExtraIndices/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("ReserveExtraIndices/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 32;
             intEdit.Editable = false;
         }

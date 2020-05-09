@@ -8,7 +8,7 @@ public class IntListEditor : VBoxContainer
 	[Signal]
 	public delegate void entry_deleted(int entry);
 	[Signal]
-	public delegate void entry_changed(int entry, bool newHas, int newValue);
+	public delegate void entry_changed(int entry, float newValue);
 
 	private readonly PackedScene IntListEntryEditorScene = GD.Load<PackedScene>("res://Util/IntListEntryEditor.tscn");
 
@@ -17,10 +17,10 @@ public class IntListEditor : VBoxContainer
 		GetNode<Button>("AddButton").Connect("pressed", this, nameof(Signal_AddValue));
 	}
 
-	public void AddInt(int? value)
+	public void AddInt(float value)
 	{
 		var strEditor = IntListEntryEditorScene.Instance();
-		strEditor.GetNode<IntegerEdit>("IntegerEdit").Value = value;
+		strEditor.GetNode<SpinBox>("SpinBox").Value = value;
 		strEditor.Connect(nameof(IntListEntryEditor.changed), this, nameof(Signal_ChangedValue));
 		strEditor.Connect(nameof(IntListEntryEditor.deleted), this, nameof(Signal_DeleteValue));
 		AddChild(strEditor);
@@ -38,9 +38,9 @@ public class IntListEditor : VBoxContainer
 		EmitSignal(nameof(entry_deleted), ind - 1);
 	}
 
-	private void Signal_ChangedValue(StringListEntryEditor node, bool newHas, bool newValue)
+	private void Signal_ChangedValue(StringListEntryEditor node, float newValue)
 	{
 		var ind = GetChildren().IndexOf(node);
-		EmitSignal(nameof(entry_changed), ind - 1, newHas, newValue);
+		EmitSignal(nameof(entry_changed), ind - 1, newValue);
 	}
 }

@@ -13,10 +13,10 @@ public class SubImageEditor : HBoxContainer
 	private ImageResourceReference pendingStartValue;
 
 	private OptionButton resourceSelect;
-	private IntegerEdit subrectX;
-	private IntegerEdit subrectY;
-	private IntegerEdit subrectW;
-	private IntegerEdit subrectH;
+	private SpinBox subrectX;
+	private SpinBox subrectY;
+	private SpinBox subrectW;
+	private SpinBox subrectH;
 	private TextureRect texturePreview;
 
 	public override void _Ready()
@@ -24,14 +24,14 @@ public class SubImageEditor : HBoxContainer
 		resourceSelect = GetNode<OptionButton>("Values/Resource/OptionButton");
 		resourceSelect.Connect("item_selected", this, nameof(Signal_ResourceSelected));
 
-		subrectX = GetNode<IntegerEdit>("Values/SubRectX/IntegerEdit");
-		subrectX.Connect("int_edited", this, nameof(Signal_SubRectUpdated));
-		subrectY = GetNode<IntegerEdit>("Values/SubRectY/IntegerEdit");
-		subrectY.Connect("int_edited", this, nameof(Signal_SubRectUpdated));
-		subrectW = GetNode<IntegerEdit>("Values/SubRectWidth/IntegerEdit");
-		subrectW.Connect("int_edited", this, nameof(Signal_SubRectUpdated));
-		subrectH = GetNode<IntegerEdit>("Values/SubRectHeight/IntegerEdit");
-		subrectH.Connect("int_edited", this, nameof(Signal_SubRectUpdated));
+		subrectX = GetNode<SpinBox>("Values/SubRectX/SpinBox");
+		subrectX.Connect("value_changed", this, nameof(Signal_SubRectUpdated));
+		subrectY = GetNode<SpinBox>("Values/SubRectY/SpinBox");
+		subrectY.Connect("value_changed", this, nameof(Signal_SubRectUpdated));
+		subrectW = GetNode<SpinBox>("Values/SubRectWidth/SpinBox");
+		subrectW.Connect("value_changed", this, nameof(Signal_SubRectUpdated));
+		subrectH = GetNode<SpinBox>("Values/SubRectHeight/SpinBox");
+		subrectH.Connect("value_changed", this, nameof(Signal_SubRectUpdated));
 
 		texturePreview = GetNode<TextureRect>("ImagePreview");
 
@@ -69,10 +69,10 @@ public class SubImageEditor : HBoxContainer
 			if (imageRef == null)
 			{
 				resourceSelect.Selected = -1;
-				subrectX.Value = null;
-				subrectY.Value = null;
-				subrectW.Value = null;
-				subrectH.Value = null;
+				subrectX.Value = 0;
+				subrectY.Value = 0;
+				subrectW.Value = 0;
+				subrectH.Value = 0;
 				return;
 			}
 
@@ -104,14 +104,14 @@ public class SubImageEditor : HBoxContainer
 		if (imageRef.Resource == "")
 			imageRef.Resource = null;
 
-		if (subrectX.Value.HasValue && subrectY.Value.HasValue && subrectW.Value.HasValue && subrectH.Value.HasValue)
+		if (subrectW.Value >= 1 && subrectH.Value >= 1)
 		{
-			imageRef.SubRect = new Rect2(subrectX.Value.Value, subrectY.Value.Value, subrectW.Value.Value, subrectH.Value.Value);
+			imageRef.SubRect = new Rect2((int)subrectX.Value, (int)subrectY.Value, (int)subrectW.Value, (int)subrectH.Value);
 		}
 		return imageRef;
 	}
 
-	private void Signal_SubRectUpdated(bool _has, long _value)
+	private void Signal_SubRectUpdated(float _value)
 	{
 		EmitSignal(nameof(image_changed), this);
 		ResetTexturePreview();
@@ -126,13 +126,13 @@ public class SubImageEditor : HBoxContainer
 	private void Signal_ResetSubRect()
 	{
         if (subrectX.Editable)
-    		subrectX.Value = null;
+    		subrectX.Value = 0;
         if (subrectY.Editable)
-            subrectY.Value = null;
+            subrectY.Value = 0;
         if (subrectW.Editable)
-            subrectW.Value = null;
+            subrectW.Value = 0;
         if (subrectH.Editable)
-            subrectH.Value = null;
+            subrectH.Value = 0;
 		EmitSignal(nameof(image_changed), this);
 		ResetTexturePreview();
 	}
@@ -152,7 +152,7 @@ public class SubImageEditor : HBoxContainer
 		}
 		var baseTex = getTexture(res);
 
-		if (!subrectX.Value.HasValue || !subrectY.Value.HasValue || !subrectW.Value.HasValue || !subrectH.Value.HasValue)
+		if (subrectW.Value < 1 || subrectH.Value < 1)
 		{
 			texturePreview.Texture = baseTex;
 		}
@@ -161,7 +161,7 @@ public class SubImageEditor : HBoxContainer
 			var tex = new AtlasTexture()
 			{
 				Atlas = baseTex,
-				Region = new Rect2(subrectX.Value.Value, subrectY.Value.Value, subrectW.Value.Value, subrectH.Value.Value),
+				Region = new Rect2((int)subrectX.Value, (int)subrectY.Value, (int)subrectW.Value, (int)subrectH.Value),
 			};
 			texturePreview.Texture = tex;
 		}

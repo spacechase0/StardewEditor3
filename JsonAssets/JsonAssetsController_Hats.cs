@@ -18,10 +18,10 @@ namespace StardewEditor3.JsonAssets
             activeHat = hats[entry];
 
             DoEditorConnections(editor, activeHat);
-            var intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
+            var intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectWidth/SpinBox");
             intEdit.Value = 20;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 80;
             intEdit.Editable = false;
         }

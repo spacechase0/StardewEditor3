@@ -11,7 +11,7 @@ public class IngredientEntryEditor : HBoxContainer
 	public override void _Ready()
 	{
 		GetNode<LineEdit>("LineEdit").Connect("text_changed", this, nameof(Signal_OnIngredientChanged));
-		GetNode<IntegerEdit>("IntegerEdit").Connect("int_edited", this, nameof(Signal_OnQuantityChanged));
+		GetNode<SpinBox>("SpinBox").Connect("value_changed", this, nameof(Signal_OnQuantityChanged));
 		GetNode<Button>("DeleteButton").Connect("pressed", this, nameof(Signal_OnDelete));
 	}
 
@@ -23,12 +23,12 @@ public class IngredientEntryEditor : HBoxContainer
 
 	private void Signal_OnIngredientChanged(string str)
 	{
-		var other = GetNode<IntegerEdit>("IntegerEdit");
-		EmitSignal(nameof(changed), this, str, other.Value.HasValue ? other.Value : 0 );
+		var other = GetNode<SpinBox>("SpinBox");
+		EmitSignal(nameof(changed), this, str, (int)other.Value );
 	}
-	private void Signal_OnQuantityChanged(bool has, long val)
+	private void Signal_OnQuantityChanged(float value)
 	{
 		var other = GetNode<LineEdit>("LineEdit");
-		EmitSignal(nameof(changed), this, other.Text, has ? val : 0);
+		EmitSignal(nameof(changed), this, other.Text, (int)value);
 	}
 }

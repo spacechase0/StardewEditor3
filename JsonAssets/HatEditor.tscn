@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://JsonAssets/BaseWithTextureEditor.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=2]
 [ext_resource path="res://JsonAssets/LocalizationEditor.tscn" type="PackedScene" id=3]
 
 [node name="HatEditor" instance=ExtResource( 1 )]
@@ -37,11 +36,15 @@ margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Purchase Price"
 
-[node name="IntegerEdit" parent="PurchasePrice" index="1" instance=ExtResource( 2 )]
+[node name="SpinBox" type="SpinBox" parent="PurchasePrice" index="1"]
 margin_left = 154.0
 margin_right = 354.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The purchase price of this hat."
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="ShowHair" type="HBoxContainer" parent="." index="6"]
 margin_top = 300.0

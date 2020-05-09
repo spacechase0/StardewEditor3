@@ -6,11 +6,11 @@ public class IntListEntryEditor : HBoxContainer
 	[Signal]
 	public delegate void deleted(IntListEntryEditor node);
 	[Signal]
-	public delegate void changed(IntListEntryEditor node, bool has, long value);
+	public delegate void changed(IntListEntryEditor node, float value);
 
 	public override void _Ready()
 	{
-		GetNode<IntegerEdit>("IntegerEdit").Connect("int_edited", this, nameof(Signal_OnChanged));
+		GetNode<SpinBox>("SpinBox").Connect("value_changed", this, nameof(Signal_OnChanged));
 		GetNode<Button>("DeleteButton").Connect("pressed", this, nameof(Signal_OnDelete));
 	}
 
@@ -20,8 +20,8 @@ public class IntListEntryEditor : HBoxContainer
 		QueueFree();
 	}
 
-	private void Signal_OnChanged(bool has, long value)
+	private void Signal_OnChanged(float value)
 	{
-		EmitSignal(nameof(changed), this, has, value);
+		EmitSignal(nameof(changed), this, value);
 	}
 }

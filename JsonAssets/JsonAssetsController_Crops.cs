@@ -21,24 +21,24 @@ namespace StardewEditor3.JsonAssets
 
             DoEditorConnections(editor, activeCrop);
 
-            var intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
+            var intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectWidth/SpinBox");
             intEdit.Value = 128;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 32;
             intEdit.Editable = false;
 
-            intEdit = editor.GetNode<IntegerEdit>("SeedTexture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("SeedTexture/SubImageEditor/Values/SubRectWidth/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("SeedTexture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("SeedTexture/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
 
-            intEdit = editor.GetNode<IntegerEdit>("GiantTexture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("GiantTexture/SubImageEditor/Values/SubRectWidth/SpinBox");
             intEdit.Value = 48;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("GiantTexture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("GiantTexture/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 63;
             intEdit.Editable = false;
         }

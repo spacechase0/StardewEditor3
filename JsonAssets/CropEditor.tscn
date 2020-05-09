@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://JsonAssets/BaseWithTextureEditor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Util/SubImageEditor.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Util/IntListEditor.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Util/ColorListEditor.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Util/StringListEditor.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Util/IntegerEdit.tscn" type="PackedScene" id=7]
 [ext_resource path="res://JsonAssets/LocalizationEditor.tscn" type="PackedScene" id=8]
 
 [node name="CropEditor" instance=ExtResource( 1 )]
@@ -187,11 +186,16 @@ margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Regrowth Phase:"
 
-[node name="IntegerEdit" parent="RegrowthPhase" index="1" instance=ExtResource( 7 )]
+[node name="SpinBox" type="SpinBox" parent="RegrowthPhase" index="1"]
 margin_left = 154.0
 margin_right = 354.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
-hint_tooltip = "The phase that this crop will regrow to."
+hint_tooltip = "The phase to regrow at, or -1 for a one-time harvest."
+value = -1.0
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="HarvestWithScythe" type="HBoxContainer" parent="." index="13"]
 margin_top = 752.0
@@ -277,11 +281,15 @@ margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Minimum per harvest:"
 
-[node name="IntegerEdit" parent="Bonus/BonusEditor/MinimumPerHarvest" index="1" instance=ExtResource( 7 )]
+[node name="SpinBox" type="SpinBox" parent="Bonus/BonusEditor/MinimumPerHarvest" index="1"]
 margin_left = 154.0
 margin_right = 354.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The minimum amount of the product harvested. Must be at least 1, or this section will be ignored."
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="MaximumPerHarvest" type="HBoxContainer" parent="Bonus/BonusEditor" index="1"]
 margin_top = 28.0
@@ -295,11 +303,15 @@ margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Maximum per harvest:"
 
-[node name="IntegerEdit" parent="Bonus/BonusEditor/MaximumPerHarvest" index="1" instance=ExtResource( 7 )]
+[node name="SpinBox" type="SpinBox" parent="Bonus/BonusEditor/MaximumPerHarvest" index="1"]
 margin_left = 154.0
 margin_right = 354.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The maximum amount of the product that will be harvested."
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="MaxIncreasePerFarmLevel" type="HBoxContainer" parent="Bonus/BonusEditor" index="2"]
 margin_top = 56.0
@@ -313,12 +325,15 @@ rect_min_size = Vector2( 150, 0 )
 text = "Max increase
 per farm level:"
 
-[node name="IntegerEdit" parent="Bonus/BonusEditor/MaxIncreasePerFarmLevel" index="1" instance=ExtResource( 7 )]
+[node name="SpinBox" type="SpinBox" parent="Bonus/BonusEditor/MaxIncreasePerFarmLevel" index="1"]
 margin_left = 154.0
 margin_right = 354.0
 margin_bottom = 31.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The maximum harvest amount increase per farmer level."
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="ExtraChance" type="HBoxContainer" parent="Bonus/BonusEditor" index="3"]
 margin_top = 91.0
@@ -332,11 +347,15 @@ margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Extra Chance:"
 
-[node name="IntegerEdit" parent="Bonus/BonusEditor/ExtraChance" index="1" instance=ExtResource( 7 )]
+[node name="SpinBox" type="SpinBox" parent="Bonus/BonusEditor/ExtraChance" index="1"]
 margin_left = 154.0
 margin_right = 354.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "An extra percent chance for more product to drop upon harvest. The game will cap this value at 90%."
+step = 0.0
+allow_greater = true
+allow_lesser = true
 
 [node name="PercentLabel" type="Label" parent="Bonus/BonusEditor/ExtraChance" index="2"]
 margin_left = 358.0
@@ -374,9 +393,10 @@ margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Seed Purchase Price:"
 
-[node name="IntegerEdit" parent="SeedPurchasePrice" index="1" instance=ExtResource( 7 )]
+[node name="SpinBox" type="SpinBox" parent="SeedPurchasePrice" index="1"]
 margin_left = 154.0
 margin_right = 354.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The purchase price of the seed."
 
@@ -392,9 +412,10 @@ margin_bottom = 19.0
 rect_min_size = Vector2( 150, 0 )
 text = "Seed Sell Price:"
 
-[node name="IntegerEdit" parent="SeedSellPrice" index="1" instance=ExtResource( 7 )]
+[node name="SpinBox" type="SpinBox" parent="SeedSellPrice" index="1"]
 margin_left = 154.0
 margin_right = 354.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The sell price of the seed."
 

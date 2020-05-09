@@ -18,10 +18,10 @@ namespace StardewEditor3.JsonAssets
             activeWeapon = weapons[entry];
 
             DoEditorConnections(editor, activeWeapon);
-            var intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
+            var intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectWidth/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
         }

@@ -22,7 +22,7 @@ public class IngredientListEditor : VBoxContainer
 	{
 		var ingredEditor = IngredientEntryEditorScene.Instance();
 		ingredEditor.GetNode<LineEdit>("LineEdit").Text = ingred;
-		ingredEditor.GetNode<IntegerEdit>("IntegerEdit").Value = amt;
+		ingredEditor.GetNode<SpinBox>("SpinBox").Value = amt;
 		ingredEditor.Connect(nameof(IngredientEntryEditor.changed), this, nameof(Signal_ChangedEntry));
 		ingredEditor.Connect(nameof(IngredientEntryEditor.deleted), this, nameof(Signal_DeleteEntry));
 		AddChild(ingredEditor);

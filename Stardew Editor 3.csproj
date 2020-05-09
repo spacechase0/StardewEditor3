@@ -105,7 +105,6 @@
     <Compile Include="UI.cs" />
     <Compile Include="UpdateKey.cs" />
     <Compile Include="Util\IgnorePropertiesOfTypeJsonContractResolver.cs" />
-    <Compile Include="Util\IntegerEdit.cs" />
     <Compile Include="Util\IntListEditor.cs" />
     <Compile Include="Util\IntListEntryEditor.cs" />
     <Compile Include="Util\LambdaWrapper.cs" />

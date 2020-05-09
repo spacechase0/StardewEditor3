@@ -747,62 +747,37 @@ namespace StardewEditor3.JsonAssets
                 }
                 else if (prop.PropertyType == typeof(int))
                 {
-                    string path = prop.Name + "/IntegerEdit";
-                    var intEdit = editor.GetNode<IntegerEdit>(path);
-                    intEdit.Value = (long?)(int)prop.GetValue(obj);
-                    var lambda = new LambdaWrapper<bool, long>((has, value) => prop.SetValue(obj, (int)value));
+                    string path = prop.Name + "/SpinBox";
+                    var intEdit = editor.GetNode<SpinBox>(path);
+                    intEdit.Value = (int)prop.GetValue(obj);
+                    var lambda = new LambdaWrapper<float>((value) => prop.SetValue(obj, (int)value));
                     if (prop.Name == "Price")
                     {
-                        lambda = new LambdaWrapper<bool, long>((has, value) =>
+                        lambda = new LambdaWrapper<float>((value) =>
                         {
-                            obj.GetType().GetProperty("CanSell").SetValue(obj, has);
+                            obj.GetType().GetProperty("CanSell").SetValue(obj, value >= 0);
                             prop.SetValue(obj, (int)value);
-                        });
-                    }
-                    else if (prop.Name == "Edibility")
-                    {
-                        var val = intEdit.Value;
-                        intEdit.Value = val == -300 ? null : (long?)val;
-                        lambda = new LambdaWrapper<bool, long>((has, value) =>
-                        {
-                            prop.SetValue(obj, has ? (int)value : -300);
                         });
                     }
                     else if (prop.Name == "PurchasePrice")
                     {
-                        lambda = new LambdaWrapper<bool, long>((has, value) =>
+                        lambda = new LambdaWrapper<float>((value) =>
                         {
                             var canProp = obj.GetType().GetProperty("CanPurchase");
                             if (canProp != null)
-                                canProp.SetValue(obj, has);
+                                canProp.SetValue(obj, value >= 0);
                             prop.SetValue(obj, (int)value);
                         });
                     }
-                    lambda.SelfConnect(intEdit, nameof(IntegerEdit.int_edited));
+                    lambda.SelfConnect(intEdit, "value_changed");
                 }
                 else if (prop.PropertyType == typeof(double))
                 {
-                    string path = prop.Name + "/IntegerEdit";
-                    if (editor.HasNode(path))
-                    {
-                        if (!editor.HasNode(prop.Name + "/PercentLabel"))
-                        {
-                            GD.PrintErr("Doubles not supported except in percents with IntegerEdit");
-                            continue;
-                        }
-                        var intEdit = editor.GetNode<IntegerEdit>(path);
-                        intEdit.Value = (long?)(int)((double)prop.GetValue(obj) * 100);
-                        var lambda = new LambdaWrapper<bool, long>((has, value) => prop.SetValue(obj, ((int)value) / 100.0));
-                        lambda.SelfConnect(intEdit, nameof(IntegerEdit.int_edited));
-                    }
-                    else
-                    {
-                        path = prop.Name + "/SpinBox";
-                        var doubleEdit = editor.GetNode<SpinBox>(path);
-                        doubleEdit.Value = (double)prop.GetValue(obj) * (editor.HasNode(prop.Name + "/PercentLabel") ? 100 : 1);
-                        var lambda = new LambdaWrapper<float>((value) => prop.SetValue(obj, ((double)value) / (editor.HasNode(prop.Name + "/PercentLabel") ? 100.0 : 1.0)));
-                        lambda.SelfConnect(doubleEdit, "value_changed");
-                    }
+                    string path = prop.Name + "/SpinBox";
+                    var doubleEdit = editor.GetNode<SpinBox>(path);
+                    doubleEdit.Value = (double)prop.GetValue(obj) * (editor.HasNode(prop.Name + "/PercentLabel") ? 100 : 1);
+                    var lambda = new LambdaWrapper<float>((value) => prop.SetValue(obj, ((double)value) / (editor.HasNode(prop.Name + "/PercentLabel") ? 100.0 : 1.0)));
+                    lambda.SelfConnect(doubleEdit, "value_changed");
                 }
                 else if (prop.PropertyType == typeof(bool))
                 {

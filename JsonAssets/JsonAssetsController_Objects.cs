@@ -24,16 +24,16 @@ namespace StardewEditor3.JsonAssets
                 activeObj.GiftTastes = new ObjectData.GiftTastes_();
 
             DoEditorConnections(editor, activeObj);
-            var intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectWidth/IntegerEdit");
+            var intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectWidth/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("Texture/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("Texture/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("TextureColor/SubImageEditor/Values/SubRectWidth/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("TextureColor/SubImageEditor/Values/SubRectWidth/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
-            intEdit = editor.GetNode<IntegerEdit>("TextureColor/SubImageEditor/Values/SubRectHeight/IntegerEdit");
+            intEdit = editor.GetNode<SpinBox>("TextureColor/SubImageEditor/Values/SubRectHeight/SpinBox");
             intEdit.Value = 16;
             intEdit.Editable = false;
         }
