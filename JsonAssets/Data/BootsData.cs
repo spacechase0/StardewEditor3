@@ -1,6 +1,7 @@
 ﻿using Godot;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using StardewEditor3.Util;
 using System;
 using System.Collections.Generic;
 
@@ -8,12 +9,14 @@ namespace StardewEditor3.JsonAssets.Data
 {
     public class BootsData : BaseDataWithTexture
     {
-        public Color[] ColorPalette { get; set; } = new Color[5];
+        [JsonIgnore]
+        public Color[] ColorPalette { get; set; } = new Color[4];
         
         public string Description { get; set; }
 
         public int Price { get; set; }
         
+        [DoNotAutoConnect]
         public bool CanPurchase { get; set; } = false;
         public int PurchasePrice { get; set; }
         public string PurchaseFrom { get; set; } = "Marlon";

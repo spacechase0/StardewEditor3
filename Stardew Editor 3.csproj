@@ -66,6 +66,10 @@
     <Compile Include="JsonAssets\IngredientListEditor.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_FruitTrees.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_Crops.cs" />
+    <Compile Include="JsonAssets\JsonAssetsController_Boots.cs" />
+    <Compile Include="JsonAssets\JsonAssetsController_TailoringRecipes.cs" />
+    <Compile Include="JsonAssets\JsonAssetsController_Pants.cs" />
+    <Compile Include="JsonAssets\JsonAssetsController_Shirts.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_Weapons.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_Hats.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_Objects.cs" />

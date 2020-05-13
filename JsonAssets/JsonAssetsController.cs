@@ -24,6 +24,10 @@ namespace StardewEditor3.JsonAssets
         private readonly Dictionary<TreeItem, FruitTreeData> trees = new Dictionary<TreeItem, FruitTreeData>();
         private readonly Dictionary<TreeItem, HatData> hats = new Dictionary<TreeItem, HatData>();
         private readonly Dictionary<TreeItem, WeaponData> weapons = new Dictionary<TreeItem, WeaponData>();
+        private readonly Dictionary<TreeItem, ShirtData> shirts = new Dictionary<TreeItem, ShirtData>();
+        private readonly Dictionary<TreeItem, PantsData> pantss = new Dictionary<TreeItem, PantsData>();
+        private readonly Dictionary<TreeItem, TailoringRecipeData> tailorings = new Dictionary<TreeItem, TailoringRecipeData>();
+        private readonly Dictionary<TreeItem, BootsData> bootss = new Dictionary<TreeItem, BootsData>();
 
         private TreeItem activeEntry;
         private Node activeEditor;
@@ -34,6 +38,10 @@ namespace StardewEditor3.JsonAssets
         private readonly PackedScene FruitTreeEditor = GD.Load<PackedScene>("res://JsonAssets/FruitTreeEditor.tscn");
         private readonly PackedScene HatEditor = GD.Load<PackedScene>("res://JsonAssets/HatEditor.tscn");
         private readonly PackedScene WeaponEditor = GD.Load<PackedScene>("res://JsonAssets/WeaponEditor.tscn");
+        private readonly PackedScene ShirtEditor = GD.Load<PackedScene>("res://JsonAssets/ShirtEditor.tscn");
+        private readonly PackedScene PantsEditor = GD.Load<PackedScene>("res://JsonAssets/PantsEditor.tscn");
+        private readonly PackedScene TailoringEditor = GD.Load<PackedScene>("res://JsonAssets/TailoringRecipeEditor.tscn");
+        private readonly PackedScene BootsEditor = GD.Load<PackedScene>("res://JsonAssets/BootsEditor.tscn");
 
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
@@ -115,6 +123,46 @@ namespace StardewEditor3.JsonAssets
                 item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this weapon");
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 weapons.Add(item, weapon);
+            }
+
+            var shirtRoot = roots["Shirts"];
+            foreach (var shirt in data.Shirts)
+            {
+                var item = ui.ProjectTree.CreateItem(shirtRoot);
+                item.SetText(0, shirt.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this shirt");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                shirts.Add(item, shirt);
+            }
+
+            var pantsRoot = roots["Pants"];
+            foreach (var pants in data.Pantss)
+            {
+                var item = ui.ProjectTree.CreateItem(pantsRoot);
+                item.SetText(0, pants.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove these pants");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                pantss.Add(item, pants);
+            }
+
+            var tailoringRoot = roots["Tailoring Recipes"];
+            foreach (var trecipe in data.TailoringRecipes)
+            {
+                var item = ui.ProjectTree.CreateItem(tailoringRoot);
+                item.SetText(0, trecipe.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this tailoring recipe");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                tailorings.Add(item, trecipe);
+            }
+
+            var bootsRoot = roots["Boots"];
+            foreach (var boots in data.Bootss)
+            {
+                var item = ui.ProjectTree.CreateItem(bootsRoot);
+                item.SetText(0, boots.Name);
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove these boots");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                bootss.Add(item, boots);
             }
         }
 
@@ -213,6 +261,44 @@ namespace StardewEditor3.JsonAssets
                     errors.Add($"Weapon \"{weapon.Name}\" must have a texture.");
                 if (weapon.Description != null && weapon.Description.Contains('/'))
                     errors.Add($"Weapon description for \"{weapon.Name}\" must not contain slashes.");
+
+                // todo - validate purchase requirements
+            }
+
+            foreach (var shirt in data.Shirts)
+            {
+                if (!nameRegex.IsMatch(shirt.Name))
+                    errors.Add($"Shirt name \"{shirt.Name}\" must only contain basic english characters.");
+                if (shirt.MaleTexture == null || string.IsNullOrEmpty(shirt.MaleTexture.Resource))
+                    errors.Add($"Shirt \"{shirt.Name}\" must have a primary texture.");
+                if (shirt.Description != null && shirt.Description.Contains('/'))
+                    errors.Add($"Shirt description for \"{shirt.Name}\" must not contain slashes.");
+            }
+            
+            foreach (var pants in data.Pantss)
+            {
+                if (!nameRegex.IsMatch(pants.Name))
+                    errors.Add($"Pants name \"{pants.Name}\" must only contain basic english characters.");
+                if (pants.Texture == null || string.IsNullOrEmpty(pants.Texture.Resource))
+                    errors.Add($"Pants \"{pants.Name}\" must have a texture.");
+                if (pants.Description != null && pants.Description.Contains('/'))
+                    errors.Add($"Pants description for \"{pants.Name}\" must not contain slashes.");
+            }
+
+            foreach (var trecipe in data.TailoringRecipes)
+            {
+                if (!nameRegex.IsMatch(trecipe.Name))
+                    errors.Add($"Tailoring recipe name \"{trecipe.Name}\" must only contain basic english characters.");
+            }
+
+            foreach (var boots in data.Bootss)
+            {
+                if (!nameRegex.IsMatch(boots.Name))
+                    errors.Add($"Boots name \"{boots.Name}\" must only contain basic english characters.");
+                if (boots.Texture == null || string.IsNullOrEmpty(boots.Texture.Resource))
+                    errors.Add($"Boots \"{boots.Name}\" must have a texture.");
+                if (boots.Description != null && boots.Description.Contains('/'))
+                    errors.Add($"Boots description for \"{boots.Name}\" must not contain slashes.");
 
                 // todo - validate purchase requirements
             }
@@ -373,7 +459,7 @@ namespace StardewEditor3.JsonAssets
                 image.Dispose();
             }
 
-            string weaponPath = System.IO.Path.Combine(path, "Hats");
+            string weaponPath = System.IO.Path.Combine(path, "Weapons");
             System.IO.Directory.CreateDirectory(weaponPath);
             foreach (var weapon in data.Weapons)
             {
@@ -383,6 +469,75 @@ namespace StardewEditor3.JsonAssets
 
                 var image = weapon.Texture.MakeImage(ui.ModProjectDir);
                 image.SavePng(System.IO.Path.Combine(weaponDir, "weapon.png"));
+                image.Dispose();
+            }
+
+            string shirtPath = System.IO.Path.Combine(path, "Shirts");
+            System.IO.Directory.CreateDirectory(shirtPath);
+            foreach (var shirt in data.Shirts)
+            {
+                string shirtDir = System.IO.Path.Combine(shirtPath, shirt.Name);
+                System.IO.Directory.CreateDirectory(shirtDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(shirtDir, "shirt.json"), JsonConvert.SerializeObject(shirt, settings));
+
+                var image = shirt.MaleTexture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(shirtDir, "male.png"));
+                image.Dispose();
+
+                image = shirt.MaleColorTexture?.MakeImage(ui.ModProjectDir);
+                image?.SavePng(System.IO.Path.Combine(shirtDir, "male-color.png"));
+                image?.Dispose();
+
+                image = shirt.FemaleTexture?.MakeImage(ui.ModProjectDir);
+                image?.SavePng(System.IO.Path.Combine(shirtDir, "female.png"));
+                image?.Dispose();
+
+                image = shirt.FemaleColorTexture?.MakeImage(ui.ModProjectDir);
+                image?.SavePng(System.IO.Path.Combine(shirtDir, "female-color.png"));
+                image?.Dispose();
+            }
+
+            string pantsPath = System.IO.Path.Combine(path, "Pants");
+            System.IO.Directory.CreateDirectory(pantsPath);
+            foreach (var pants in data.Pantss)
+            {
+                string pantsDir = System.IO.Path.Combine(pantsPath, pants.Name);
+                System.IO.Directory.CreateDirectory(pantsDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(pantsDir, "pants.json"), JsonConvert.SerializeObject(pants, settings));
+
+                var image = pants.Texture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(pantsDir, "pants.png"));
+                image.Dispose();
+            }
+
+            string tailoringPath = System.IO.Path.Combine(path, "Tailoring");
+            System.IO.Directory.CreateDirectory(tailoringPath);
+            foreach (var trecipe in data.TailoringRecipes)
+            {
+                string tailoringDir = System.IO.Path.Combine(tailoringPath, trecipe.Name);
+                System.IO.Directory.CreateDirectory(tailoringDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(tailoringDir, "recipe.json"), JsonConvert.SerializeObject(trecipe, settings));
+            }
+
+            string bootsPath = System.IO.Path.Combine(path, "Boots");
+            System.IO.Directory.CreateDirectory(bootsPath);
+            foreach (var boots in data.Bootss)
+            {
+                string bootsDir = System.IO.Path.Combine(bootsPath, boots.Name);
+                System.IO.Directory.CreateDirectory(bootsDir);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(bootsDir, "boots.json"), JsonConvert.SerializeObject(boots, settings));
+
+                var image = boots.Texture.MakeImage(ui.ModProjectDir);
+                image.SavePng(System.IO.Path.Combine(bootsDir, "boots.png"));
+                image.Dispose();
+
+                image = new Image();
+                image.Create(4, 1, false, Image.Format.Rgba8);
+                image.Lock();
+                for ( int i = 0; i < boots.ColorPalette.Length; ++i )
+                    image.SetPixel(i, 0, boots.ColorPalette[i]);
+                image.Unlock();
+                image.SavePng(System.IO.Path.Combine(bootsDir, "color.png"));
                 image.Dispose();
             }
         }
@@ -475,6 +630,62 @@ namespace StardewEditor3.JsonAssets
                 item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
                 weapons.Add(item, weaponData);
             }
+            else if (root == roots["Shirts"])
+            {
+                var shirtData = new ShirtData()
+                {
+                    Name = "Shirt",
+                };
+                data.Shirts.Add(shirtData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Shirt");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this shirt");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                shirts.Add(item, shirtData);
+            }
+            else if (root == roots["Pants"])
+            {
+                var pantsData = new PantsData()
+                {
+                    Name = "Pants",
+                };
+                data.Pantss.Add(pantsData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Pants");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove these pants");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                pantss.Add(item, pantsData);
+            }
+            else if (root == roots["Tailoring Recipes"])
+            {
+                var trecipeData = new TailoringRecipeData()
+                {
+                    Name = "Tailoring Recipe",
+                };
+                data.TailoringRecipes.Add(trecipeData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Tailoring Recipe");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this tailoring recipe");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                tailorings.Add(item, trecipeData);
+            }
+            else if (root == roots["Boots"])
+            {
+                var bootsData = new BootsData()
+                {
+                    Name = "Boots",
+                };
+                data.Bootss.Add(bootsData);
+
+                var item = ui.ProjectTree.CreateItem(root);
+                item.SetText(0, "Boots");
+                item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove these boots");
+                item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                bootss.Add(item, bootsData);
+            }
         }
 
         public override void OnRemoved(UI ui, ModData data_, TreeItem entry)
@@ -510,7 +721,28 @@ namespace StardewEditor3.JsonAssets
                 data.Weapons.Remove(weapons[entry]);
                 weapons.Remove(entry);
             }
+            else if (shirts.ContainsKey(entry))
+            {
+                data.Shirts.Remove(shirts[entry]);
+                shirts.Remove(entry);
+            }
+            else if (pantss.ContainsKey(entry))
+            {
+                data.Pantss.Remove(pantss[entry]);
+                pantss.Remove(entry);
+            }
+            else if (tailorings.ContainsKey(entry))
+            {
+                data.TailoringRecipes.Remove(tailorings[entry]);
+                tailorings.Remove(entry);
+            }
+            else if (bootss.ContainsKey(entry))
+            {
+                data.Bootss.Remove(bootss[entry]);
+                bootss.Remove(entry);
+            }
         }
+
         public override Node CreateMainEditingArea(UI ui, ModData data, TreeItem entry)
         {
             activeEntry = entry;
@@ -543,6 +775,26 @@ namespace StardewEditor3.JsonAssets
             {
                 activeEditor = WeaponEditor.Instance();
                 DoWeaponEditorConnections(activeEditor, entry);
+            }
+            else if (shirts.ContainsKey(entry))
+            {
+                activeEditor = ShirtEditor.Instance();
+                DoShirtEditorConnections(activeEditor, entry);
+            }
+            else if (pantss.ContainsKey(entry))
+            {
+                activeEditor = PantsEditor.Instance();
+                DoPantsEditorConnections(activeEditor, entry);
+            }
+            else if (tailorings.ContainsKey(entry))
+            {
+                activeEditor = TailoringEditor.Instance();
+                DoTailoringRecipeEditorConnections(activeEditor, entry);
+            }
+            else if (bootss.ContainsKey(entry))
+            {
+                activeEditor = BootsEditor.Instance();
+                DoBootsEditorConnections(activeEditor, entry);
             }
 
             activeEditor.SetMeta(Meta.CorrespondingController, ModUniqueId);
@@ -704,6 +956,19 @@ namespace StardewEditor3.JsonAssets
                     });
                     lambda.SelfConnect(optionButton, "item_selected");
                 }
+                else if ( obj is BootsData && prop.Name == "ColorPalette" )
+                {
+                    var boots = obj as BootsData;
+                    for (int i = 0; i < boots.ColorPalette.Length; ++i)
+                    {
+                        string path = prop.Name + "/Colors/Color" + i;
+                        var colorPicker = editor.GetNode<ColorPickerButton>(path);
+                        colorPicker.Color = boots.ColorPalette[i];
+                        int tmp = i;
+                        var lambda = new LambdaWrapper<Color>((color) => boots.ColorPalette[tmp] = color);
+                        lambda.SelfConnect(colorPicker, "color_changed");
+                    }
+                }
 
 
                 // Everything else
@@ -755,7 +1020,9 @@ namespace StardewEditor3.JsonAssets
                     {
                         lambda = new LambdaWrapper<float>((value) =>
                         {
-                            obj.GetType().GetProperty("CanSell").SetValue(obj, value >= 0);
+                            var sellProp = obj.GetType().GetProperty("CanSell");
+                            if (sellProp != null)
+                                sellProp.SetValue(obj, value >= 0);
                             prop.SetValue(obj, (int)value);
                         });
                     }
@@ -817,6 +1084,20 @@ namespace StardewEditor3.JsonAssets
                     colorPicker.Color = (Color)prop.GetValue(obj);
                     var lambda = new LambdaWrapper<Color>((color) => prop.SetValue(obj, color));
                     lambda.SelfConnect(colorPicker, "color_changed");
+                }
+                else if (prop.PropertyType == typeof(List<object>))
+                {
+                    string path = prop.Name + "/StringListEditor";
+                    var stringsEditor = editor.GetNode<StringListEditor>(path);
+                    var strings = (List<object>)prop.GetValue(obj);
+                    foreach (var entry in strings)
+                        stringsEditor.AddString((string)entry);
+                    var lambdaAdd = new LambdaWrapper(() => strings.Add(""));
+                    var lambdaDelete = new LambdaWrapper<int>((ind) => strings.RemoveAt(ind));
+                    var lambdaEdit = new LambdaWrapper<int, string>((ind, str) => strings[ind] = str);
+                    lambdaAdd.SelfConnect(stringsEditor, nameof(StringListEditor.entry_added));
+                    lambdaDelete.SelfConnect(stringsEditor, nameof(StringListEditor.entry_deleted));
+                    lambdaEdit.SelfConnect(stringsEditor, nameof(StringListEditor.entry_changed));
                 }
                 else if (prop.PropertyType == typeof(List<string>))
                 {

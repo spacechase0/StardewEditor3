@@ -11,7 +11,7 @@ namespace StardewEditor3.JsonAssets.Data
 {
     public class ShirtData : ClothingData
     {
-        public ImageResourceReference MaleColorTexture;
-        public ImageResourceReference FemaleColorTexture;
+        public ImageResourceReference MaleColorTexture { get; set; }
+        public ImageResourceReference FemaleColorTexture { get; set; }
     }
 }
