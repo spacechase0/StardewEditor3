@@ -1106,14 +1106,160 @@ namespace StardewEditor3.JsonAssets
             activeEditor = null;
         }
 
-        public override void OnResourceRenamed(UI ui, ModData data, string oldFilename, string newFilename)
+        public override void OnResourceRenamed(UI ui, ModData data_, string oldFilename, string newFilename)
         {
-            // todo
+            var data = data_ as JsonAssetsModData;
+
+            foreach ( var item in data.Objects )
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = newFilename;
+                if (item.TextureColor.Resource == oldFilename)
+                    item.TextureColor.Resource = newFilename;
+            }
+
+            foreach (var item in data.Crops)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = newFilename;
+                if (item.SeedTexture.Resource == oldFilename)
+                    item.SeedTexture.Resource = newFilename;
+                if (item.GiantTexture.Resource == oldFilename)
+                    item.GiantTexture.Resource = newFilename;
+            }
+
+            foreach (var item in data.FruitTrees)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = newFilename;
+                if (item.SaplingTexture.Resource == oldFilename)
+                    item.SaplingTexture.Resource = newFilename;
+            }
+            
+            foreach (var item in data.BigCraftables)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = newFilename;
+                foreach ( var res in item.ReserveExtraIndices )
+                {
+                    if (res.Resource == oldFilename)
+                        res.Resource = newFilename;
+                }
+            }
+
+            foreach (var item in data.Hats)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = newFilename;
+            }
+
+            foreach (var item in data.Weapons)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = newFilename;
+            }
+
+            foreach (var item in data.Shirts)
+            {
+                if (item.MaleTexture.Resource == oldFilename)
+                    item.MaleTexture.Resource = newFilename;
+                if (item.MaleColorTexture.Resource == oldFilename)
+                    item.MaleColorTexture.Resource = newFilename;
+                if (item.FemaleTexture.Resource == oldFilename)
+                    item.FemaleTexture.Resource = newFilename;
+                if (item.FemaleColorTexture.Resource == oldFilename)
+                    item.FemaleColorTexture.Resource = newFilename;
+            }
+
+            foreach (var item in data.Pantss)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = newFilename;
+            }
+
+            foreach (var item in data.Bootss)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = newFilename;
+            }
         }
 
-        public override void OnResourceDeleted(UI ui, ModData data, string filename)
+        public override void OnResourceDeleted(UI ui, ModData data_, string oldFilename)
         {
-            // todo
+            var data = data_ as JsonAssetsModData;
+
+            foreach (var item in data.Objects)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = null;
+                if (item.TextureColor.Resource == oldFilename)
+                    item.TextureColor.Resource = null;
+            }
+
+            foreach (var item in data.Crops)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = null;
+                if (item.SeedTexture.Resource == oldFilename)
+                    item.SeedTexture.Resource = null;
+                if (item.GiantTexture.Resource == oldFilename)
+                    item.GiantTexture.Resource = null;
+            }
+
+            foreach (var item in data.FruitTrees)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = null;
+                if (item.SaplingTexture.Resource == oldFilename)
+                    item.SaplingTexture.Resource = null;
+            }
+
+            foreach (var item in data.BigCraftables)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = null;
+                foreach (var res in item.ReserveExtraIndices)
+                {
+                    if (res.Resource == oldFilename)
+                        res.Resource = null;
+                }
+            }
+
+            foreach (var item in data.Hats)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = null;
+            }
+
+            foreach (var item in data.Weapons)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = null;
+            }
+
+            foreach (var item in data.Shirts)
+            {
+                if (item.MaleTexture.Resource == oldFilename)
+                    item.MaleTexture.Resource = null;
+                if (item.MaleColorTexture.Resource == oldFilename)
+                    item.MaleColorTexture.Resource = null;
+                if (item.FemaleTexture.Resource == oldFilename)
+                    item.FemaleTexture.Resource = null;
+                if (item.FemaleColorTexture.Resource == oldFilename)
+                    item.FemaleColorTexture.Resource = null;
+            }
+
+            foreach (var item in data.Pantss)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = null;
+            }
+
+            foreach (var item in data.Bootss)
+            {
+                if (item.Texture.Resource == oldFilename)
+                    item.Texture.Resource = null;
+            }
         }
 
         private void AddSections(UI ui, TreeItem entry)
