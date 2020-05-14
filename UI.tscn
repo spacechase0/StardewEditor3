@@ -185,3 +185,30 @@ current_path = "G:/StardewValley/StardewEditor3/"
 margin_right = 1024.0
 margin_bottom = 600.0
 window_title = "Project Validation Errors"
+
+[node name="ImportPackDialog" type="FileDialog" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+window_title = "Import a content pack"
+resizable = true
+mode = 0
+access = 2
+filters = PoolStringArray( "manifest.json ; Content pack manifest" )
+current_dir = "G:/StardewValley/StardewEditor3"
+current_path = "G:/StardewValley/StardewEditor3/"
+
+[node name="UnsupportedPackTypeDialog" type="AcceptDialog" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+window_title = "Bad Project Directory"
+resizable = true
+
+[node name="Label2" type="Label" parent="UnsupportedPackTypeDialog"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 1016.0
+margin_bottom = 564.0
+text = "This content pack type is not yet supported."
+__meta__ = {
+"_edit_use_anchors_": false
+}

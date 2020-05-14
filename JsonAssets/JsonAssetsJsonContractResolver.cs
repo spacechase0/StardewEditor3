@@ -55,7 +55,11 @@ namespace StardewEditor3.JsonAssets
     {
         public override List<ImageResourceReference> ReadJson(JsonReader reader, Type objectType, List<ImageResourceReference> existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            var ret = new List<ImageResourceReference>();
+            int amt = serializer.Deserialize<int>(reader);
+            for (int i = 0; i < amt; ++i)
+                ret.Add(new ImageResourceReference());
+            return ret;
         }
 
         public override void WriteJson(JsonWriter writer, List<ImageResourceReference> value, JsonSerializer serializer)

@@ -84,8 +84,12 @@ public class UI : MarginContainer
 		keyHelper.Scancode = (uint) KeyList.E;
 		filePopup.SetItemAccelerator(6, keyHelper.GetScancodeWithModifiers());
 		filePopup.SetItemDisabled(6, true);
+        filePopup.AddItem("Import");
+        keyHelper.Scancode = (uint) KeyList.I;
+        filePopup.SetItemAccelerator(7, keyHelper.GetScancodeWithModifiers());
+        filePopup.SetItemDisabled(7, true);
 
-		ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
+        ProjectTree = GetNode<Tree>("MenuSeparator/Splitter/Left/ProjectTree");
 		ProjectTree.Connect("button_pressed", this, nameof(Signal_TreeButtonPressed));
 		ProjectTree.Connect("item_activated", this, nameof(Signal_TreeCellActivated));
 		ProjectTree.Connect("item_edited", this, nameof(Signal_TreeItemEdited));
@@ -112,7 +116,10 @@ public class UI : MarginContainer
 
 		var export = GetNode<FileDialog>("ExportProjectDialog");
 		export.Connect("dir_selected", this, nameof(Signal_ExportProject));
-	}
+
+        var importPack = GetNode<FileDialog>("ImportPackDialog");
+        importPack.Connect("file_selected", this, nameof(Signal_ImportPack));
+    }
 
 	public List<string> GetImageList()
 	{
@@ -191,6 +198,7 @@ public class UI : MarginContainer
 		fileMenu.GetPopup().SetItemDisabled(1, false);
 		fileMenu.GetPopup().SetItemDisabled(3, false);
 		fileMenu.GetPopup().SetItemDisabled(6, false);
+		fileMenu.GetPopup().SetItemDisabled(7, false);
 
 		if (!loading)
 		{
@@ -376,6 +384,37 @@ public class UI : MarginContainer
 		}
 	}
 
+    private void Signal_ImportPack(string file)
+    {
+        var manifest = JsonConvert.DeserializeObject<ExportManifest>(System.IO.File.ReadAllText(file));
+
+        ContentPackController matchingController = null;
+        foreach ( var controller in ContentPackController.GetRegisteredControllerTypes() )
+        {
+            if ( controller == manifest.ContentPackFor.UniqueID )
+            {
+                matchingController = ContentPackController.GetControllerForMod(manifest.ContentPackFor.UniqueID);
+            }
+        }
+
+        if ( matchingController == null )
+        {
+            GetNode<AcceptDialog>("UnsupportedPackTypeDialog").PopupCenteredClamped();
+            return;
+        }
+
+        var existingMod = ModProject.Mods.Find(md => md.ContentPackFor == matchingController.ModUniqueId);
+        if ( existingMod == null )
+        {
+            var mod = ProjectTree.CreateItem(ProjectRoot);
+            mod.SetText(0, $"[{matchingController.ModAbbreviation}] {ModProject.Name}");
+            mod.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this mod");
+            mod.SetMeta(Meta.CorrespondingController, matchingController.ModUniqueId);
+            ModProject.Mods.Add(existingMod = matchingController.OnModCreated(this, mod));
+        }
+        matchingController.OnImport(this, existingMod, System.IO.Path.GetDirectoryName(file));
+    }
+
 	private void Signal_FileMenuActivated(int index)
 	{
 		if (index == 0)
@@ -406,8 +445,13 @@ public class UI : MarginContainer
 		{
 			var export = GetNode<FileDialog>("ExportProjectDialog");
 			export.PopupCenteredClamped();
-		}
-	}
+        }
+        else if (index == 7)
+        {
+            var import = GetNode<FileDialog>("ImportPackDialog");
+            import.PopupCenteredClamped();
+        }
+    }
 
 	private void Signal_NewModMenuActivated(int index)
 	{

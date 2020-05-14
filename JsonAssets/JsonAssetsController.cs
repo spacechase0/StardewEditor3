@@ -305,6 +305,299 @@ namespace StardewEditor3.JsonAssets
             }
         }
 
+        public override void OnImport(UI ui, ModData data_, string importPath)
+        {
+            var data = data_ as JsonAssetsModData;
+
+            JsonSerializerSettings settings = new JsonSerializerSettings()
+            {
+                ContractResolver = new JsonAssetsJsonContractResolver(),
+            };
+
+            string path = System.IO.Path.Combine(importPath, "Objects");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var obj = JsonConvert.DeserializeObject<ObjectData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "object.json")), settings);
+
+                    string newFilename = "Object_" + obj.Name + ".png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "object.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    obj.Texture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 16, 16) };
+
+                    string colorFilename = System.IO.Path.Combine(dir, "color.png");
+                    if (System.IO.File.Exists(colorFilename))
+                    {
+                        newFilename = "Object_" + obj.Name + "_Color.png";
+                        System.IO.File.Copy(colorFilename, System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                        obj.TextureColor = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 16, 16) };
+                    }
+
+                    data.Objects.Add(obj);
+
+                    var root = roots["Objects"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, obj.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this object");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    objects.Add(item, obj);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "Crops");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var crop = JsonConvert.DeserializeObject<CropData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "crop.json")), settings);
+
+                    string newFilename = "Crop_" + crop.Name + ".png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "crop.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    crop.Texture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 128, 32) };
+
+                    newFilename = "Crop_" + crop.Name + "_Seeds.png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "seeds.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    crop.SeedTexture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 16, 16) };
+
+                    string giantFilename = System.IO.Path.Combine(dir, "giant.png");
+                    if (System.IO.File.Exists(giantFilename))
+                    {
+                        newFilename = "Object_" + crop.Name + "_Giant.png";
+                        System.IO.File.Copy(giantFilename, System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                        crop.GiantTexture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 48, 63) };
+                    }
+
+                    data.Crops.Add(crop);
+
+                    var root = roots["Crops"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, crop.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this crop");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    crops.Add(item, crop);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "FruitTrees");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var ftree = JsonConvert.DeserializeObject<FruitTreeData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "tree.json")), settings);
+
+                    string newFilename = "FruitTree_" + ftree.Name + ".png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "tree.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    ftree.Texture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 432, 80) };
+
+                    newFilename = "FruitTree_" + ftree.Name + "_Sapling.png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "sapling.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    ftree.SaplingTexture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 16, 16) };
+
+                    data.FruitTrees.Add(ftree);
+
+                    var root = roots["Fruit Trees"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, ftree.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this fruit tree");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    trees.Add(item, ftree);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "BigCraftables");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var big = JsonConvert.DeserializeObject<BigCraftableData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "big-craftable.json")), settings);
+
+                    string newFilename = "BigCraftable_" + big.Name + ".png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "big-craftable.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    big.Texture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 16, 32) };
+
+                    for (int i = 0; i < big.ReserveExtraIndices.Count; ++i)
+                    {
+                        string extraFilename = System.IO.Path.Combine(dir, "big-craftable-" + (i + 2) + ".png");
+                        if (System.IO.File.Exists(extraFilename))
+                        {
+                            newFilename = "BigCraftalbe_" + big.Name + "_" + (i + 2) + ".png";
+                            System.IO.File.Copy(extraFilename, System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                            big.ReserveExtraIndices[i] = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 16, 32) };
+                        }
+                    }
+
+                    data.BigCraftables.Add(big);
+
+                    var root = roots["Big Craftables"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, big.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this big craftable");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    bigs.Add(item, big);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "Hats");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var hat = JsonConvert.DeserializeObject<HatData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "hat.json")), settings);
+
+                    string newFilename = "Hat_" + hat.Name + ".png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "hat.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    hat.Texture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 20, 80) };
+
+                    data.Hats.Add(hat);
+
+                    var root = roots["Hats"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, hat.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this hat");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    hats.Add(item, hat);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "Weapons");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var weapon = JsonConvert.DeserializeObject<WeaponData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "weapon.json")), settings);
+
+                    string newFilename = "Weapon_" + weapon.Name + ".png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "weapon.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    weapon.Texture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 16, 16) };
+
+                    data.Weapons.Add(weapon);
+
+                    var root = roots["Weapons"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, weapon.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this weapon");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    weapons.Add(item, weapon);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "Shirts");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var shirt = JsonConvert.DeserializeObject<ShirtData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "shirt.json")), settings);
+
+                    string newFilename = "Shirt_" + shirt.Name + "_Male.png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "male.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    shirt.MaleTexture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 8, 32) };
+
+                    string colorFilename = System.IO.Path.Combine(dir, "male-color.png");
+                    if (System.IO.File.Exists(colorFilename))
+                    {
+                        newFilename = "Shirt_" + shirt.Name + "_Male_Color.png";
+                        System.IO.File.Copy(colorFilename, System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                        shirt.MaleColorTexture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 8, 32) };
+                    }
+
+                    if (shirt.HasFemaleVariant)
+                    {
+                        newFilename = "Shirt_" + shirt.Name + "_Female.png";
+                        System.IO.File.Copy(System.IO.Path.Combine(dir, "female.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                        shirt.FemaleTexture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 8, 32) };
+
+                        colorFilename = System.IO.Path.Combine(dir, "female-color.png");
+                        if (System.IO.File.Exists(colorFilename))
+                        {
+                            newFilename = "Shirt_" + shirt.Name + "_Female_Color.png";
+                            System.IO.File.Copy(colorFilename, System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                            shirt.FemaleColorTexture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 8, 32) };
+                        }
+                    }
+
+                    data.Shirts.Add(shirt);
+
+                    var root = roots["Shirts"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, shirt.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this shirt");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    shirts.Add(item, shirt);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "Pants");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var pants = JsonConvert.DeserializeObject<PantsData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "pants.json")), settings);
+
+                    string newFilename = "Pants_" + pants.Name + ".png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "pants.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    pants.Texture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 192, 688) };
+
+                    data.Pantss.Add(pants);
+
+                    var root = roots["Pants"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, pants.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove these pants");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    pantss.Add(item, pants);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "Tailoring");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var recipe = JsonConvert.DeserializeObject<TailoringRecipeData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "recipe.json")), settings);
+                    recipe.Name = System.IO.Path.GetFileName(dir);
+
+                    data.TailoringRecipes.Add(recipe);
+
+                    var root = roots["Tailoring Recipes"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, recipe.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove this tailoring recipe");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    tailorings.Add(item, recipe);
+                }
+            }
+
+            path = System.IO.Path.Combine(importPath, "Boots");
+            if (System.IO.Directory.Exists(path))
+            {
+                foreach (var dir in System.IO.Directory.EnumerateDirectories(path))
+                {
+                    var boots = JsonConvert.DeserializeObject<BootsData>(System.IO.File.ReadAllText(System.IO.Path.Combine(dir, "boots.json")), settings);
+
+                    string newFilename = "Boots_" + boots.Name + ".png";
+                    System.IO.File.Copy(System.IO.Path.Combine(dir, "boots.png"), System.IO.Path.Combine(ui.ModProjectDir, newFilename));
+                    boots.Texture = new ImageResourceReference() { Resource = newFilename, SubRect = new Rect2(0, 0, 16, 16) };
+
+                    var colorImage = new Image();
+                    colorImage.Load(System.IO.Path.Combine(dir, "color.png"));
+                    colorImage.Lock();
+                    for (int i = 0; i < boots.ColorPalette.Length; ++i)
+                        boots.ColorPalette[i] = colorImage.GetPixel(i, 0);
+                    colorImage.Unlock();
+                    colorImage.Dispose();
+
+                    data.Bootss.Add(boots);
+
+                    var root = roots["Boots"];
+                    var item = ui.ProjectTree.CreateItem(root);
+                    item.SetText(0, boots.Name);
+                    item.AddButton(0, ui.RemoveIcon, UI.REMOVE_BUTTON_INDEX, tooltip: "Remove these boots");
+                    item.SetMeta(Meta.CorrespondingController, MOD_UNIQUE_ID);
+                    bootss.Add(item, boots);
+                }
+            }
+        }
+
         public override void OnExport(UI ui, ModData data_, string exportPath)
         {
             var data = data_ as JsonAssetsModData;
@@ -342,12 +635,12 @@ namespace StardewEditor3.JsonAssets
             System.IO.Directory.CreateDirectory(objPath);
             foreach ( var obj in data.Objects )
             {
-                if (obj.Recipe.ResultCount == 0)
+                if (obj.Recipe != null && obj.Recipe.ResultCount == 0)
                     obj.Recipe = null;
-                if (obj.EdibleBuffs.Duration == 0)
+                if (obj.EdibleBuffs != null && obj.EdibleBuffs.Duration == 0)
                     obj.EdibleBuffs = null;
-                if (obj.GiftTastes.Love.Count == 0 && obj.GiftTastes.Like.Count == 0 && obj.GiftTastes.Neutral.Count == 0 &&
-                    obj.GiftTastes.Dislike.Count == 0 && obj.GiftTastes.Hate.Count == 0)
+                if (obj.GiftTastes != null && obj.GiftTastes.Love.Count == 0 && obj.GiftTastes.Like.Count == 0 &&
+                    obj.GiftTastes.Neutral.Count == 0 && obj.GiftTastes.Dislike.Count == 0 && obj.GiftTastes.Hate.Count == 0)
                     obj.GiftTastes = null;
 
                 if (obj.CategoryTextOverride == "")
@@ -379,7 +672,7 @@ namespace StardewEditor3.JsonAssets
             System.IO.Directory.CreateDirectory(cropPath);
             foreach (var crop in data.Crops)
             {
-                if (crop.Bonus.MinimumPerHarvest == 0)
+                if (crop.Bonus != null && crop.Bonus.MinimumPerHarvest == 0)
                     crop.Bonus = null;
 
                 string cropDir = System.IO.Path.Combine(cropPath, crop.Name);
@@ -423,7 +716,7 @@ namespace StardewEditor3.JsonAssets
             System.IO.Directory.CreateDirectory(bigPath);
             foreach (var big in data.BigCraftables)
             {
-                if (big.Recipe.ResultCount == 0)
+                if (big.Recipe == null && big.Recipe.ResultCount == 0)
                     big.Recipe = null;
 
                 string bigDir = System.IO.Path.Combine(bigPath, big.Name);
