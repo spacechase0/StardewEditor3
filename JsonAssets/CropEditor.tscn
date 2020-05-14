@@ -192,7 +192,6 @@ margin_right = 354.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = "The phase to regrow at, or -1 for a one-time harvest."
-value = -1.0
 rounded = true
 allow_greater = true
 allow_lesser = true

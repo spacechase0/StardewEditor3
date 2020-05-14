@@ -64,6 +64,7 @@
     <Compile Include="JsonAssets\GiftTasteEntryEditor.cs" />
     <Compile Include="JsonAssets\IngredientEntryEditor.cs" />
     <Compile Include="JsonAssets\IngredientListEditor.cs" />
+    <Compile Include="JsonAssets\JsonAssetsController_TranslationHelper.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_FruitTrees.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_Crops.cs" />
     <Compile Include="JsonAssets\JsonAssetsController_Boots.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Util\IntListEditor.cs" />
     <Compile Include="Util\IntListEntryEditor.cs" />
     <Compile Include="Util\LambdaWrapper.cs" />
+    <Compile Include="Util\Languages.cs" />
     <Compile Include="Util\Pair.cs" />
     <Compile Include="Util\Rectangle.cs" />
     <Compile Include="Util\StringListEntryEditor.cs" />

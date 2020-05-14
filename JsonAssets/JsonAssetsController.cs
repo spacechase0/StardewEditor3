@@ -42,6 +42,7 @@ namespace StardewEditor3.JsonAssets
         private readonly PackedScene PantsEditor = GD.Load<PackedScene>("res://JsonAssets/PantsEditor.tscn");
         private readonly PackedScene TailoringEditor = GD.Load<PackedScene>("res://JsonAssets/TailoringRecipeEditor.tscn");
         private readonly PackedScene BootsEditor = GD.Load<PackedScene>("res://JsonAssets/BootsEditor.tscn");
+        private readonly PackedScene TranslationHelperEditor = GD.Load<PackedScene>("res://JsonAssets/TranslationHelperEditor.tscn");
 
         public JsonAssetsController()
         :   base(MOD_NAME, MOD_UNIQUE_ID, MOD_ABBREVIATION)
@@ -797,6 +798,12 @@ namespace StardewEditor3.JsonAssets
                 DoBootsEditorConnections(activeEditor, entry);
             }
 
+            else if ( entry == roots["Translation Helper"] )
+            {
+                activeEditor = TranslationHelperEditor.Instance();
+                DoTranslationHelperEditorConnections(activeEditor, entry, data as JsonAssetsModData);
+            }
+
             activeEditor.SetMeta(Meta.CorrespondingController, ModUniqueId);
             return activeEditor;
         }
@@ -830,13 +837,15 @@ namespace StardewEditor3.JsonAssets
                 "Pants",
                 "Tailoring Recipes",
                 "Boots",
+                "Translation Helper",
             };
 
             foreach (var section in sections)
             {
                 var item = ui.ProjectTree.CreateItem(entry);
                 item.SetText(0, section);
-                item.AddButton(0, ui.AddIcon, UI.ADD_BUTTON_INDEX, tooltip: "Add new entry");
+                if ( section != "Translation Helper" )
+                    item.AddButton(0, ui.AddIcon, UI.ADD_BUTTON_INDEX, tooltip: "Add new entry");
                 item.SetMeta(Meta.CorrespondingController, ModUniqueId);
                 roots.Add(section, item);
             }
@@ -1228,7 +1237,7 @@ namespace StardewEditor3.JsonAssets
                     var entries = new List<Pair<string, string>>();
                     foreach (var loc in locs)
                     {
-                        locEditor.AddEntry(loc.Key, loc.Value);
+                        locEditor.AddEntry(Languages.CodeToLanguage(loc.Key), loc.Value);
                         entries.Add(new Pair<string, string>(loc.Key, loc.Value));
                     }
                     var lambdaAdd = new LambdaWrapper(() => entries.Add(new Pair<string, string>("", "")));
@@ -1249,8 +1258,8 @@ namespace StardewEditor3.JsonAssets
                         locs.Clear();
                         foreach (var entry in entries)
                         {
-                            if (!locs.ContainsKey(entry.First))
-                                locs.Add(entry.First, entry.Second);
+                            if (!locs.ContainsKey(Languages.LanguageToCode(entry.First)))
+                                locs.Add(Languages.LanguageToCode(entry.First), entry.Second);
                         }
                     });
                     lambdaAdd.SelfConnect(locEditor, nameof(LocalizationEditor.entry_added));

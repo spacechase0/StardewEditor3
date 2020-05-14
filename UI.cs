@@ -572,10 +572,10 @@ public class UI : MarginContainer
 		}
 
 		if ( newArea != null )
-		{
-			ClearMainEditingArea();
-			MainEditingArea.AddChild(newArea);
-		}
+        {
+            ClearMainEditingArea();
+            MainEditingArea.AddChild(newArea);
+        }
 	}
 
 	private void Signal_TreeItemEdited()
@@ -666,17 +666,17 @@ public class UI : MarginContainer
 
 	private void ClearMainEditingArea()
 	{
-		if (MainEditingArea.GetChildCount() <= 0)
-			return;
-
-		var child = MainEditingArea.GetChild(0);
-		if (child.GetMeta(Meta.CorrespondingController) != null)
-		{
-			var controller = ContentPackController.GetControllerForMod((string)child.GetMeta(Meta.CorrespondingController));
-			var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
-			controller.OnEditingAreaChanged(this, data, child);
-		}
-		child.QueueFree();
+        for (int i = 0; i < MainEditingArea.GetChildCount(); ++i)
+        {
+            var child = MainEditingArea.GetChild(i);
+            if (child.HasMeta(Meta.CorrespondingController))
+            {
+                var controller = ContentPackController.GetControllerForMod((string)child.GetMeta(Meta.CorrespondingController));
+                var data = ModProject.Mods.Find(md => md.ContentPackFor == controller.ModUniqueId);
+                controller.OnEditingAreaChanged(this, data, child);
+            }
+            child.QueueFree();
+        }
 	}
 
 	private void InitFileSystemWatcher()

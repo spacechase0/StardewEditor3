@@ -1,0 +1,160 @@
+[gd_scene format=2]
+
+[node name="TranslationHelperEditor" type="HSplitContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 760, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+margin_right = 214.0
+margin_bottom = 600.0
+
+[node name="Keys" type="VBoxContainer" parent="PanelContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 207.0
+margin_bottom = 593.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="PanelContainer/Keys"]
+margin_top = -1.0
+margin_right = 200.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 200, 27 )
+text = "Item String"
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+margin_left = 226.0
+margin_right = 1452.0
+margin_bottom = 600.0
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer"]
+margin_right = 214.0
+margin_bottom = 600.0
+
+[node name="English" type="VBoxContainer" parent="HSplitContainer/PanelContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 207.0
+margin_bottom = 593.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="HSplitContainer/PanelContainer/English"]
+margin_top = -1.0
+margin_right = 200.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 200, 27 )
+text = "English"
+
+[node name="Values" type="ScrollContainer" parent="HSplitContainer"]
+margin_left = 226.0
+margin_right = 1226.0
+margin_bottom = 600.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/Values"]
+margin_right = 2444.0
+margin_bottom = 32.0
+
+[node name="Label" type="Label" parent="HSplitContainer/Values/VBoxContainer"]
+margin_right = 2444.0
+margin_bottom = 14.0
+text = "Translations"
+
+[node name="Grid" type="GridContainer" parent="HSplitContainer/Values/VBoxContainer"]
+margin_top = 18.0
+margin_right = 2444.0
+margin_bottom = 32.0
+columns = 12
+
+[node name="Label2" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_right = 200.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Japanese"
+
+[node name="Label3" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 204.0
+margin_right = 404.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Russian"
+
+[node name="Label4" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 408.0
+margin_right = 608.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Chinese"
+
+[node name="Label5" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 612.0
+margin_right = 812.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Portugese"
+
+[node name="Label6" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 816.0
+margin_right = 1016.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Spanish"
+
+[node name="Label7" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 1020.0
+margin_right = 1220.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "German"
+
+[node name="Label8" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 1224.0
+margin_right = 1424.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Thai"
+
+[node name="Label9" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 1428.0
+margin_right = 1628.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "French"
+
+[node name="Label10" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 1632.0
+margin_right = 1832.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Korean"
+
+[node name="Label11" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 1836.0
+margin_right = 2036.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Italian"
+
+[node name="Label12" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 2040.0
+margin_right = 2240.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Turkish"
+
+[node name="Label13" type="Label" parent="HSplitContainer/Values/VBoxContainer/Grid"]
+margin_left = 2244.0
+margin_right = 2444.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 200, 0 )
+text = "Hungarian"
