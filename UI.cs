@@ -403,6 +403,36 @@ public class UI : MarginContainer
             return;
         }
 
+        foreach ( var updateKey in manifest.UpdateKeys )
+        {
+            int colon = updateKey.IndexOf(':');
+            string keyPlatform = updateKey.Substring(0, colon);
+            string keyId = updateKey.Substring(colon + 1);
+            if ( ModProject.UpdateKeys.Find(uk => uk.Platform == keyPlatform) == null )
+            {
+                var uk = new UpdateKey() { Platform = keyPlatform, Id = keyId };
+                ModProject.UpdateKeys.Add(uk);
+
+                var updateKeyItem = ProjectTree.CreateItem(updateKeysRoot);
+                updateKeyItem.SetText(0, updateKey);
+                updateKeyItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this update key");
+                updateKeys.Add(updateKeyItem, uk);
+            }
+        }
+
+        foreach (var dep in manifest.Dependencies)
+        {
+            if (ModProject.Dependencies.Find(d => d.UniqueID == dep.UniqueID) == null)
+            {
+                ModProject.Dependencies.Add(dep);
+
+                var depItem = ProjectTree.CreateItem(depsRoot);
+                depItem.SetText(0, dep.UniqueID);
+                depItem.AddButton(0, RemoveIcon, REMOVE_BUTTON_INDEX, tooltip: "Remove this dependency");
+                deps.Add(depItem, dep);
+            }
+        }
+
         var existingMod = ModProject.Mods.Find(md => md.ContentPackFor == matchingController.ModUniqueId);
         if ( existingMod == null )
         {
