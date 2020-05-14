@@ -1590,6 +1590,15 @@ namespace StardewEditor3.JsonAssets
                             prop.SetValue(obj, ir);
                         });
                     }
+                    else if (prop.Name == "FemaleTexture")
+                    {
+                        lambda = new LambdaWrapper<SubImageEditor>((ie) =>
+                        {
+                            var ir = ie.GetImageRef();
+                            obj.GetType().GetProperty("HasFemaleVariant").SetValue(obj, !string.IsNullOrEmpty(ir.Resource));
+                            prop.SetValue(obj, ir);
+                        });
+                    }
                     lambda.SelfConnect(imageEditor, nameof(SubImageEditor.image_changed));
                 }
                 else if (prop.PropertyType == typeof(RecipeData))
