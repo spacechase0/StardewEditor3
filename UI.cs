@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 
 public class UI : MarginContainer
 {
+    public static Font InternationalFont = GD.Load<Font>("res://InternationalFont.tres");
+
 	public string ModProjectDir { get; set; }
 	public Project ModProject { get; set; }
 

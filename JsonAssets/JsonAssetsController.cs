@@ -1701,13 +1701,14 @@ namespace StardewEditor3.JsonAssets
                     });
                     var lambdaEdit = new LambdaWrapper<int, string, string>((idx, lang, str) =>
                     {
+                        lang = Languages.LanguageToCode(lang);
                         entries[idx].First = lang;
                         entries[idx].Second = str;
                         locs.Clear();
                         foreach (var entry in entries)
                         {
-                            if (!locs.ContainsKey(Languages.LanguageToCode(entry.First)))
-                                locs.Add(Languages.LanguageToCode(entry.First), entry.Second);
+                            if (!locs.ContainsKey(entry.First))
+                                locs.Add(entry.First, entry.Second);
                         }
                     });
                     lambdaAdd.SelfConnect(locEditor, nameof(LocalizationEditor.entry_added));

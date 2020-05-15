@@ -61,10 +61,11 @@ namespace StardewEditor3.JsonAssets
 
         private void AddTranslation(VBoxContainer keys, GridContainer values, VBoxContainer englishContainer, string key, string english, Dictionary<string, string> locales)
         {
-            var label = new Label() { Text = key, RectMinSize = new Vector2(0, 24) };
+            var label = new Label() { Text = key, RectMinSize = new Vector2(0, 32) };
             keys.AddChild(label);
 
             var lineEdit = new LineEdit() { Text = english, Editable = false };
+            lineEdit.AddFontOverride("font", UI.InternationalFont);
             englishContainer.AddChild(lineEdit);
 
             foreach ( var lang in Languages.GetList() )
@@ -74,6 +75,7 @@ namespace StardewEditor3.JsonAssets
                     locales.Add(code, "");
 
                 lineEdit = new LineEdit() { Text = locales[code] };
+                lineEdit.AddFontOverride("font", UI.InternationalFont);
                 values.AddChild(lineEdit);
 
                 var lambda = new LambdaWrapper<string>((str) => locales[code] = str);

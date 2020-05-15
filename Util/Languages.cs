@@ -44,7 +44,7 @@ namespace StardewEditor3.Util
                 case "turkish": return "tr";
                 case "hungarian": return "hu";
             }
-            throw new ArgumentException("Unsupported language");
+            throw new ArgumentException("Unsupported language '" + lang + "'");
         }
 
         public static string CodeToLanguage(string code)
@@ -64,7 +64,7 @@ namespace StardewEditor3.Util
                 case "tr": return "Turkish";
                 case "hu": return "Hungarian";
             }
-            throw new ArgumentException("Unsupported language");
+            throw new ArgumentException("Unsupported language code '" + code + "'");
         }
     }
 }
