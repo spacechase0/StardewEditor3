@@ -189,7 +189,7 @@ window_title = "Project Validation Errors"
 [node name="ImportPackDialog" type="FileDialog" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
-window_title = "Import a content pack"
+window_title = "Open a File"
 resizable = true
 mode = 0
 access = 2

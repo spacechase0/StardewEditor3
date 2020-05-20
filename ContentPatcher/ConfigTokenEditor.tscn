@@ -1,0 +1,100 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Util/StringListEditor.tscn" type="PackedScene" id=1]
+
+[node name="ConfigTokenEditor" type="VBoxContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="HBoxContainer" parent="."]
+margin_right = 354.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="Name"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Name:"
+
+[node name="LineEdit" type="LineEdit" parent="Name"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The config token name."
+
+[node name="AllowValues" type="HBoxContainer" parent="."]
+margin_top = 28.0
+margin_right = 354.0
+margin_bottom = 48.0
+
+[node name="Label" type="Label" parent="AllowValues"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 17.0
+rect_min_size = Vector2( 150, 0 )
+text = "Allow Values:"
+
+[node name="StringListEditor" parent="AllowValues" instance=ExtResource( 1 )]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 20.0
+
+[node name="AllowBlank" type="HBoxContainer" parent="."]
+margin_top = 52.0
+margin_right = 354.0
+margin_bottom = 76.0
+
+[node name="Label" type="Label" parent="AllowBlank"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Allow Blank:"
+
+[node name="CheckBox" type="CheckBox" parent="AllowBlank"]
+margin_left = 154.0
+margin_right = 178.0
+margin_bottom = 24.0
+hint_tooltip = "Whether the field can be left blank or not."
+
+[node name="AllowMultiple" type="HBoxContainer" parent="."]
+margin_top = 80.0
+margin_right = 354.0
+margin_bottom = 104.0
+
+[node name="Label" type="Label" parent="AllowMultiple"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Allow Multiple:"
+
+[node name="CheckBox" type="CheckBox" parent="AllowMultiple"]
+margin_left = 154.0
+margin_right = 178.0
+margin_bottom = 24.0
+hint_tooltip = "Whether the player can specify multiple comma-delimited values or not."
+
+[node name="Default" type="HBoxContainer" parent="."]
+margin_top = 108.0
+margin_right = 354.0
+margin_bottom = 132.0
+
+[node name="Label" type="Label" parent="Default"]
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 150, 0 )
+text = "Default:"
+
+[node name="LineEdit" type="LineEdit" parent="Default"]
+margin_left = 154.0
+margin_right = 354.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The default values when the field is missing. Required if AllowBlank is false."

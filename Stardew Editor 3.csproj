@@ -57,6 +57,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentPackController.cs" />
+    <Compile Include="ContentPatcher\ConfigToken.cs" />
+    <Compile Include="ContentPatcher\ContentPatcherController.cs" />
+    <Compile Include="ContentPatcher\ContentPatcherController_ConfigTokens.cs" />
+    <Compile Include="ContentPatcher\ContentPatcherModData.cs" />
     <Compile Include="Dependency.cs" />
     <Compile Include="ExportManifest.cs" />
     <Compile Include="JsonAssets\Data\RecipeData.cs" />

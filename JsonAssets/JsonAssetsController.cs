@@ -49,9 +49,9 @@ namespace StardewEditor3.JsonAssets
         {
         }
 
-        public override ModData OnModCreated(UI ui, TreeItem mod)
+        public override ModData OnModCreated(UI ui, TreeItem entry)
         {
-            AddSections(ui, mod);
+            AddSections(ui, entry);
             return new JsonAssetsModData();
         }
 
@@ -1289,6 +1289,7 @@ namespace StardewEditor3.JsonAssets
                 roots.Add(section, item);
             }
         }
+
         private void DoEditorConnections<T>(Node editor, T obj)
         {
             foreach (var prop in obj.GetType().GetProperties())

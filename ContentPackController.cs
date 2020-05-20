@@ -1,4 +1,5 @@
 ﻿using Godot;
+using StardewEditor3.ContentPatcher;
 using StardewEditor3.JsonAssets;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace StardewEditor3
             ModAbbreviation = modAbbrev;
         }
 
-        public abstract ModData OnModCreated(UI ui, TreeItem mod);
+        public abstract ModData OnModCreated(UI ui, TreeItem entry);
 
         public abstract void OnSave(UI ui, ModData data);
 
@@ -66,6 +67,7 @@ namespace StardewEditor3
         {
             var ret = new Dictionary<string, ContentPackController>(); ;
             ret.Add(JsonAssetsController.MOD_UNIQUE_ID, new JsonAssetsController());
+            ret.Add(ContentPatcherController.MOD_UNIQUE_ID, new ContentPatcherController());
             return ret;
         }
     }
